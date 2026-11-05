@@ -72,7 +72,7 @@ a{color:#0b6} .row{background:#fff;border-radius:10px;padding:10px 12px;margin:6
           .map(
             (ch) =>
               `<a class="row" href="/${b.botId}/chat/${ch.chatId}">${ch.read ? "" : "● "}<b>${esc(ch.profile.name)}</b>
-<div class="m">${esc(String(ch.latestEvent?.message?.text ?? `[${ch.latestEvent?.message?.type ?? "-"}]`))}</div></a>`,
+<div class="m">${esc(String(ch.latestEvent?.message?.text ?? `[${ch.latestEvent?.message?.type ?? ch.latestEvent?.type ?? "-"}]`))}</div></a>`,
           )
           .join("");
         return `<h3>${esc(b.name)}</h3>${items || '<p class="m">no chats</p>'}`;
