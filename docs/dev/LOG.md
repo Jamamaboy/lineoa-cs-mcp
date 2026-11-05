@@ -64,3 +64,16 @@
 - Why: the user reviews each commit, and the read-core commit (703 lines) was too big to review.
 - Commits: this commit.
 - For other lanes: from now on, dev stops after each feature for review (CLAUDE.md).
+
+## 2026-11-06 03:40 ICT · Login and real-console default (feat/login)
+- What:
+  - `playwright-core` drives the installed Google Chrome, so no browser download.
+  - `src/auth/login.ts` (`npm run login`) opens chat.line.biz, waits until `/api/v1/me` answers, then saves only the
+    *.line.biz cookies to `~/.config/lineoa-mcp/session.json`. The file is mode 0600 in a 0700 folder.
+  - `LINEOA_BASE_URL` defaults to https://chat.line.biz. The mock runs only with `LINEOA_MOCK=1`.
+  - `.mcp.json` now has `lineoa-cs` (real, `LINEOA_ALLOW_SEND=false`) and `lineoa-cs-mock`.
+  - `npm run try -- --real` forces sending off and only opens a chat that is already read.
+- Why: the user asked to connect to their real OA now, read-only by default, with sending switchable later.
+- Commits: `chore(deps): add playwright-core…`, `feat(auth): npm run login…`, `feat(config): talk to the real
+  console by default…`, `feat(dx): npm run try -- --real…`.
+- For other lanes: the real endpoints get their first live check here (GET only).
