@@ -1,0 +1,112 @@
+{
+  "slug": "zwiz",
+  "name": "Zwiz.ai",
+  "category": "inbox-saas",
+  "url": "https://www.zwiz.ai/en",
+  "one_liner_th": "แพลตฟอร์ม AI social commerce ไทย รวม inbox, CRM และตรวจสลิปอัตโนมัติ",
+  "language": null,
+  "license": "proprietary (SaaS)",
+  "github": null,
+  "users_claim": {
+    "text": "150,000+ Businesses, 100M+ Conversations handled",
+    "url": "https://www.zwiz.ai/en"
+  },
+  "auth": {
+    "method_th": "ไม่ระบุสาธารณะ (ปุ่ม LINE/Messenger บนเว็บ; LINE เป็น technology partner)",
+    "storage_th": "ไม่เปิดเผย",
+    "borrow_th": "ไม่มีอะไรให้ลอก"
+  },
+  "attachments": {
+    "how_th": "มีตรวจสลิปโอนเงินอัตโนมัติ (ธนาคารหลัก/TrueMoney) บนหน้าเว็บ ไม่มีรายละเอียดการจัดการรูป/ไฟล์ใน inbox",
+    "borrow_th": "ไอเดียตรวจสลิปจากรูปที่ลูกค้าส่ง อาจเป็น extension ของ tool อ่านรูปในอนาคต"
+  },
+  "core_features": [
+    {
+      "name": "ZIGNAL",
+      "detail_th": "Unified Inbox & Notifications"
+    },
+    {
+      "name": "CRM & Loyalty",
+      "detail_th": "แผงลูกค้า สถานะ ติดต่อ แท็ก"
+    },
+    {
+      "name": "Slip verify",
+      "detail_th": "ตรวจสลิปอัตโนมัติ ตรวจสอบสำเร็จ"
+    },
+    {
+      "name": "Chatbot",
+      "detail_th": "ตอบคอมเมนต์/แชทอัตโนมัติ"
+    },
+    {
+      "name": "Live commerce",
+      "detail_th": "ตะกร้า live บน Facebook Live"
+    }
+  ],
+  "flow": [
+    {
+      "actor": "service",
+      "label": "ลูกค้าทักผ่านแชท"
+    },
+    {
+      "actor": "service",
+      "label": "เข้า ZIGNAL inbox"
+    },
+    {
+      "actor": "agent",
+      "label": "แอดมินตอบ/แท็ก"
+    },
+    {
+      "actor": "service",
+      "label": "ลูกค้าส่งสลิป"
+    },
+    {
+      "actor": "service",
+      "label": "ตรวจสลิปอัตโนมัติ"
+    }
+  ],
+  "highlights_th": [
+    "รวม inbox + CRM + ตรวจสลิปในที่เดียว",
+    "ตรงกับบริบทธุรกิจไทย",
+    "อ้างผู้ใช้ 150,000+ ธุรกิจ"
+  ],
+  "weaknesses_th": [
+    "ไม่ยืนยันว่า inbox รวม LINE OA จริงหรือไม่",
+    "ไม่มีเอกสาร technical",
+    "SaaS ปิด"
+  ],
+  "tools_or_endpoints": [],
+  "trial": {
+    "status": "not-run",
+    "summary_th": "ไม่มีบัญชี ดึงข้อมูลจากหน้าเว็บสาธารณะและถ่ายภาพเท่านั้น",
+    "log": "trials/zwiz.md"
+  },
+  "screenshots": [
+    {
+      "file": "shots/zwiz-1.png",
+      "caption_th": "หน้าแรก ZWIZ AI Platform for Social Commerce",
+      "kind": "website"
+    },
+    {
+      "file": "shots/zwiz-2.png",
+      "caption_th": "หน้าเว็บ ZWIZ ภาษาไทย",
+      "kind": "website"
+    }
+  ],
+  "scores": {
+    "relevance": 3,
+    "auth": 1,
+    "attachments": 2,
+    "maturity": 4,
+    "tryability": 1,
+    "reasons_th": {
+      "relevance": "inbox สำหรับร้านค้าไทย แต่ LINE OA ไม่ชัด",
+      "auth": "ไม่มีข้อมูล auth",
+      "attachments": "มีแค่ฟีเจอร์ตรวจสลิป ไม่มีรายละเอียดไฟล์",
+      "maturity": "ผู้ใช้จำนวนมากตามที่อ้าง",
+      "tryability": "ไม่มีบัญชี ไม่ได้ลอง"
+    }
+  },
+  "sources": [
+    "https://www.zwiz.ai/en"
+  ]
+}

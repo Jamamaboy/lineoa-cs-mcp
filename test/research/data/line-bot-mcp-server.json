@@ -1,0 +1,138 @@
+{
+  "slug": "line-bot-mcp-server",
+  "name": "line/line-bot-mcp-server",
+  "category": "mcp-official",
+  "url": "https://github.com/line/line-bot-mcp-server",
+  "one_liner_th": "MCP ทางการของ LINE ครอบ Messaging API ให้ AI ส่งข้อความในนาม bot",
+  "language": "TypeScript",
+  "license": "Apache-2.0",
+  "github": {
+    "stars": 797,
+    "forks": 159,
+    "open_issues": 10,
+    "last_push": "2026-11-05",
+    "created": "2025-04-04",
+    "fetched_at": "2026-11-05"
+  },
+  "users_claim": null,
+  "auth": {
+    "method_th": "ใช้ Channel Access Token (long-lived) ของ Messaging API ผ่าน env CHANNEL_ACCESS_TOKEN และ DESTINATION_USER_ID เป็นปลายทางเริ่มต้น ตัวตนคือ bot ของ OA ไม่ใช่เจ้าหน้าที่ CS",
+    "storage_th": "อยู่ใน env ของ process MCP (config ของ client) ไม่มีการเก็บ session เอง",
+    "borrow_th": "ไม่ตรงโจทย์เรื่อง act on behalf of human; เอาแค่แนวคิดส่ง secret ผ่าน env และตั้ง NPM_CONFIG_IGNORE_SCRIPTS=true ใน config ตัวอย่างของเขา"
+  },
+  "attachments": {
+    "how_th": "ไม่มีเครื่องมืออ่านรูป/ไฟล์จากแชต ส่งได้เฉพาะ text และ flex message (รูปอ้างด้วย URL ภายใน flex JSON) มี create_rich_menu ที่อัปโหลดรูป rich menu",
+    "borrow_th": "ไม่มีอะไรให้ยืมสำหรับ attachment ขาเข้า; ใช้เป็นตัวอย่างว่า Messaging API ไม่ให้ดึงประวัติแชต"
+  },
+  "core_features": [
+    {
+      "name": "push_text_message",
+      "detail_th": "ส่งข้อความ text หาผู้ใช้ตาม userId"
+    },
+    {
+      "name": "push_flex_message",
+      "detail_th": "ส่ง flex message (bubble/carousel)"
+    },
+    {
+      "name": "broadcast_*",
+      "detail_th": "broadcast text/flex ถึงผู้ติดตามทั้งหมด (เสี่ยงส่งผิดวง)"
+    },
+    {
+      "name": "get_profile",
+      "detail_th": "ดึงโปรไฟล์ผู้ใช้ (ชื่อ รูป status)"
+    },
+    {
+      "name": "get_follower_ids",
+      "detail_th": "รายการ userId ผู้ติดตาม ไม่ใช่รายการแชต"
+    },
+    {
+      "name": "rich_menu tools",
+      "detail_th": "สร้าง/ลบ/ตั้งค่า default rich menu"
+    },
+    {
+      "name": "get_message_quota",
+      "detail_th": "โควตาและยอดใช้ข้อความรายเดือน"
+    }
+  ],
+  "flow": [
+    {
+      "actor": "user",
+      "label": "สั่ง AI ให้ส่งข้อความ"
+    },
+    {
+      "actor": "agent",
+      "label": "เรียก push_text_message"
+    },
+    {
+      "actor": "tool",
+      "label": "MCP อ่าน env token"
+    },
+    {
+      "actor": "service",
+      "label": "LINE Messaging API push"
+    },
+    {
+      "actor": "user",
+      "label": "ผู้รับเห็นจาก bot"
+    }
+  ],
+  "highlights_th": [
+    "เป็น MCP ทางการจาก LINE Corp ดาว 797 อัปเดตล่าสุดวันนี้",
+    "รัน tools/list ได้จริงโดยไม่ต้องมีโทเคนจริง (12 tools)",
+    "ครอบ Messaging API ครบฝั่งส่ง/โปรไฟล์/rich menu"
+  ],
+  "weaknesses_th": [
+    "ไม่ตรงโจทย์: ตัวตนคือ bot (channel access token) ไม่ใช่เจ้าหน้าที่ CS ที่ล็อกอิน chat.line.biz และ Messaging API ห้ามใช้ตามเงื่อนไขของเรา",
+    "ไม่มี tool list chats / read chat / search messages เพราะ Messaging API ไม่มี endpoint ดึงประวัติแชต (ได้ข้อความเข้าทาง webhook เท่านั้น) มีแค่ get_follower_ids กับ get_profile",
+    "ไม่รองรับ attachment ขาเข้าเลย และมี broadcast_* ซึ่งอันตรายต่อ agent ที่ไม่ได้ควบคุม"
+  ],
+  "tools_or_endpoints": [
+    "push_text_message",
+    "push_flex_message",
+    "broadcast_text_message",
+    "broadcast_flex_message",
+    "get_profile",
+    "get_message_quota",
+    "get_rich_menu_list",
+    "delete_rich_menu",
+    "set_rich_menu_default",
+    "cancel_rich_menu_default",
+    "create_rich_menu",
+    "get_follower_ids"
+  ],
+  "trial": {
+    "status": "ran",
+    "summary_th": "รัน inspector --cli tools/list ด้วย CHANNEL_ACCESS_TOKEN=DUMMY ได้ 12 tools จริง (serverInfo line-bot 0.5.0) ไม่เรียก tool ใดเลย หมายเหตุ: ครั้งแรกค้างจน timeout เพราะ install script ของ npx; ต้องตั้ง NPM_CONFIG_IGNORE_SCRIPTS=true จึงผ่าน",
+    "log": "trials/line-bot-mcp-server.md"
+  },
+  "screenshots": [
+    {
+      "file": "shots/line-bot-mcp-server-1.png",
+      "caption_th": "หน้า GitHub ของ line/line-bot-mcp-server",
+      "kind": "github-page"
+    },
+    {
+      "file": "shots/line-bot-mcp-server-2.png",
+      "caption_th": "ผล tools/list จริง 12 tools (ไม่มี list/read/search)",
+      "kind": "real-run"
+    }
+  ],
+  "scores": {
+    "relevance": 1,
+    "auth": 1,
+    "attachments": 1,
+    "maturity": 5,
+    "tryability": 5,
+    "reasons_th": {
+      "relevance": "ตัวตน bot + Messaging API ไม่มี list/read/search จึงเป็นคนละปัญหากับเรา",
+      "auth": "token ของ bot ไม่ใช่การทำแทนคน CS ไม่มีอะไรให้เรียนรู้ด้านนี้",
+      "attachments": "ส่งได้แค่ text/flex ไม่มีการอ่านหรือดาวน์โหลดรูป/ไฟล์",
+      "maturity": "ของทางการ ดาวสูง อัปเดตล่าสุดวันนี้ มีเอกสารและเทส",
+      "tryability": "รัน tools/list ได้จริงด้วยโทเคนปลอม"
+    }
+  },
+  "sources": [
+    "https://github.com/line/line-bot-mcp-server",
+    "https://www.npmjs.com/package/@line/line-bot-mcp-server"
+  ]
+}

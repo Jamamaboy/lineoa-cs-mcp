@@ -1,0 +1,2 @@
+# zwiz (SaaS, not-run)
+WebFetch https://www.zwiz.ai/en: unified inbox "ZIGNAL (Unified Inbox & Notifications)", "CRM & Loyalty", auto slip check ("ตรวจสลิปอัตโนมัติสำเร็จ"), claims "150,000+ Businesses", "100M+ Conversations". Hero shows Messenger and LINE buttons; LINE listed as tech partner. LINE inbox details unverified. First screenshot of zwiz.ai (no www) was blank, retaken at www.zwiz.ai/en.

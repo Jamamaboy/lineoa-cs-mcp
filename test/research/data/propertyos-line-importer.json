@@ -1,0 +1,142 @@
+{
+  "slug": "propertyos-line-importer",
+  "name": "zimplemedia/propertyos-line-importer",
+  "category": "line-browser-ext",
+  "url": "https://github.com/zimplemedia/propertyos-line-importer",
+  "one_liner_th": "ส่วนขยาย Chrome ดึงประวัติแชต LINE OA (CSV) ผู้ติดต่อ แท็ก โน้ต เข้า PropertyOS",
+  "language": "JavaScript",
+  "license": null,
+  "github": {
+    "stars": 0,
+    "forks": 0,
+    "open_issues": 0,
+    "last_push": "2026-11-03",
+    "created": "2026-06-30",
+    "fetched_at": "2026-11-05"
+  },
+  "users_claim": null,
+  "auth": {
+    "method_th": "ใช้คุกกี้ล็อกอิน chat.line.biz ของผู้ใช้ผ่าน host_permissions + fetch credentials:include โดยไม่อ่านคุกกี้ ไม่ขอ permissions อื่น; เว็บ PropertyOS เรียก extension ผ่าน externally_connectable (จำกัดโดเมน) ด้วย action ping/checkSession/scrapeOam; checkSession ใช้ GET /api/v1/me",
+    "storage_th": "ไม่เก็บคุกกี้หรือ secret ใด ๆ; ข้อมูลส่งกลับเป็น batch ให้หน้าเว็บ PropertyOS",
+    "borrow_th": "คัดลอก: service worker + host_permissions + credentials:include ได้สิทธิ์เซสชันโดยไม่แตะคุกกี้, checkSession ผ่าน /api/v1/me, rate-limit gate พร้อม 429 backoff; ระวัง externally_connectable รวม http://localhost/*"
+  },
+  "attachments": {
+    "how_th": "ไม่จัดการไฟล์แนบเลย: ดึงประวัติเป็นข้อความผ่าน /download/{bot}/{chat}/messages.csv เท่านั้น ไม่มีโค้ด contentHash/chat-content",
+    "borrow_th": "ไม่มีอะไรให้คัดลอกด้านไฟล์แนบ แต่ messages.csv เป็นทางเลือกเบาสำหรับ search/อ่านย้อนหลังแบบข้อความ"
+  },
+  "core_features": [
+    {
+      "name": "scrapeOam",
+      "detail_th": "ซิงก์เป็น batch ตามช่วงเวลา/ตัวเลือก (Messages, Notes, Presets)"
+    },
+    {
+      "name": "messages.csv export",
+      "detail_th": "ดาวน์โหลดประวัติแชตเป็น CSV ต่อแชต"
+    },
+    {
+      "name": "Contacts/tags/notes/members",
+      "detail_th": "ดึงข้อมูล CRM ของ OA"
+    },
+    {
+      "name": "Saved replies catalogue",
+      "detail_th": "ดึงข้อความตอบกลับสำเร็จรูป"
+    },
+    {
+      "name": "Rate-limit gate",
+      "detail_th": "คุมประมาณ 1,000 csv req ต่อ 60 วินาที และ retry 429"
+    },
+    {
+      "name": "checkSession",
+      "detail_th": "ตรวจว่าล็อกอิน LINE อยู่ด้วย /api/v1/me"
+    }
+  ],
+  "flow": [
+    {
+      "actor": "user",
+      "label": "กด Import chats ใน PropertyOS"
+    },
+    {
+      "actor": "browser",
+      "label": "sendMessage -> extension"
+    },
+    {
+      "actor": "service",
+      "label": "GET /api/v1/bots,/me"
+    },
+    {
+      "actor": "service",
+      "label": "GET contacts/notes/tags"
+    },
+    {
+      "actor": "service",
+      "label": "GET messages.csv"
+    },
+    {
+      "actor": "storage",
+      "label": "batch กลับหน้า PropertyOS"
+    }
+  ],
+  "highlights_th": [
+    "โมเดลสิทธิ์เล็กที่สุดในกลุ่ม: host_permissions เดียวและไม่มี content script",
+    "เจาะ endpoint ที่ไม่มีใน repo อื่น: messages.csv, notes, tags, owners, savedReplies, members",
+    "มีเทสต์ 65 รายการผ่านทั้งหมด (bun test)"
+  ],
+  "weaknesses_th": [
+    "ไม่ส่งข้อความและไม่จัดการไฟล์แนบ",
+    "ผูกกับ PropertyOS; ไม่มี license; ดาว 0",
+    "externally_connectable อนุญาต localhost"
+  ],
+  "tools_or_endpoints": [
+    "GET /api/v1/me",
+    "GET /api/v1/bots?limit=1000&noFilter=true",
+    "GET /api/v2/bots/{botId}/contacts",
+    "GET /api/v1/bots/{botId}/tags",
+    "GET /api/v2/bots/{botId}/savedReplies",
+    "GET /api/v1/bots/{botId}/owners",
+    "GET /api/v1/bots/{botId}/chats/{chatId}/notes",
+    "GET /api/v1/bots/{botId}/chats/{chatId}/members",
+    "GET /download/{botId}/{chatId}/messages.csv?timezoneOffset=-420",
+    "header x-oa-chat-client-version"
+  ],
+  "trial": {
+    "status": "partial",
+    "summary_th": "รันกับ LINE จริงไม่ได้ จึงทำ static trial: รัน bun test (65 ผ่าน), สกัด manifest/permissions และรายการ endpoint",
+    "log": "trials/propertyos-line-importer.md"
+  },
+  "screenshots": [
+    {
+      "file": "shots/propertyos-line-importer-1.png",
+      "caption_th": "manifest permissions, externally_connectable, endpoints และผล bun test",
+      "kind": "real-run"
+    },
+    {
+      "file": "shots/propertyos-line-importer-2.png",
+      "caption_th": "โมเดลความเชื่อถือ/คุกกี้ และพฤติกรรม messages.csv",
+      "kind": "real-run"
+    },
+    {
+      "file": "shots/propertyos-line-importer-3.png",
+      "caption_th": "หน้า GitHub ของ repo",
+      "kind": "github-page"
+    }
+  ],
+  "scores": {
+    "relevance": 3,
+    "auth": 4,
+    "attachments": 1,
+    "maturity": 3,
+    "tryability": 2,
+    "reasons_th": {
+      "relevance": "ดึงประวัติ/CRM ของ chat.line.biz ในเบราว์เซอร์ แต่อ่านอย่างเดียว ไม่ส่ง",
+      "auth": "เซสชัน cookie ผ่าน host_permissions ไม่อ่านคุกกี้ สิทธิ์น้อยมาก มี checkSession",
+      "attachments": "ไม่จัดการไฟล์แนบ",
+      "maturity": "เทสต์ 65 ผ่าน อัปเดตล่าสุด แต่ 0 ดาว ไม่มี license",
+      "tryability": "รัน unit test ได้ ไม่ได้รันกับ LINE"
+    }
+  },
+  "sources": [
+    "https://github.com/zimplemedia/propertyos-line-importer",
+    "https://github.com/zimplemedia/propertyos-line-importer/blob/main/src/oam-api.js",
+    "https://github.com/zimplemedia/propertyos-line-importer/blob/main/manifest.json"
+  ]
+}

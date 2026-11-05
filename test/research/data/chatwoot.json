@@ -1,0 +1,145 @@
+{
+  "slug": "chatwoot",
+  "name": "chatwoot/chatwoot",
+  "category": "inbox-oss",
+  "url": "https://github.com/chatwoot/chatwoot",
+  "one_liner_th": "แพลตฟอร์ม omnichannel inbox โอเพนซอร์ส ทางเลือกแทน Intercom/Zendesk",
+  "language": "Ruby",
+  "license": "NOASSERTION (MIT core + enterprise/)",
+  "github": {
+    "stars": 38917,
+    "forks": 9472,
+    "open_issues": 1615,
+    "last_push": "2026-11-05",
+    "created": "2019-08-14",
+    "fetched_at": "2026-11-05"
+  },
+  "users_claim": null,
+  "auth": {
+    "method_th": "ผู้ใช้ agent ล็อกอินด้วย email+รหัสผ่าน (Devise) ส่วน channel LINE ใช้ line_channel_id/secret/token ของ Messaging API ทางการ",
+    "storage_th": "ตาราง channel_line ในฐานข้อมูล Postgres; webhook ตรวจ signature ด้วย channel secret",
+    "borrow_th": "ไม่ต้องลอก auth (เราห้ามใช้ Messaging API) แต่ควรแยก contact_inboxes.source_id (LINE userId) ออกจาก contacts"
+  },
+  "attachments": {
+    "how_th": "ตาราง attachments มี file_type enum (image/audio/video/file/location/fallback/share/story_mention/contact/ig_reel/ig_post/ig_story/embed), external_url, extension, meta; ไฟล์จริงเก็บด้วย ActiveStorage; ตรวจขนาดสูงสุด 40MB (ตั้งค่าได้) และ whitelist content-type; LINE incoming_message_service ดึงไฟล์จาก LINE content API แล้วแนบกับ message",
+    "borrow_th": "คัดลอกชื่อ field และ enum file_type (เฉพาะ image/audio/video/file/location/fallback) ใช้เป็น domain type; copy แนวคิด 1 message : N attachments และ limit ขนาด+MIME whitelist"
+  },
+  "core_features": [
+    {
+      "name": "Conversation",
+      "detail_th": "status open/resolved/pending/snoozed, priority, assignee_id, team_id, display_id, uuid, last_activity_at, waiting_since, contact_last_seen_at/agent_last_seen_at"
+    },
+    {
+      "name": "Message",
+      "detail_th": "content, message_type incoming/outgoing/activity/template, content_type (text, sticker, ...), private, status sent/delivered/read/failed, source_id, sender_type/sender_id, content_attributes"
+    },
+    {
+      "name": "Attachment",
+      "detail_th": "file_type enum, external_url, coordinates_lat/long, fallback_title, extension, meta, message_id"
+    },
+    {
+      "name": "Contact",
+      "detail_th": "name, email, phone_number, identifier, additional_attributes, custom_attributes, blocked, last_activity_at"
+    },
+    {
+      "name": "ContactInbox",
+      "detail_th": "contact_id+inbox_id+source_id (id ของผู้ใช้ในช่องทาง เช่น LINE userId)"
+    },
+    {
+      "name": "Inbox/Channel",
+      "detail_th": "inboxes.channel_type polymorphic; Channel::Line เก็บ line_channel_id/secret/token"
+    },
+    {
+      "name": "Labels/Notes",
+      "detail_th": "label, private note (message.private=true), canned responses"
+    }
+  ],
+  "flow": [
+    {
+      "actor": "service",
+      "label": "LINE webhook เข้า Line::IncomingMessage"
+    },
+    {
+      "actor": "service",
+      "label": "สร้าง/หา Contact+ContactInbox"
+    },
+    {
+      "actor": "service",
+      "label": "สร้าง Conversation (open)"
+    },
+    {
+      "actor": "service",
+      "label": "สร้าง Message + Attachment"
+    },
+    {
+      "actor": "browser",
+      "label": "agent เห็นใน inbox/ตอบ"
+    },
+    {
+      "actor": "service",
+      "label": "SendOnLineService ส่งออก"
+    }
+  ],
+  "highlights_th": [
+    "schema ชัดเจน field ตรงกับที่เราต้องการ (Conversation/Message/Attachment/Contact)",
+    "แยก Contact กับ ContactInbox.source_id ทำให้ 1 คนหลายช่องทางได้",
+    "message_type + private note แยก activity log ออกจากแชทจริง",
+    "โปรเจกต์ใหญ่ active มาก (38k stars)"
+  ],
+  "weaknesses_th": [
+    "ผูกกับ Rails/Postgres หนัก คัดลอกเฉพาะ concept",
+    "LINE channel ใช้ Messaging API ทางการ ซึ่งเราห้ามใช้",
+    "รัน Docker ไม่ได้ในรอบนี้ ได้แค่อ่านโค้ดแบบ static"
+  ],
+  "tools_or_endpoints": [
+    "app/models/conversation.rb",
+    "app/models/message.rb",
+    "app/models/attachment.rb",
+    "app/models/contact.rb",
+    "app/models/contact_inbox.rb",
+    "app/models/channel/line.rb",
+    "app/services/line/incoming_message_service.rb",
+    "app/services/line/send_on_line_service.rb"
+  ],
+  "trial": {
+    "status": "partial",
+    "summary_th": "clone depth 1 แล้วอ่าน db/schema.rb และ app/models แบบ static (ไม่รัน Docker) สรุปคอลัมน์และ enum ไว้ใน log; ถ่ายภาพ GitHub, เว็บ, และ doc ตั้งค่า LINE",
+    "log": "trials/chatwoot.md"
+  },
+  "screenshots": [
+    {
+      "file": "shots/chatwoot-1.png",
+      "caption_th": "หน้า GitHub ของ chatwoot",
+      "kind": "github-page"
+    },
+    {
+      "file": "shots/chatwoot-2.png",
+      "caption_th": "หน้าเว็บ chatwoot.com แสดง Conversations/Contacts inbox",
+      "kind": "website"
+    },
+    {
+      "file": "shots/chatwoot-3.png",
+      "caption_th": "doc: How to setup a Line channel",
+      "kind": "docs"
+    }
+  ],
+  "scores": {
+    "relevance": 4,
+    "auth": 2,
+    "attachments": 4,
+    "maturity": 5,
+    "tryability": 2,
+    "reasons_th": {
+      "relevance": "โครงสร้าง inbox ของ CS ที่เราจะเลียนแบบ แต่ไม่ได้ทำงานกับ chat.line.biz",
+      "auth": "auth แบบ Messaging API ไม่ใช่สิ่งที่เราใช้",
+      "attachments": "attachments model + enum + limit ใช้เป็นแบบได้ตรงๆ",
+      "maturity": "active มาก มีเอกสารและเทสต์",
+      "tryability": "ไม่ได้รัน เพราะ Docker ปิด อ่านโค้ด static เท่านั้น"
+    }
+  },
+  "sources": [
+    "https://github.com/chatwoot/chatwoot",
+    "https://www.chatwoot.com/",
+    "https://www.chatwoot.com/docs/product/channels/line"
+  ]
+}

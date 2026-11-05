@@ -1,0 +1,126 @@
+{
+  "slug": "chatwoot-mcp",
+  "name": "hugoblanc/chatwoot-mcp",
+  "category": "mcp-official",
+  "url": "https://github.com/hugoblanc/chatwoot-mcp",
+  "one_liner_th": "MCP ชุมชนสำหรับ Chatwoot: ลิสต์แชต อ่านข้อความ ตอบ และเขียนโน้ตภายใน",
+  "language": "TypeScript",
+  "license": null,
+  "github": {
+    "stars": 10,
+    "forks": 8,
+    "open_issues": 1,
+    "last_push": "2026-03-24",
+    "created": "2026-01-22",
+    "fetched_at": "2026-11-05"
+  },
+  "users_claim": null,
+  "auth": {
+    "method_th": "API access token ของ Chatwoot (header api_access_token) หรือสำรองด้วยอีเมล/รหัสผ่านแลก JWT แล้วรีเฟรชเอง",
+    "storage_th": "API token ใน env; JWT cache ที่ ~/.chatwoot-mcp/tokens.json (เขียนด้วย fs.writeFile ไม่กำหนด mode จึงเป็นสิทธิ์ตาม umask เริ่มต้น)",
+    "borrow_th": "ลอกแนวคิดรีเฟรชโทเคนอัตโนมัติ แต่ควรบังคับ chmod 0600 บนไฟล์ cache และไม่เก็บรหัสผ่านถ้าเลี่ยงได้"
+  },
+  "attachments": {
+    "how_th": "อ่านเฉพาะจำนวนไฟล์แนบ ('N file(s)') ในข้อความ; ไม่ดาวน์โหลดและไม่มีพารามิเตอร์แนบไฟล์ตอนส่ง",
+    "borrow_th": "ไม่มีให้ยืม; เป็นตัวอย่างของสิ่งที่ต้องทำเพิ่ม"
+  },
+  "core_features": [
+    {
+      "name": "chatwoot_list_conversations",
+      "detail_th": "ลิสต์บทสนทนา กรอง status/assignee/inbox"
+    },
+    {
+      "name": "chatwoot_get_conversation",
+      "detail_th": "รายละเอียดบทสนทนาเดียว"
+    },
+    {
+      "name": "chatwoot_list_messages",
+      "detail_th": "ข้อความทั้งหมดในบทสนทนา"
+    },
+    {
+      "name": "chatwoot_create_message",
+      "detail_th": "ส่งข้อความ หรือ private note"
+    },
+    {
+      "name": "response_format",
+      "detail_th": "เลือกผลลัพธ์ markdown หรือ json"
+    },
+    {
+      "name": "tool annotations",
+      "detail_th": "ตั้ง readOnlyHint / destructiveHint ครบทุก tool"
+    }
+  ],
+  "flow": [
+    {
+      "actor": "user",
+      "label": "ตั้ง base URL + token"
+    },
+    {
+      "actor": "agent",
+      "label": "list_conversations"
+    },
+    {
+      "actor": "tool",
+      "label": "MCP เรียก Chatwoot REST"
+    },
+    {
+      "actor": "service",
+      "label": "Chatwoot /api/v1"
+    },
+    {
+      "actor": "agent",
+      "label": "list_messages แล้ว create_message"
+    }
+  ],
+  "highlights_th": [
+    "ครบวงจรเล็กๆ: list, read, send ใกล้กับ tools ของเรา (ขาด search และ profile)",
+    "ใส่ annotations readOnly/destructive และรองรับ response_format",
+    "สร้างชนิดจาก OpenAPI swagger.json"
+  ],
+  "weaknesses_th": [
+    "ไม่มี search และไม่มีดึงโปรไฟล์ลูกค้า ไม่รองรับไฟล์แนบ",
+    "อายุสั้น: 3 commits, ไม่มี release, เทสเป็น integration ต้องใช้ Chatwoot จริง (pnpm test ล้มเหลวเพราะไม่มี credential)",
+    "เลือกตัวนี้แทน StackLab-Digital/chatwoot_mcp (11 ดาว) ซึ่งเป็น Cloudflare Worker ไม่มี tool อ่านข้อความและไม่อัปเดตตั้งแต่ ก.ค. 2025; ดาวต่างกันแค่ 1"
+  ],
+  "tools_or_endpoints": [
+    "chatwoot_list_conversations",
+    "chatwoot_get_conversation",
+    "chatwoot_list_messages",
+    "chatwoot_create_message"
+  ],
+  "trial": {
+    "status": "ran",
+    "summary_th": "pnpm install --ignore-scripts, tsc build แล้วรัน inspector tools/list ด้วย CHATWOOT_BASE_URL=http://127.0.0.1:9 และ token DUMMY ได้ 4 tools จริง (npm install ล้มด้วยบั๊ก npm จึงใช้ pnpm); ไม่เรียก tool เพราะไม่มี Chatwoot",
+    "log": "trials/chatwoot-mcp.md"
+  },
+  "screenshots": [
+    {
+      "file": "shots/chatwoot-mcp-1.png",
+      "caption_th": "หน้า GitHub ของ hugoblanc/chatwoot-mcp",
+      "kind": "github-page"
+    },
+    {
+      "file": "shots/chatwoot-mcp-2.png",
+      "caption_th": "ผล tools/list จริง 4 tools",
+      "kind": "real-run"
+    }
+  ],
+  "scores": {
+    "relevance": 3,
+    "auth": 2,
+    "attachments": 1,
+    "maturity": 2,
+    "tryability": 5,
+    "reasons_th": {
+      "relevance": "ลักษณะงาน CS inbox ตรงเกือบทั้งหมด (list/read/send) แต่ใช้ API ทางการของ Chatwoot ไม่ใช่เว็บแชตของ LINE",
+      "auth": "ใช้ API token/JWT ตามปกติ; cache โทเคนไม่ตั้ง chmod จึงเป็นตัวอย่างที่ต้องระวังมากกว่าที่ควรลอก",
+      "attachments": "นับจำนวนไฟล์แนบอย่างเดียว ไม่ดาวน์โหลดหรือส่งไฟล์",
+      "maturity": "ต้นปี 2026 มี 3 commits ไม่มี release ดาว 10 ไม่มีเทสที่รันได้ถ้าไม่มี Chatwoot",
+      "tryability": "build และ tools/list ได้จริง"
+    }
+  },
+  "sources": [
+    "https://github.com/hugoblanc/chatwoot-mcp",
+    "https://github.com/StackLab-Digital/chatwoot_mcp"
+  ]
+}
