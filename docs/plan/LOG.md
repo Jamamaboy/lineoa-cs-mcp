@@ -112,3 +112,14 @@
 - Why: the user asked for clean docs and a file that explains what each document does, in one session.
 - Commits: this commit.
 - For other lanes: worktree paths changed (CLAUDE.md). Research gets `docs/research/README.md` and the refs comparison next.
+
+## 2026-11-06 02:30 ICT · Plan summary page
+- What: `docs/plan/plan-summary.html` is a Thai one-page summary. It shows the end result as 3 screens (Claude chat,
+  login terminal, mock console), the 11 use cases with example prompts and tool calls, the 13 tools, a one-picture
+  architecture, the final folder tree with file counts, the stage chain, what graders get per criterion, and the
+  open questions. The repo has 156 files now (docs + research); about 270 are expected at submission. Linked from
+  `docs/README.md`.
+- Why: the user asked for a Thai summary of the plan as understood, including the final look, use cases, files and
+  folders.
+- Commits: this commit plus the merge into `dev`.
+- For other lanes: the folder tree in the summary is the target layout for dev (it matches PLAN §4).
