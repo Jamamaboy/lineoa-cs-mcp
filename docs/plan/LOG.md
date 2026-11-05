@@ -73,3 +73,14 @@
   mock-based MVP, and the HAR capture runs at the same time.
 - Commits: this commit.
 - For other lanes: dev starts as soon as PLAN v3 is merged; research starts when the HAR lands in `~/lineoa-har/`.
+
+## 2026-11-06 01:15 ICT · PLAN v3 written and merged; dev unpaused
+- What: PLAN.md v3. Framing and must/should/could (§1); assumptions A8–A12 (main-OA link, many cases per chat,
+  email + CS linking, live OA read-only, no LLM in the server); `webUrl` and flex messages (§5); case layer with the
+  tag taxonomy (§5b); PII rules (§6b); research requests applied to §6a; new schedule (§8); Support flows F1–F11
+  (§10); risks. Six rows were added to DECISIONS. The Thai copies got a v3 summary on top. Merged `plan` into `dev`
+  and `research`.
+- Why: the user accepted the proposed defaults for the 10 re-scope questions and asked to start tonight's run.
+- Commits: `0794786 docs(plan): v3 — Acme Support scope, webUrl, case layer, PII rules, new schedule`, this
+  commit, and the merge commits on `dev` and `research`.
+- For other lanes: dev, start now (see Requests). Research waits for the HAR.
