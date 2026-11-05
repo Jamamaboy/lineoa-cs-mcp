@@ -95,3 +95,10 @@
 - Why: the user wants the plan readable as HTML, and does not want a 03:00 target in the timeline.
 - Commits: this commit plus the merges into `dev` and `research`.
 - For other lanes: PLAN.md §8 now uses stage numbers (0–10). Dev's work is unchanged.
+
+## 2026-11-06 01:40 ICT · Single-session mode
+- What: added "Single-session mode" to CLAUDE.md. One session drives plan, dev and research. It writes in each
+  lane's worktree, and every commit stays on one lane's branch with that lane's STATUS/LOG. Subagents never commit.
+- Why: the user prefers one conversation over three parallel sessions.
+- Commits: this commit plus the merges into `dev` and `research`.
+- For other lanes: no separate sessions; this session will run dev stage 1 next.
