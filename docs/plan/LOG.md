@@ -131,3 +131,10 @@
 - Why: the user looks at the project in Orca. On `plan` they could not see the research files or, later, the code.
 - Commits: this commit plus the merge into `dev`.
 - For other lanes: dev work now happens in the main checkout on `feat/*` branches.
+
+## 2026-11-06 03:50 ICT · Review rule: small commits, stop after each feature
+- What: CLAUDE.md git rules now require about 150 lines of hand-written code per commit at most, every commit green
+  on its own, and a stop after each feature for the user's review.
+- Why: the user reviews every commit, and the first read-core commit (703 lines) was too big.
+- Commits: this commit plus the merge into `dev`.
+- For other lanes: dev history was split the same way (see docs/dev/LOG.md).

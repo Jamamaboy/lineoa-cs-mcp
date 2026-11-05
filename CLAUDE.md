@@ -81,6 +81,10 @@ Last updated: 2026-11-05 21:30 ICT · branch <branch> @ <short sha>
 ```
 
 ## Git rules
+- **Small commits the user can review.** One concern per commit, about 150 lines of hand-written code at most
+  (lockfiles and generated files don't count). Every commit must pass typecheck and tests on its own.
+- **Stop after each feature.** When a `feat/*` branch is done and merged into `dev`, stop. List its commits with a
+  one-line summary each, say how it was checked, and wait for the user's OK before starting the next feature.
 - Commit as you go, one concern per commit. Never squash. Merge with `--no-ff`.
 - Flow: `feat/*` → `dev`; `plan` → `dev` and `research` → `dev` when a round finishes; `dev` → `main` only as a
   release, tagged `vX.Y.Z` with a CHANGELOG entry. "Check" is CI (lint/typecheck/test), not a branch.
