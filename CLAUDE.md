@@ -1,7 +1,7 @@
 # CLAUDE.md
 
 MCP server that lets an AI agent work LINE OA Manager's chat (chat.line.biz) the way a human CS person does. It is a
-take-home for Acme, due **Fri 6 Nov 2026 23:59 ICT**. The task is in `docs/ASSIGNMENT.md` (kept untracked) and
+take-home assignment, due **Fri 6 Nov 2026 23:59 ICT**. The task is in `docs/ASSIGNMENT.md` (kept untracked) and
 the spec is in `docs/PLAN.md` (Thai copies: `docs/PLAN_thai.md`, `docs/PLAN.html`).
 
 Reply to the user in **Thai**. Code, commit messages and docs that graders read are in English.
