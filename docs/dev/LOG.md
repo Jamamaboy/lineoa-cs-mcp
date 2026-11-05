@@ -54,3 +54,13 @@
 - Why: the user asked where they can test it themselves. Graders get the same one-command path.
 - Commits: `feat(dx): try the server in one command with a built-in mock`.
 - For other lanes: none.
+
+## 2026-11-06 03:50 ICT · History split into reviewable commits
+- What: the 4 code commits were rebuilt from the same base as 15 small commits: scaffold 3, mock 3, read core 6,
+  try-it 3. Each is about 150 lines of code or less, apart from the package lock. Each feature is still merged
+  `--no-ff`. The final tree is identical to the old `dev`: `git diff` is empty. Every commit passed typecheck and
+  tests on its own, checked one by one in a temporary worktree. The old history is kept as the local branch
+  `backup/dev-before-split`; it was never pushed.
+- Why: the user reviews each commit, and the read-core commit (703 lines) was too big to review.
+- Commits: this commit.
+- For other lanes: from now on, dev stops after each feature for review (CLAUDE.md).
