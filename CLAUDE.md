@@ -13,12 +13,13 @@ Work happens in three parallel **lanes**. Your lane is your current branch (`git
 
 | Lane | Branch | Worktree | You may write | Your docs folder |
 |---|---|---|---|---|
-| plan | `plan` | `<repo>` (main checkout) | `docs/PLAN*.{md,html}`, `docs/README.md`, `docs/plan/**`, `CLAUDE.md`, `AGENTS.md` | `docs/plan/` |
-| dev | `dev`, `feat/*` | `~/.lineoa-lanes/dev` (created on demand) | `src/`, `mock-server/`, `tests/`, package/config files, `.claude/`, `README.md`, `docs/dev/**` | `docs/dev/` |
+| plan | `plan` | `~/.lineoa-lanes/plan` | `docs/PLAN*.{md,html}`, `docs/README.md`, `docs/plan/**`, `CLAUDE.md`, `AGENTS.md` | `docs/plan/` |
+| dev | `dev`, `feat/*` | `<repo>` (main checkout, the folder the user opens) | `src/`, `mock-server/`, `tests/`, package/config files, `.claude/`, `README.md`, `docs/dev/**` | `docs/dev/` |
 | research | `research` | `~/.lineoa-lanes/research` (created on demand) | `test/research/**`, `docs/research/**` | `docs/research/` |
 
 - **A commit touches only one lane's paths.** Because of this, merging lanes never conflicts.
-- The dev and research worktrees live outside `~/orca` so they don't show up as Orca workspaces. Create one with
+- The main checkout stays on `dev`, where every lane is merged, so the user sees the whole project. The plan and
+  research worktrees live outside `~/orca` so they don't show up as Orca workspaces. Create one with
   `git worktree add ~/.lineoa-lanes/<lane> <branch>` if it's missing. All commits live on the branches, so a
   missing worktree folder loses nothing that was committed.
 - Need something from another lane (a change to the plan, data, a decision)? Add it under "Requests" in **your own**
@@ -26,7 +27,7 @@ Work happens in three parallel **lanes**. Your lane is your current branch (`git
 - Only the plan lane edits `CLAUDE.md` / `AGENTS.md` and the shared spec (`docs/PLAN*`). Other lanes ask through Requests.
 
 ### Single-session mode (current, from 2026-11-06)
-The user drives all three lanes from **one session** (the main checkout). The branches and folders above stay as
+The user drives all three lanes from **one session** (opened in the main checkout). The branches and folders above stay as
 they are, so the history still shows each lane. In this mode:
 - The one session may write in all three worktrees. It uses absolute paths and works inside the worktree that
   owns the file. Each change is committed on that lane's branch (code on `feat/*` in the dev worktree, then merged

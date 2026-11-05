@@ -123,3 +123,11 @@
   folders.
 - Commits: this commit plus the merge into `dev`.
 - For other lanes: the folder tree in the summary is the target layout for dev (it matches PLAN §4).
+
+## 2026-11-06 02:40 ICT · Main checkout moved to dev
+- What: the folder the user opens (`<repo>`) now has `dev` checked out, because every lane
+  is merged there, so code, docs and research all show in the user's file tree. The plan worktree moved to
+  `~/.lineoa-lanes/plan`. CLAUDE.md was updated.
+- Why: the user looks at the project in Orca. On `plan` they could not see the research files or, later, the code.
+- Commits: this commit plus the merge into `dev`.
+- For other lanes: dev work now happens in the main checkout on `feat/*` branches.
