@@ -1,4 +1,7 @@
+import { mkdtempSync } from "node:fs";
 import type { AddressInfo } from "node:net";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { serve } from "@hono/node-server";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
@@ -18,6 +21,7 @@ export async function startStack(env: Record<string, string> = {}) {
     LINEOA_COOKIE: `${SESSION_COOKIE}=e2e`,
     LINEOA_SESSION_FILE: "/nonexistent",
     LINEOA_INDEX_FILE: ":memory:",
+    LINEOA_CACHE_DIR: mkdtempSync(join(tmpdir(), "lineoa-cache-")),
     ...env,
   });
   const server = createServer({
@@ -31,8 +35,10 @@ export async function startStack(env: Record<string, string> = {}) {
 
   const call = async (name: string, args: Record<string, unknown> = {}) => {
     const res = await client.callTool({ name, arguments: args });
-    const text = (res.content as { type: string; text: string }[])[0]?.text ?? "";
-    return { isError: Boolean(res.isError), text, json: res.isError ? undefined : JSON.parse(text) };
+    const content = res.content as { type: string; text?: string; data?: string; mimeType?: string }[];
+    const textPart = content.find((c) => c.type === "text")?.text ?? "";
+    const parsed = res.isError ? undefined : JSON.parse(textPart);
+    return { isError: Boolean(res.isError), text: textPart, json: parsed, content };
   };
   const stop = async () => {
     await client.close();

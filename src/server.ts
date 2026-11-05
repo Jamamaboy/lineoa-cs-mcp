@@ -1,5 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { registerAuthStatus } from "./tools/auth-status.js";
+import { registerGetAttachment } from "./tools/get-attachment.js";
 import { registerGetUserProfile } from "./tools/get-user-profile.js";
 import { registerListChats } from "./tools/list-chats.js";
 import { registerReadChat } from "./tools/read-chat.js";
@@ -16,5 +17,6 @@ export function createServer(ctx: ToolContext): McpServer {
   registerReadChat(server, ctx);
   registerGetUserProfile(server, ctx);
   registerSearchMessages(server, ctx);
+  registerGetAttachment(server, ctx);
   return server;
 }
