@@ -3,6 +3,12 @@ import { Hono } from "hono";
 import { getCookie, setCookie } from "hono/cookie";
 import { loadSeed, type Seed } from "./fixtures.js";
 
+const esc = (s: string) =>
+  s.replace(
+    /[&<>"']/g,
+    (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[ch] ?? ch,
+  );
+
 /** Same cookie name as chat.line.biz. */
 export const SESSION_COOKIE = "__Host-chat-ses";
 
@@ -49,7 +55,52 @@ export function createMockApp(opts: MockOptions = {}) {
     setCookie(c, SESSION_COOKIE, token, { path: "/", secure: true, httpOnly: true, sameSite: "Lax" });
     return c.redirect("/");
   });
-  app.get("/", (c) => c.text("mock chat.line.biz — logged in"));
+  // --- tiny console: the page a `webUrl` opens, so a human can see what the agent sees ---
+  const page = (title: string, body: string) =>
+    `<!doctype html><html lang="th"><meta charset="utf-8"><title>${esc(title)}</title>
+<style>body{font:14px system-ui,sans-serif;margin:0;background:#f5f6f8;color:#111}
+header{background:#06c755;color:#fff;padding:10px 16px;font-weight:600}main{max-width:760px;margin:16px auto;padding:0 12px}
+a{color:#0b6} .row{background:#fff;border-radius:10px;padding:10px 12px;margin:6px 0;display:block;text-decoration:none;color:inherit}
+.b{max-width:75%;padding:7px 11px;border-radius:12px;margin:6px 0;background:#fff;white-space:pre-wrap}
+.s{margin-left:auto;background:#d9f7e3}.y{text-align:center;color:#888;font-size:12px}.m{color:#888;font-size:12px}</style>
+<header>Mock LINE OA Manager · ${esc(title)}</header><main>${body}</main></html>`;
+  app.get("/", (c) => {
+    const rows = seed.bots
+      .map((b) => {
+        const chats = seed.chats.get(b.botId) ?? [];
+        const items = chats
+          .map(
+            (ch) =>
+              `<a class="row" href="/${b.botId}/chat/${ch.chatId}">${ch.read ? "" : "● "}<b>${esc(ch.profile.name)}</b>
+<div class="m">${esc(String(ch.latestEvent?.message?.text ?? `[${ch.latestEvent?.message?.type ?? "-"}]`))}</div></a>`,
+          )
+          .join("");
+        return `<h3>${esc(b.name)}</h3>${items || '<p class="m">no chats</p>'}`;
+      })
+      .join("");
+    return c.html(page("chats", rows));
+  });
+  app.get("/:botId/chat/:chatId", (c) => {
+    const chat = seed.chats.get(c.req.param("botId"))?.find((x) => x.chatId === c.req.param("chatId"));
+    const events = seed.events.get(c.req.param("chatId"));
+    if (!chat || !events) return c.text("chat not found", 404);
+    const bubbles = [...events]
+      .reverse()
+      .map((e) => {
+        const when = new Date(e.timestamp).toLocaleString("th-TH");
+        const m = e.message;
+        if (!m) return `<div class="y">${esc(e.type)} · ${when}</div>`;
+        const text = m.type === "text" ? String(m.text ?? "") : `[${m.type}] ${String(m.fileName ?? "")}`;
+        return `<div class="b ${e.type === "messageSent" ? "s" : ""}">${esc(text)}<div class="m">${when}</div></div>`;
+      })
+      .join("");
+    return c.html(
+      page(
+        chat.profile.name,
+        `<p><a href="/">← all chats</a></p><div style="display:flex;flex-direction:column">${bubbles}</div>`,
+      ),
+    );
+  });
 
   // --- every /api route needs a session, like the real console ---
   app.use("/api/*", async (c, next) => {
