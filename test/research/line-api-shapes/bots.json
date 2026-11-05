@@ -34,8 +34,8 @@
       "list": [
         {
           "botId": "Ub0700000000000000000000000000001",
-          "basicSearchId": "@acme-demo",
-          "name": "Acme Demo Shop",
+          "basicSearchId": "@demo-shop",
+          "name": "Demo Shop",
           "iconUrl": "https://profile.line-scdn.net/FAKE-bot-icon",
           "iconHash": "FAKE-bot-iconhash",
           "region": "TH",
@@ -53,8 +53,8 @@
         },
         {
           "botId": "Ub0700000000000000000000000000002",
-          "basicSearchId": "@acme-test2",
-          "name": "Acme ร้านทดสอบ 2",
+          "basicSearchId": "@test-shop2",
+          "name": "ร้านทดสอบ 2",
           "iconUrl": "https://profile.line-scdn.net/FAKE-bot-icon",
           "iconHash": "FAKE-bot-iconhash",
           "region": "TH",

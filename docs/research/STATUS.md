@@ -1,5 +1,5 @@
 # research status
-Last updated: 2026-11-06 02:15 ICT · branch research
+Last updated: 2026-11-06 04:17 ICT · branch research
 
 ## Now
 - Round 5 done: web search for references similar to ours (EN/TH/JA/ZH). No new open-source MCP for LINE OA exists.
