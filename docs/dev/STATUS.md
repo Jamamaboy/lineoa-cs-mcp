@@ -1,7 +1,8 @@
 # dev status
-Last updated: 2026-11-06 04:19 ICT · branch dev
+Last updated: 2026-11-06 04:21 ICT · branch dev
 
 ## Now
+- Done: v0.1.0 released to a new public repo
 - Done: choose an OA, or ask
 - Done: extension points, README and guides
 - Done: CLI, browser choice and one-step setup
