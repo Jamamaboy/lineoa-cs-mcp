@@ -102,3 +102,13 @@
 - Why: the user prefers one conversation over three parallel sessions.
 - Commits: this commit plus the merges into `dev` and `research`.
 - For other lanes: no separate sessions; this session will run dev stage 1 next.
+
+## 2026-11-06 01:55 ICT · Docs cleanup and doc map
+- What: added `docs/README.md` (a map of every document: what it is, which lane owns it, when to read it). Renamed
+  the run plan to `docs/plan/run-plan.{md,html}` and updated every link. Saved the "how a CS person uses it" page as
+  `docs/plan/how-cs-uses-it.html`. In CLAUDE.md, the dev/research worktrees moved to `~/.lineoa-lanes/` (the folders
+  in `~/orca` were removed outside this session; nothing committed was lost). Other lanes' STATUS is now read with
+  `git show <branch>:...`. The run plan's prompts became subagent briefs.
+- Why: the user asked for clean docs and a file that explains what each document does, in one session.
+- Commits: this commit.
+- For other lanes: worktree paths changed (CLAUDE.md). Research gets `docs/research/README.md` and the refs comparison next.

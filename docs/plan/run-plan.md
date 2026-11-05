@@ -4,7 +4,7 @@ Goal of this run: **the MCP server works end to end on the mock.** That means 5 
 with e2e tests green. We also want real endpoint evidence from a HAR capture. The only fixed time is the deadline,
 Fri 6 Nov 2026 23:59 ICT.
 
-The Thai diagram of this run is in [`2026-11-06-tonight.html`](2026-11-06-tonight.html).
+The Thai diagram of this run is in [`run-plan.html`](run-plan.html).
 
 ## Stages (lanes run in parallel; arrows are waits)
 
@@ -46,20 +46,21 @@ If a stage drags, stop where things are green. The mock path must stay green, an
 | 10 | Optional bonus video (separate repo) |
 | — | Push to a public repo and reply to the email before 23:59 |
 
-## Prompts to start the other sessions
+## Briefs (single-session mode)
 
-**dev session** (worktree `<repo>-dev`), after PLAN v3 is merged:
+One session runs every lane (see `CLAUDE.md`). These briefs are what the session gives the subagents for each lane.
+
+**dev** (worktree `~/.lineoa-lanes/dev`, branches `feat/*` → `dev`):
 ```
-Read CLAUDE.md, docs/plan/2026-11-06-tonight.md, docs/PLAN.md (v3) and test/research/line-api-shapes/README.md.
+Read CLAUDE.md, docs/plan/run-plan.md, docs/PLAN.md (v3) and test/research/line-api-shapes/README.md.
 Run the dev column up to the checkpoint: scaffold → mock from fixtures ‖ auth → 6 tools + webUrl → e2e tests.
-Use feat/* branches, one concern per commit, then merge --no-ff into dev. Use parallel Sonnet agents for
-independent parts. Keep STATUS/LOG current.
+One concern per commit. Keep docs/dev/STATUS.md and LOG.md current.
 ```
 
-**research session** (worktree `<repo>-research`), once the HAR exists:
+**research** (worktree `~/.lineoa-lanes/research`, branch `research`), once the HAR exists:
 ```
-Read CLAUDE.md and docs/plan/2026-11-06-tonight.md. The HAR files are in ~/lineoa-har/ and must never be committed.
-Turn them into a redacted endpoint map under test/research/line-api-shapes/ (no real ids, names, cookies or
-tokens). Diff it against the existing fixtures. Answer: pagination cursor, markAsRead method, search endpoint,
-flex message shape, profile/tags/notes endpoints, bulkSendFiles with a PDF. Put the fixes dev needs in Requests.
+The HAR files are in ~/lineoa-har/ and must never be committed. Turn them into a redacted endpoint map under
+test/research/line-api-shapes/ (no real ids, names, cookies or tokens) and diff it against the existing fixtures.
+Answer: pagination cursor, markAsRead method, search endpoint, flex message shape, profile/tags/notes endpoints,
+bulkSendFiles with a PDF. List the fixes dev needs.
 ```

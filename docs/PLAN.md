@@ -1,7 +1,7 @@
 # PLAN: LINE OA CS MCP server
 
 Status: **v3** (re-scoped around Acme Support case handling), 2026-11-06. Deadline: **Fri 6 Nov 2026,
-23:59 ICT**. Run plan: [`docs/plan/2026-11-06-tonight.md`](plan/2026-11-06-tonight.md).
+23:59 ICT**. Run plan: [`docs/plan/run-plan.md`](plan/run-plan.md).
 
 What changed in v3 (the details are in the sections below):
 - The product is framed as a CS assistant for the **Acme Support** OA. The graded core (5 tools + auth +
@@ -331,7 +331,7 @@ covers prompt injection.
 ## 8. Phases, order and commits
 
 Commit after every meaningful step (one concern per commit, conventional prefixes). Never squash.
-The run plan with prompts for each lane: [`docs/plan/2026-11-06-tonight.md`](plan/2026-11-06-tonight.md).
+The run plan with prompts for each lane: [`docs/plan/run-plan.md`](plan/run-plan.md).
 The only fixed time is the deadline, **Fri 6 Nov 2026 23:59 ICT**. Stages run in this order; lanes work in parallel.
 
 | Stage | Work | Lane |
@@ -442,7 +442,7 @@ What none of them do, and where this project differs:
 
 | Risk / question | Mitigation |
 |---|---|
-| Real endpoints unconfirmed | HAR from the live OA (read-only) and the test OA tonight; the mock stays the graded path. |
+| Real endpoints unconfirmed | HAR from the live OA (read-only) and the test OA (stage 0); the mock stays the graded path. |
 | Touching real people's chats on the live OA | A11: read-only rules, `LINEOA_ALLOW_SEND=false`, bot allowlist, HAR kept outside the repo. |
 | Scope creep from the case layer and extras | Must/should/could in §1, cut order in §8. The core ships first. |
 | The internal API changes or is undocumented | Endpoints live in one module plus the contract tests, so breakage shows up fast. |
