@@ -1,0 +1,114 @@
+{
+  "slug": "chatcone",
+  "name": "Chatcone (Clicknext)",
+  "category": "inbox-saas",
+  "url": "https://chatcone.com",
+  "one_liner_th": "ระบบรวมแชทและแชทบอทไทยจาก Clicknext รองรับ LINE OA, FB, IG, TikTok, Lazada",
+  "language": null,
+  "license": "proprietary (SaaS)",
+  "github": null,
+  "users_claim": null,
+  "auth": {
+    "method_th": "ไม่ระบุสาธารณะว่าเชื่อม LINE OA อย่างไร (เว็บบอกแค่ 'เชื่อมต่อบน LINE OA ของธุรกิจ'); ยืนยันไม่ได้ว่าใช้ Messaging API webhook",
+    "storage_th": "ไม่เปิดเผย",
+    "borrow_th": "ไม่มีอะไรให้ลอก"
+  },
+  "attachments": {
+    "how_th": "ส่งข้อความ รูป วิดีโอ การ์ด และบันทึกคำตอบ/รูป/ลิงก์ที่ใช้บ่อย; มีเมนู 'ระบบตรวจสอบสลิป' แต่ไม่มีรายละเอียด; ไม่พบเรื่องนำเข้าประวัติแชทเก่า",
+    "borrow_th": "ไอเดียตรวจสลิปจากรูปลูกค้า"
+  },
+  "core_features": [
+    {
+      "name": "Chat Management",
+      "detail_th": "รวมทุกช่องทางในจอเดียว มอบหมาย/กระจายคิว"
+    },
+    {
+      "name": "AI Chatbot",
+      "detail_th": "ตอบอัตโนมัติ 24 ชม."
+    },
+    {
+      "name": "SLA & alerts",
+      "detail_th": "กำหนดเวลาตอบและแจ้งเตือนแชทใหม่ real-time"
+    },
+    {
+      "name": "Team routing",
+      "detail_th": "แบ่งกลุ่มแอดมิน ส่งต่อเคสให้ผู้เชี่ยวชาญ"
+    },
+    {
+      "name": "LINE OA Customization",
+      "detail_th": "ออกแบบ Rich Menu, comment-to-chat"
+    },
+    {
+      "name": "Slip verify",
+      "detail_th": "ระบบตรวจสอบสลิป (เมนูเท่านั้น)"
+    }
+  ],
+  "flow": [
+    {
+      "actor": "service",
+      "label": "ลูกค้าทักผ่าน LINE OA"
+    },
+    {
+      "actor": "service",
+      "label": "เข้า Chatcone inbox"
+    },
+    {
+      "actor": "service",
+      "label": "บอท/จัดคิวตามทีม"
+    },
+    {
+      "actor": "agent",
+      "label": "แอดมินตอบ"
+    },
+    {
+      "actor": "service",
+      "label": "รายงานต่อคน/ทีม"
+    }
+  ],
+  "highlights_th": [
+    "ตรงบริบทธุรกิจไทย รองรับ LINE OA, Lazada, TikTok",
+    "มีแอปมือถือ iOS/Android",
+    "มี Rich Menu/Customer self service"
+  ],
+  "weaknesses_th": [
+    "ไม่เปิดเผยวิธีเชื่อม LINE OA, API หรือ roles รายละเอียด",
+    "ไม่พบการนำเข้าประวัติแชทเก่า",
+    "ไม่ระบุจำนวนลูกค้า"
+  ],
+  "tools_or_endpoints": [],
+  "trial": {
+    "status": "not-run",
+    "summary_th": "ไม่มีบัญชี อ่านหน้าเว็บสาธารณะและถ่ายภาพเท่านั้น; ไม่พบเอกสารเชื่อม LINE, API หรือนำเข้าประวัติ",
+    "log": "trials/chatcone.md"
+  },
+  "screenshots": [
+    {
+      "file": "shots/chatcone-1.png",
+      "caption_th": "หน้าแรก Chatcone แสดง inbox รวม LINE/Messenger/IG/Lazada/TikTok/WhatsApp",
+      "kind": "website"
+    },
+    {
+      "file": "shots/chatcone-2.png",
+      "caption_th": "ส่วนท้ายเว็บ รายการ Chatcone Services รวมระบบตรวจสอบสลิป",
+      "kind": "website"
+    }
+  ],
+  "scores": {
+    "relevance": 3,
+    "auth": 1,
+    "attachments": 2,
+    "maturity": 3,
+    "tryability": 1,
+    "reasons_th": {
+      "relevance": "inbox ไทยรองรับ LINE OA แต่ไม่ลงรายละเอียด",
+      "auth": "ไม่มีข้อมูล",
+      "attachments": "พูดถึงรูป/วิดีโอ/สลิปแบบผิวเผิน",
+      "maturity": "บริษัท Clicknext มีแอป มีทีมขาย แต่ docs สาธารณะน้อย",
+      "tryability": "ไม่มีบัญชี ไม่ได้ลอง"
+    }
+  },
+  "sources": [
+    "https://chatcone.com",
+    "https://chatcone.com/blog"
+  ]
+}

@@ -14,3 +14,12 @@
   `4cb1a3b docs(research): explain line-api-shapes fields, conflicts and HAR checklist`
 - For other lanes: pagination `backward` vs `before/after`; markAsRead is PUT v2 (not POST); send response body
   unknown; folderType filters unknown; CSV columns mostly guessed. All ids/tokens are fake; nothing was sent to LINE.
+
+## 2026-11-05 23:25 ICT · Round 4: six more similar systems
+- What: 2 Sonnet agents (medium) profiled Intercom MCP, Zendesk, Freshchat (agent A) and Trengo, ChatCone, OHO Chat
+  (agent B) per AGENT_BRIEF. Opus checked JSON/schema and the doubtful screenshots, added a round-4 table to
+  `takeaways.html`, updated README and the agent count in build.py, and rebuilt `index.html` (23 projects, 54 shots).
+- Why: user's round 4 list; mostly confirms the plan (LINE inboxes all use the Messaging API webhook, so no history).
+- Commits: `0b3328f research: profile 6 more systems (...)`, plus this rebuild commit.
+- For other lanes: LINE file sending may be receive-only on the Messaging API side (Freshchat); verify the web
+  console can send PDFs (F6). Intercom's official MCP is read-mostly with one safe write (internal note).

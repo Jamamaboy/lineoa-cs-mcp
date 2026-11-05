@@ -1,0 +1,115 @@
+{
+  "slug": "trengo",
+  "name": "Trengo",
+  "category": "inbox-saas",
+  "url": "https://trengo.com",
+  "one_liner_th": "inbox ทีมแบบ omnichannel จากยุโรป เน้น WhatsApp/อีเมล/แชท พร้อม AI Agents",
+  "language": null,
+  "license": "proprietary (SaaS)",
+  "github": null,
+  "users_claim": null,
+  "auth": {
+    "method_th": "ล็อกอินบัญชีผู้ใช้; การเพิ่มช่องทางต้องมี role Administrator; REST API + webhooks (verify request) แต่ไม่ได้ยืนยันรายละเอียด token จากหน้าที่อ่านได้",
+    "storage_th": "ไม่เปิดเผย",
+    "borrow_th": "แนวคิดแยกสิทธิ์ Administrator สำหรับการเชื่อมช่องทาง; ไม่มีอะไรเกี่ยวกับ LINE ให้ลอก"
+  },
+  "attachments": {
+    "how_th": "หน้าที่อ่านได้ไม่ระบุขนาด/ชนิดไฟล์; มี endpoint อัปโหลดไฟล์ของ WhatsApp template เท่านั้น ไม่ยืนยันขีดจำกัด",
+    "borrow_th": "ไม่มีรายละเอียดให้ลอก"
+  },
+  "core_features": [
+    {
+      "name": "Shared inbox",
+      "detail_th": "รวม WhatsApp อีเมล live chat โซเชียล เสียง ในกล่องเดียว"
+    },
+    {
+      "name": "AI Agents",
+      "detail_th": "AI ตอบคำถามซ้ำ ๆ 24 ชม. หลายภาษา"
+    },
+    {
+      "name": "AI Journeys",
+      "detail_th": "flow อัตโนมัติ เรียก HTTP action ไป backend ได้"
+    },
+    {
+      "name": "Dessa",
+      "detail_th": "AI agent สำหรับอีคอมเมิร์ซ"
+    },
+    {
+      "name": "REST API + Webhooks",
+      "detail_th": "เชื่อมระบบหลังบ้านและรับ event"
+    },
+    {
+      "name": "Custom channels",
+      "detail_th": "สร้างช่องทางเองผ่าน API (รับ/ส่งข้อความ)"
+    }
+  ],
+  "flow": [
+    {
+      "actor": "service",
+      "label": "ลูกค้าทักผ่านช่องทาง"
+    },
+    {
+      "actor": "service",
+      "label": "เข้า shared inbox"
+    },
+    {
+      "actor": "service",
+      "label": "AI Agent ตอบเบื้องต้น"
+    },
+    {
+      "actor": "agent",
+      "label": "ทีมรับเรื่องต่อ"
+    },
+    {
+      "actor": "service",
+      "label": "webhook ส่ง event"
+    }
+  ],
+  "highlights_th": [
+    "มี Custom channels API ที่อาจใช้เชื่อม LINE เองได้",
+    "เอกสาร developer ครบ (REST, webhooks, widget)",
+    "ไม่พบ MCP ในหน้าที่อ่าน"
+  ],
+  "weaknesses_th": [
+    "ไม่พบว่ารองรับ LINE แบบ native (หน้า help และหน้าแรกไม่ระบุ)",
+    "ตลาดยุโรป ไม่เน้นไทย",
+    "SaaS ปิด"
+  ],
+  "tools_or_endpoints": [],
+  "trial": {
+    "status": "not-run",
+    "summary_th": "ไม่มีบัญชี อ่านหน้าเว็บ/help/developer docs สาธารณะและถ่ายภาพเท่านั้น; ยืนยันไม่ได้ว่ารองรับ LINE, ขนาดไฟล์, วิธีขอ token",
+    "log": "trials/trengo.md"
+  },
+  "screenshots": [
+    {
+      "file": "shots/trengo-1.png",
+      "caption_th": "หน้าแรก Trengo (มี cookie banner บังบางส่วน แต่เห็นเนื้อหา)",
+      "kind": "website"
+    },
+    {
+      "file": "shots/trengo-2.png",
+      "caption_th": "developers.trengo.com: REST API, Webhooks, Custom channels, AI Journeys",
+      "kind": "docs"
+    }
+  ],
+  "scores": {
+    "relevance": 2,
+    "auth": 2,
+    "attachments": 1,
+    "maturity": 4,
+    "tryability": 1,
+    "reasons_th": {
+      "relevance": "inbox ทีมคล้ายกัน แต่ไม่พบ LINE",
+      "auth": "รู้แค่ role Administrator ต้องใช้เพิ่มช่องทาง",
+      "attachments": "ไม่พบข้อมูลไฟล์",
+      "maturity": "ผลิตภัณฑ์เป็นที่รู้จัก มี docs และ AI หลายตัว",
+      "tryability": "ไม่มีบัญชี ไม่ได้ลอง"
+    }
+  },
+  "sources": [
+    "https://trengo.com",
+    "https://help.trengo.com/article/adding-channels-to-your-trengo-inbox",
+    "https://developers.trengo.com"
+  ]
+}

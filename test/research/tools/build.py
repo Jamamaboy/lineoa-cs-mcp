@@ -449,7 +449,7 @@ def build():
  <div class="stat"><b>{len(items)}</b><span>โปรเจกต์ / ผลิตภัณฑ์</span></div>
  <div class="stat"><b>{ran} + {partial}</b><span>รันได้จริง + รันได้บางส่วน</span></div>
  <div class="stat"><b>{shots}</b><span>ภาพที่ถ่ายไว้</span></div>
- <div class="stat"><b>5 + 1</b><span>agent Sonnet (medium) + orchestrator Opus</span></div>
+ <div class="stat"><b>7 + 1</b><span>agent Sonnet (medium) + orchestrator Opus (รอบ 2: 5 ตัว, รอบ 4: 2 ตัว)</span></div>
 </div>
 <nav class="nav"><a href="#take">สรุป</a><a href="#land">ภาพรวม</a><a href="#board">ตารางคะแนน</a><a href="#stars">GitHub stars</a><a href="#method">วิธีทำ</a>{nav}</nav>
 
@@ -471,7 +471,7 @@ def build():
 <h2 id="method">วิธีทำ</h2>
 <div class="card small">
 <ul>
-<li>Orchestrator (Opus, session plan) แบ่งเป็น 5 กลุ่ม แล้วส่งให้ agent Sonnet ระดับ medium กลุ่มละตัว ทำงานขนานกัน ทุกตัวใช้ brief เดียวกัน: <code>tools/AGENT_BRIEF.md</code></li>
+<li>Orchestrator (Opus, session plan) แบ่งเป็น 5 กลุ่ม แล้วส่งให้ agent Sonnet ระดับ medium กลุ่มละตัว ทำงานขนานกัน ทุกตัวใช้ brief เดียวกัน: <code>tools/AGENT_BRIEF.md</code> (รอบ 4 เพิ่มอีก 6 ตัวด้วย agent อีก 2 ตัว brief เดิม)</li>
 <li>Agent clone repo ลง <code>_vendor/</code> (gitignore ไว้แล้ว) ติดตั้งแบบ <code>--ignore-scripts</code> ใช้ credential ปลอมเท่านั้น และไม่ส่งข้อความไปที่บริการจริงใด ๆ</li>
 <li>ภาพ <span class="pill ok">real-run</span> คือผลลัพธ์ที่รันได้จริงในเครื่อง ส่วน <span class="pill mute">github-page / website / docs</span> คือภาพหน้าเว็บ</li>
 <li>คำสั่งที่รันและผลลัพธ์จริงของแต่ละโปรเจกต์อยู่ใน <code>trials/&lt;slug&gt;.md</code></li>

@@ -23,6 +23,18 @@
 <tr><td>Dependency</td><td>pin major version ของ MCP SDK (whatsapp-mcp ติดตั้งไม่ขึ้นเพราะ <code>mcp</code> 2.x ไม่มี <code>fastmcp</code> แล้ว)</td><td>whatsapp-mcp</td></tr>
 </tbody></table>
 
+<h4>รอบ 4: เพิ่มอีก 6 ตัว (Intercom MCP, Zendesk, Freshchat, Trengo, ChatCone, OHO Chat)</h4>
+<p class="small">ทั้งหมดเป็น SaaS ปิด ไม่มีบัญชีทดลอง จึงอ่านจากเอกสารสาธารณะเป็นหลัก ตัวที่ได้รันจริงมีตัวเดียวคือ zendesk-mcp-server ของชุมชน (pytest)</p>
+<table>
+<thead><tr><th>เรื่อง</th><th>สิ่งที่ได้</th><th>ได้มาจาก</th></tr></thead>
+<tbody>
+<tr><td>ยืนยันแนวทาง</td><td>inbox ที่รองรับ LINE (Zendesk, Freshchat) ต่อผ่าน Messaging API webhook ทั้งหมด Zendesk ต้องตั้ง Response mode เป็น Bot ด้วย จึงอ่านประวัติเก่าที่ CS เห็นในหน้าเว็บไม่ได้ เหตุผลที่เราใช้ session ของหน้าเว็บจึงยังหนักแน่น</td><td><a href="#p-zendesk">Zendesk</a>, <a href="#p-freshchat">Freshchat</a></td></tr>
+<tr><td>ขอบเขต tool</td><td>MCP ทางการของ Intercom เน้นอ่าน มี tool เขียนตัวเดียวคือ internal note ไม่ส่งหาลูกค้า สอดคล้องกับแนวทางของเราที่ปิดการส่งเป็นค่าเริ่มต้น (<code>LINEOA_ALLOW_SEND</code>)</td><td><a href="#p-intercom-mcp">Intercom MCP</a></td></tr>
+<tr><td>ไฟล์แนบ</td><td>tool รูปของ zendesk-mcp-server ใช้ allowlist MIME, ตรวจ magic bytes, จำกัดขนาดระหว่าง stream (10 MB) และไม่ส่ง Authorization ต่อไปยัง CDN ภายนอก ตรงกับ PLAN §7 ส่วน Freshchat มีสถานะสแกนไวรัส (<code>file_security_status</code>) ไว้ใช้เป็นไอเดีย</td><td>Zendesk, Freshchat</td></tr>
+<tr><td>ข้อจำกัดของ LINE</td><td>Freshchat ส่งรูปและวิดีโอได้สองทาง แต่ไฟล์รับได้อย่างเดียว ต้องยืนยันใน HAR ว่าหน้าเว็บ chat.line.biz ส่งไฟล์ (PDF) ได้จริงผ่าน <code>bulkSendFiles</code></td><td>Freshchat</td></tr>
+<tr><td>ตลาดไทย</td><td>ChatCone มีระบบตรวจสลิป OHO Chat มี AI ร่างคำตอบ (ยังไม่ยืนยันจากเว็บของ OHO เอง) ทั้งสองเจ้าไม่บอกวิธีต่อ LINE หรือการนำเข้าประวัติเก่า</td><td><a href="#p-chatcone">ChatCone</a>, <a href="#p-oho-chat">OHO Chat</a></td></tr>
+</tbody></table>
+
 <h4>สิ่งที่ยังไม่มีใครทำ (จุดที่งานของเราจะต่างออกไป)</h4>
 <ul>
   <li>ไม่มีโปรเจกต์ไหนเป็น <b>MCP server สำหรับ LINE OA ในนามพนักงาน CS</b> ที่เจอใกล้ที่สุดคือ extension (omnichat-bridge) กับ library (LINELib)</li>
