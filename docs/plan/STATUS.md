@@ -1,5 +1,5 @@
 # plan status
-Last updated: 2026-11-05 23:55 ICT · branch plan
+Last updated: 2026-11-06 00:20 ICT · branch plan
 
 ## Now
 - Re-scoping with the user around the **Acme Support** OA (bug-report OA) instead of a generic CS agent.
@@ -12,7 +12,7 @@ Last updated: 2026-11-05 23:55 ICT · branch plan
   chat-history CSV exists; chat history is kept 6 months on the free plan; PDPA calls for masking, a DPA and retention).
 
 ## Next
-- Get the user's answers to 6 questions: scope must/should/could, the case-opening trigger, the tag taxonomy,
+- Get the user's answers to 10 questions (artifacts: re-scope + main-OA context): scope must/should/could, the case-opening trigger, the tag taxonomy,
   who may mark a case done, OA linking by email + CS confirmation, local storage.
 - Then rewrite PLAN.md (v3): user flows around Support cases, the new case tools, assumptions A8+ (why link the main
   OA), the PII rules. After that, unpause dev.

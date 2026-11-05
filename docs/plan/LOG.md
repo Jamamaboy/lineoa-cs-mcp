@@ -28,3 +28,17 @@
 - Why: build what the CS team actually needs, while the graded core (5 tools + auth + attachments) stays first.
 - Commits: this commit (status/log only; PLAN v3 waits for the user's answers).
 - For other lanes: dev paused; see Requests and Heads-up in docs/plan/STATUS.md.
+
+## 2026-11-06 00:20 ICT · Main Acme OA analysed alongside Support
+- What: analysed the user's export of the main Acme OA chat (99 messages; 83 from the bot/OA, 16 from the user).
+  The main OA is the product used through chat: templated bot replies, account state and broadcasts, not a CS
+  conversation.
+  - Its templates parse into usage events without an LLM.
+  - "Google connected (email)" is an OAuth-verified identity link to the Support case.
+  - A Sheets sync at 14:24 came 4 minutes before the Support report about Google Sheet currency.
+  - 9 daily "payment ฿X,XXX" notices are a proactive alert candidate.
+  A second artifact with a swimlane timeline and 4 more questions (7–10) is in the plan chat.
+- Why: defines what context CS needs from the main OA, and how to pull it cheaply (only persons with cases, a time
+  window, a rule-based parser, amounts hidden).
+- Commits: this commit (log/status only).
+- For other lanes: none yet. The mock will likely need 2 OAs with one shared person (pending the user's answer to Q10).
