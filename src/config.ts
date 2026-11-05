@@ -15,6 +15,8 @@ export interface Config {
   cacheDir: string;
   maxAttachmentBytes: number;
   botAllowlist: string[];
+  /** OA to use when a request names none and the account reaches several (name, @id or botId). */
+  defaultOa?: string;
   allowSend: boolean;
   /** If set, sending is allowed only to these chat ids. */
   sendChatAllowlist: string[];
@@ -53,6 +55,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
       .split(",")
       .map((s) => s.trim())
       .filter(Boolean),
+    ...(env.LINEOA_DEFAULT_OA ? { defaultOa: env.LINEOA_DEFAULT_OA } : {}),
     allowSend: env.LINEOA_ALLOW_SEND === "true",
     sendChatAllowlist: (env.LINEOA_SEND_CHAT_ALLOWLIST ?? "")
       .split(",")
