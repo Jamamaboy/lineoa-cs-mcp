@@ -114,3 +114,9 @@
 - Why: The attachment requirement of the assignment; the live check confirms the content host accepts the saved session.
 - Commits: chore(deps): add sharp…; feat(mock): serve attachment bytes…; feat(attachments): sniff types…; feat(client): download a message's image or file; feat(tools): add get_attachment
 - For other lanes: none.
+
+## 2026-11-06 03:44 ICT · send_message (off by default)
+- What: mock: CSRF token + send endpoint that echoes the message with its sendId; client sendText (CSRF, textV2 body, unique sendId, one retry on 403, never resends an unknown result: looks up the sendId and returns SEND_UNCERTAIN); audit log (JSON lines, text stored as length + hash only); tool send_message registered only when LINEOA_ALLOW_SEND=true, with chat allowlist, daily cap (50), dryRun, destructiveHint. 3 e2e tests. NOT tried on the real console yet: LiveOA is read-only; a test OA from the user's account (e.g. TestOA) is needed for one live send.
+- Why: Required action 4 (send a message), made safe for an agent.
+- Commits: feat(mock): add the CSRF token and the send endpoint; feat(client): send a text message…; feat(audit): log every send attempt…; feat(tools): add send_message…
+- For other lanes: none.
