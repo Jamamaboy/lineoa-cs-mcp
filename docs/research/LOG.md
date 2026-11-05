@@ -23,3 +23,17 @@
 - Commits: `0b3328f research: profile 6 more systems (...)`, plus this rebuild commit.
 - For other lanes: LINE file sending may be receive-only on the Messaging API side (Freshchat); verify the web
   console can send PDFs (F6). Intercom's official MCP is read-mostly with one safe write (internal note).
+
+## 2026-11-06 02:15 ICT · Round 5: references compared on one page
+- What: a Sonnet agent searched the web (read-only) for new references. Opus merged its findings with the 23
+  projects from rounds 2–4 into `docs/research/refs-comparison.html`, and added `docs/research/README.md` as a map
+  of every research file. Findings:
+  - No open-source MCP exists for LINE OA as a CS person.
+  - The closest new analogue is kakao-channel-chat: cookie session, and the send tool is registered only behind a
+    flag.
+  - Help Scout's MCP has the best write tiers.
+  - Nobody handles attachments well, and nobody has a case layer or a takeover link.
+- Why: the user wanted to see how the references differ from ours, what is good in each, as an HTML page in the
+  research folder, plus a markdown file that explains the documents.
+- Commits: this commit (research branch, worktree now at ~/.lineoa-lanes/research).
+- For other lanes: 5 proposed plan additions are under Requests → plan.
