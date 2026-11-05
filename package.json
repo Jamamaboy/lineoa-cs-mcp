@@ -8,7 +8,8 @@
     "node": ">=22"
   },
   "bin": {
-    "lineoa-cs-mcp": "dist/src/index.js"
+    "lineoa-cs-mcp": "dist/src/index.js",
+    "lineoa": "dist/src/cli.js"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
@@ -20,7 +21,9 @@
     "format": "biome format --write .",
     "check": "npm run lint && npm run typecheck && npm test",
     "try": "tsx scripts/try.ts",
-    "login": "tsx src/auth/login.ts"
+    "login": "tsx src/cli.ts login",
+    "lineoa": "tsx src/cli.ts",
+    "setup": "tsx src/cli.ts setup"
   },
   "license": "MIT",
   "dependencies": {

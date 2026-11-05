@@ -76,15 +76,19 @@ export function createLineClient(cfg: Config, fetchImpl?: typeof fetch): LineOAC
 
     async listChats(botId, { limit, cursor }) {
       assertAllowed(botId);
-      const r = await getJson<{ list: RawChat[]; next?: string }>(deps, `/api/v2/bots/${botId}/chats`, {
-        folderType: "ALL",
-        limit,
-        next: cursor,
-      });
-      return {
-        items: r.list.map((c) => toChat(c, botId, cfg.webBaseUrl)),
-        ...(r.next ? { cursor: r.next } : {}),
-      };
+      // The real console answers 400 for pages over 25, so bigger requests are fetched 25 at a time.
+      const items: Chat[] = [];
+      let next = cursor;
+      do {
+        const r = await getJson<{ list: RawChat[]; next?: string }>(deps, `/api/v2/bots/${botId}/chats`, {
+          folderType: "ALL",
+          limit: Math.min(25, limit - items.length),
+          next,
+        });
+        items.push(...r.list.map((c) => toChat(c, botId, cfg.webBaseUrl)));
+        next = r.next;
+      } while (next && items.length < limit);
+      return { items, ...(next ? { cursor: next } : {}) };
     },
 
     async getChat(botId, chatId) {
