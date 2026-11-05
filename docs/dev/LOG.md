@@ -90,3 +90,9 @@
 - Why: the user wanted the real OA connected, not only the mock.
 - Commits: this commit. No real names, ids or messages were written to the repo.
 - For other lanes: research fixtures for these 5 GET endpoints are now confirmed against the live console.
+
+## 2026-11-06 03:36 ICT · get_user_profile
+- What: mock serves notes/tags/owners; client getProfile joins chat detail, tag names, notes and the assignee; tool get_user_profile (read-only) + e2e test. Checked live on the real OA (GET only, an already-read chat): all three endpoints answer JSON.
+- Why: Required action 5 of the assignment (see a user's profile).
+- Commits: feat(mock): serve chat notes, tags and owners; feat(client): read a profile…; feat(tools): add get_user_profile
+- For other lanes: none.
