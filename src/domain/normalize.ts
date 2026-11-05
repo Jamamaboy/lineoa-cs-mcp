@@ -14,7 +14,13 @@ export interface RawEvent {
     contentHash?: string;
     expired?: boolean;
     expiredAt?: number;
-    contentProvider?: { type?: string; expired?: boolean; expiredAt?: number };
+    contentProvider?: {
+      type?: string;
+      contentHash?: string;
+      originalContentUrl?: string;
+      expired?: boolean;
+      expiredAt?: number;
+    };
     altText?: string;
     title?: string;
     address?: string;

@@ -5,7 +5,7 @@ const CLIENT_VERSION = "20240513144702";
 
 export interface HttpDeps {
   baseUrl: string;
-  cookie: () => string | undefined;
+  cookie: (host?: string) => string | undefined;
   fetch?: typeof fetch;
 }
 
@@ -53,4 +53,32 @@ export async function getJson<T>(
     );
   }
   return (await res.json()) as T;
+}
+
+/**
+ * Downloads attachment bytes. The session cookie goes only to LINE's own hosts (or the mock); a
+ * public URL from the sender gets no cookie. Refuses anything over `maxBytes`.
+ */
+export async function getBytes(
+  deps: HttpDeps,
+  url: string,
+  maxBytes: number,
+): Promise<{ bytes: Uint8Array; contentType?: string }> {
+  const target = new URL(url);
+  const own = target.hostname.endsWith("line.biz") || target.origin === new URL(deps.baseUrl).origin;
+  const cookie = own ? deps.cookie(target.hostname) : undefined;
+  if (own && !cookie) throw authExpired();
+  const res = await (deps.fetch ?? fetch)(target, { headers: cookie ? { Cookie: cookie } : {} });
+  if (new URL(res.url || url).hostname.startsWith("account.")) throw authExpired();
+  if (res.status === 401) throw authExpired();
+  if (res.status === 404 || res.status === 410)
+    throw new LineOAError("ATTACHMENT_EXPIRED", "LINE no longer has this file (expired or deleted).");
+  if (!res.ok) throw new LineOAError("UPSTREAM_ERROR", `download failed with ${res.status}`);
+  const tooBig = () =>
+    new LineOAError("ATTACHMENT_TOO_LARGE", `The file is larger than ${Math.round(maxBytes / 1048576)} MB.`);
+  if (Number(res.headers.get("content-length") ?? 0) > maxBytes) throw tooBig();
+  const bytes = new Uint8Array(await res.arrayBuffer());
+  if (bytes.length > maxBytes) throw tooBig();
+  const contentType = res.headers.get("content-type") ?? undefined;
+  return { bytes, ...(contentType ? { contentType } : {}) };
 }

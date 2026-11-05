@@ -1,8 +1,8 @@
 import type { Config } from "../config.js";
 import { LineOAError } from "../domain/errors.js";
 import { type RawChat, type RawEvent, toChat, toMessage } from "../domain/normalize.js";
-import type { Bot, Chat, Me, Message, UserProfile } from "../domain/types.js";
-import { getJson } from "./http.js";
+import type { AttachmentRef, Bot, Chat, Me, Message, UserProfile } from "../domain/types.js";
+import { getBytes, getJson } from "./http.js";
 
 export interface Page<T> {
   items: T[];
@@ -26,10 +26,21 @@ export interface LineOAClient {
   ): Promise<Page<Message>>;
   /** The chat's profile plus the staff-side tags, notes and assignee. */
   getProfile(botId: string, chatId: string): Promise<UserProfile>;
+  /** Downloads one message's image or file. Looks back through the last 5 pages of the chat. */
+  getAttachment(
+    botId: string,
+    chatId: string,
+    messageId: string,
+  ): Promise<{ ref: AttachmentRef; bytes: Uint8Array; contentType?: string }>;
 }
 
 export function createLineClient(cfg: Config, fetchImpl?: typeof fetch): LineOAClient {
   const deps = { baseUrl: cfg.baseUrl, cookie: cfg.cookie, ...(fetchImpl ? { fetch: fetchImpl } : {}) };
+  const rawMessages = (botId: string, chatId: string, cursor?: string) =>
+    getJson<{ list: RawEvent[]; backward?: string }>(deps, `/api/v3/bots/${botId}/chats/${chatId}/messages`, {
+      limit: 50,
+      backward: cursor,
+    });
 
   const assertAllowed = (botId: string) => {
     if (cfg.botAllowlist.length && !cfg.botAllowlist.includes(botId)) {
@@ -118,6 +129,35 @@ export function createLineClient(cfg: Config, fetchImpl?: typeof fetch): LineOAC
         ...(raw.lastTalkedAt ? { lastTalkedAt: new Date(raw.lastTalkedAt).toISOString() } : {}),
         webUrl: chat.webUrl,
       };
+    },
+
+    async getAttachment(botId, chatId, messageId) {
+      assertAllowed(botId);
+      let cursor: string | undefined;
+      for (let page = 0; page < 5; page++) {
+        const r = await rawMessages(botId, chatId, cursor);
+        const ev = r.list.find((e) => e.message?.id === messageId);
+        if (ev?.message) {
+          const ref = toMessage(ev)?.attachment;
+          const m = ev.message;
+          if (!ref) throw new LineOAError("NOT_FOUND", `Message ${messageId} has no image or file.`);
+          if (ref.expired) throw new LineOAError("ATTACHMENT_EXPIRED", "LINE no longer keeps this file.");
+          const hash = m.contentHash ?? m.contentProvider?.contentHash;
+          const url =
+            ref.provider === "external"
+              ? m.contentProvider?.originalContentUrl
+              : `${cfg.contentBaseUrl}/bot/${botId}/${hash}`;
+          if (!url || (ref.provider === "line" && !hash))
+            throw new LineOAError("NOT_FOUND", "LINE gave no download address for this file.");
+          return { ref, ...(await getBytes(deps, url, cfg.maxAttachmentBytes)) };
+        }
+        if (!r.backward) break;
+        cursor = r.backward;
+      }
+      throw new LineOAError(
+        "NOT_FOUND",
+        `Message ${messageId} is not in the last 250 messages of this chat.`,
+      );
     },
   };
 }

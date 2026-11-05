@@ -6,7 +6,9 @@ export type ErrorCode =
   | "RATE_LIMITED"
   | "ENDPOINT_CHANGED"
   | "UPSTREAM_ERROR"
-  | "CONFIG_ERROR";
+  | "CONFIG_ERROR"
+  | "ATTACHMENT_EXPIRED"
+  | "ATTACHMENT_TOO_LARGE";
 
 export class LineOAError extends Error {
   constructor(
