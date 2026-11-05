@@ -40,6 +40,14 @@ TRIAL_PILL = {"ran": ("ok", "รันได้จริง"), "partial": ("warn
 esc = html.escape
 
 
+def short_name(p):
+    """'owner/repo' -> 'repo'; 'Product (@scope/pkg)' -> 'Product'."""
+    n = p["name"]
+    if " (" in n:
+        return n.split(" (")[0]
+    return n.split("/")[-1]
+
+
 def popularity(stars):
     if stars is None:
         return None
@@ -149,7 +157,7 @@ def hub_svg(p):
             lines[-1] = lines[-1][:cut(lines[-1], 34)] + "…"
         parts.append(tspans(lines, x + 14, y + 39, 15, "t2", "start"))
     parts.append(f'<rect class="bx acc" x="{cx - 110}" y="{cy - 32}" width="220" height="64" rx="12"/>')
-    name = p["name"].split("/")[-1]
+    name = short_name(p)
     parts.append(f'<text class="b" x="{cx}" y="{cy - 6}" text-anchor="middle">{esc(name)[:30]}</text>')
     parts.append(f'<text class="t2" x="{cx}" y="{cy + 14}" text-anchor="middle">core features · {n}</text>')
     parts.append("</svg>")
@@ -196,7 +204,7 @@ def landscape_svg(items):
         parts.append(f'<text class="t2 b" x="24" y="{y + 24}">{esc(label)}</text>')
         cx = 24
         for p in by[k]:
-            nm = p["name"].split("/")[-1][:22]
+            nm = short_name(p)
             w = 16 + 7.2 * len(nm)
             if cx + w > 560:
                 break
@@ -234,7 +242,7 @@ def stars_svg(items):
     for i, p in enumerate(rows):
         y = 26 + i * rh
         w = max(2, sx(p["_stars"]) - left)
-        nm = p["name"].split("/")[-1][:30]
+        nm = short_name(p)
         parts.append(f'<text class="t2" x="{left - 10}" y="{y + 13}" text-anchor="end">{esc(nm)}</text>')
         tip = f'{p["name"]}: {p["_stars"]:,} stars · fork {p["github"].get("forks", 0):,} · push ล่าสุด {p["github"].get("last_push", "")[:10]}'
         parts.append(f'<g class="hit" data-tip="{esc(tip)}"><rect class="hitbox" x="{left}" y="{y}" width="{right - left}" height="{rh - 4}"/>'
@@ -428,7 +436,7 @@ def build():
     shots = sum(len(p.get("screenshots", [])) for p in items)
     takeaways_file = ROOT / "takeaways.html"
     takeaways = takeaways_file.read_text(encoding="utf-8") if takeaways_file.exists() else "<p class='dim'>(ยังไม่ได้สรุป)</p>"
-    nav = "".join(f"<a href='#p-{esc(p['slug'])}'>{esc(p['name'].split('/')[-1])}</a>" for p in items)
+    nav = "".join(f"<a href='#p-{esc(p['slug'])}'>{esc(short_name(p))}</a>" for p in items)
     weights = " · ".join(f"{lbl} {w}%" for _, lbl, w in CRITERIA)
     out = f"""<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Research: ระบบที่คล้ายกับ LINE OA CS MCP</title><style>{CSS}</style></head><body>
