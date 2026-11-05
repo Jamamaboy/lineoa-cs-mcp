@@ -10,7 +10,12 @@ afterAll(async () => stack.stop());
 describe("MCP read core against the mock", () => {
   it("exposes the read tools, all marked read-only", async () => {
     const { tools } = await stack.client.listTools();
-    expect(tools.map((t) => t.name).sort()).toEqual(["auth_status", "list_chats", "read_chat"]);
+    expect(tools.map((t) => t.name).sort()).toEqual([
+      "auth_status",
+      "get_user_profile",
+      "list_chats",
+      "read_chat",
+    ]);
     for (const t of tools) expect(t.annotations?.readOnlyHint).toBe(true);
   });
 
@@ -43,6 +48,16 @@ describe("MCP read core against the mock", () => {
     expect(r.json.prevCursor).toBeTypeOf("string");
     const older = await stack.call("read_chat", { chatId: somchai.chatId, cursor: r.json.prevCursor });
     expect(older.json.messages.length).toBeGreaterThan(0);
+  });
+
+  it("get_user_profile names the tags, notes and assignee", async () => {
+    const list = await stack.call("list_chats", { filter: "all", limit: 50 });
+    const somchai = list.json.chats.find((c: { name: string }) => c.name === "สมชาย ใจดี");
+    const r = await stack.call("get_user_profile", { chatId: somchai.chatId });
+    expect(r.json.tags).toEqual(["ลูกค้า VIP"]);
+    expect(r.json.assignee).toBe("ปุ้ย ฝ่ายบริการลูกค้า");
+    expect(r.json.notes).toHaveLength(2);
+    expect(r.json.webUrl).toBe(somchai.webUrl);
   });
 
   it("turns a missing session into AUTH_EXPIRED with the fix in the message", async () => {
