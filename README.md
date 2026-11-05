@@ -175,7 +175,7 @@ is in the repo:
 - Each lane keeps a log in `docs/<lane>/LOG.md`.
 - Each feature is a branch of small commits, each one green on its own.
 
-[`docs/README.md`](docs/README.md) maps every document.
+[`docs/README.md`](docs/README.md) maps every document. A Thai user guide is in [`docs/USAGE.th.md`](docs/USAGE.th.md).
 
 ## Develop
 
