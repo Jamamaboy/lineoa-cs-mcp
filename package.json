@@ -22,7 +22,8 @@
     "check": "npm run lint && npm run typecheck && npm test",
     "try": "tsx scripts/try.ts",
     "login": "tsx src/cli.ts login",
-    "lineoa": "tsx src/cli.ts"
+    "lineoa": "tsx src/cli.ts",
+    "setup": "tsx src/cli.ts setup"
   },
   "license": "MIT",
   "dependencies": {

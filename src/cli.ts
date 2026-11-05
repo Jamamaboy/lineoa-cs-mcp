@@ -8,6 +8,7 @@ import "./quiet.js";
 import { parseArgs } from "node:util";
 import { BROWSERS, type BrowserName } from "./auth/browsers.js";
 import { login } from "./auth/login.js";
+import { setup } from "./cli/setup.js";
 import { cut, ui, when } from "./cli/ui.js";
 import { createLineClient } from "./client/line-client.js";
 import { loadConfig } from "./config.js";
@@ -23,6 +24,8 @@ const { values: opt, positionals } = parseArgs({
     "needs-reply": { type: "boolean" },
     unread: { type: "boolean" },
     all: { type: "boolean" },
+    "dry-run": { type: "boolean" },
+    "allow-send": { type: "boolean" },
   },
 });
 const [cmd = "help", ...rest] = positionals;
@@ -37,6 +40,19 @@ async function pickOa() {
 }
 
 const commands: Record<string, () => Promise<void>> = {
+  async setup() {
+    ui.title("Set up lineoa-cs for your AI apps");
+    for (const s of setup({ dryRun: Boolean(opt["dry-run"]), allowSend: Boolean(opt["allow-send"]) })) {
+      (s.done ? ui.ok : ui.warn)(`${ui.bold(s.target)}: ${s.detail}`);
+    }
+    ui.line(
+      `  sending: ${opt["allow-send"] ? ui.bold("ON") : "off (read-only). Run `lineoa setup --allow-send` to turn it on."}`,
+    );
+    ui.line(
+      `\nNext: ${ui.cyan("npm run login")}, then ask your AI app: "Which LINE chats are waiting for a reply?"`,
+    );
+  },
+
   async login() {
     if (opt.browser && !BROWSERS.includes(opt.browser as BrowserName))
       throw new Error(`--browser must be one of: ${BROWSERS.join(", ")}`);
@@ -117,6 +133,7 @@ const commands: Record<string, () => Promise<void>> = {
   async help() {
     ui.title("lineoa — LINE OA Manager from the terminal");
     for (const [c, d] of [
+      ["setup [--allow-send] [--dry-run]", "add this server to Claude Desktop and Claude Code"],
       ["login [--browser chrome|edge|brave|chromium|firefox|webkit]", "log in once (a browser window opens)"],
       ["status", "who is logged in, which OAs, is sending on"],
       ["chats [--needs-reply|--unread|--all] [--oa NAME]", "list chats"],
