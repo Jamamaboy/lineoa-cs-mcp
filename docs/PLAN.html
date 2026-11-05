@@ -159,11 +159,21 @@ figure.d figcaption{font-size:12.5px;color:var(--ink-3);margin-top:8px;padding:0
 
 <header class="masthead">
   <h1>แผนงาน: MCP server สำหรับงาน CS บน LINE OA</h1>
-  <div style="border-left:3px solid #d97706;background:rgba(217,119,6,.08);padding:8px 12px;border-radius:0 8px 8px 0;margin:10px 0;font-size:13.5px"><b>v3 (6 พ.ย. 01:15):</b> ขอบเขตเปลี่ยนเป็นผู้ช่วย CS ของ Acme Support (tool หลัก 5 ตัวก่อน แล้วค่อยชั้นเคส), เพิ่ม <code>webUrl</code>, กฎข้อมูลส่วนบุคคล, OA จริงใช้อ่านอย่างเดียว · หน้านี้ยังเป็น v2 ถ้าไม่ตรงกันให้ยึด <code>PLAN.md</code> · ตารางคืนนี้: <code>docs/plan/2026-11-06-tonight.html</code></div>
-  <p class="sub">ฉบับภาษาไทยพร้อม diagram ของ <code>docs/PLAN.md</code> (ถ้าเนื้อหาไม่ตรงกัน ให้ถือ PLAN.md เป็นหลัก) · draft v2 (ใส่ผลงานวิจัยรอบ 2 แล้ว) วันที่ 2026-11-05 · โจทย์อยู่ที่ <code>docs/ASSIGNMENT.md</code></p>
+
+  <p class="sub">ฉบับภาษาไทยพร้อม diagram ของ <code>docs/PLAN.md</code> (ถ้าเนื้อหาไม่ตรงกัน ให้ถือ PLAN.md เป็นหลัก) · <b>v3</b> ปรับขอบเขตเป็นผู้ช่วย CS ของ Acme Support · 6 พ.ย. 2026 · โจทย์อยู่ที่ <code>docs/ASSIGNMENT.md</code> · ลำดับงานรอบนี้: <code>docs/plan/2026-11-06-tonight.html</code></p>
+  <div class="note ok" style="margin-top:14px"><b>v3 เปลี่ยนอะไร:</b>
+    <ul style="margin-top:4px">
+      <li>ขอบเขตเป็นผู้ช่วย CS ของ OA <b>Acme Support</b> งานที่ได้คะแนน (tool 5 ตัว + auth + ไฟล์แนบ) ทำก่อน ส่วน<b>ชั้นเคส</b>เป็น "ควรมี" (หัวข้อ 1, 5b)</li>
+      <li>ผลของแชทและโปรไฟล์ทุกตัวมี <code>webUrl</code> ลิงก์เข้าหน้าแชทใน chat.line.biz ให้คนกดไปคุยต่อเอง (หัวข้อ 5)</li>
+      <li>กฎข้อมูลส่วนบุคคล: ข้อมูลอยู่ใน server เท่านั้น และถูกปิดบังเป็นค่าเริ่มต้น (หัวข้อ 6b)</li>
+      <li>มี OA จริงให้ใช้แบบ<b>อ่านอย่างเดียว</b> และ OA ทดสอบใหม่สำหรับลองส่ง (A1, A11)</li>
+      <li>หัวข้อ 8 เปลี่ยนเป็นลำดับขั้น ไม่ผูกกับเวลา เวลาที่ตายตัวมีแค่กำหนดส่ง · หัวข้อ 10 เป็น flow ของ Acme Support</li>
+    </ul>
+  </div>
   <div class="bar">
     <div class="stat"><b>กำหนดส่ง</b><span>ศ. 6 พ.ย. 2026 เวลา 23:59 (เวลาไทย)</span></div>
-    <div class="stat"><b>Tool บังคับ</b><span>5 ตัว + <code>get_attachment</code> + <code>auth_status</code></span></div>
+    <div class="stat"><b>Tool บังคับ</b><span>5 ตัว + <code>get_attachment</code> + <code>webUrl</code></span></div>
+    <div class="stat"><b>ขอบเขต</b><span>ต้องมี → ชั้นเคส (ควรมี) → ถ้ามีเวลา</span></div>
     <div class="stat"><b>Stack</b><span>TypeScript · Node 22 · MCP SDK · Hono · Playwright</span></div>
     <div class="stat"><b>เส้นทางที่ใช้ให้คะแนน</b><span>รันบน mock LINE OA (ไม่ต้องมีบัญชี LINE)</span></div>
   </div>
@@ -171,9 +181,9 @@ figure.d figcaption{font-size:12.5px;color:var(--ink-3);margin-top:8px;padding:0
 
 <nav class="nav">
   <div class="navrow">
-    <a href="#goal">1 เป้าหมาย</a><a href="#why">ทำไมใช้ console</a><a href="#assume">2 สมมติฐาน</a><a href="#stack">3 Stack</a>
-    <a href="#arch">4 สถาปัตยกรรม</a><a href="#tools">5 Tool</a><a href="#auth">6 Auth</a><a href="#endpoints">6a Endpoint</a>
-    <a href="#attach">7 ไฟล์แนบ</a><a href="#search">Search</a><a href="#phases">8 Phase</a><a href="#agents">9 Agent</a>
+    <a href="#goal">1 เป้าหมาย</a><a href="#scope">ขอบเขต v3</a><a href="#ux">สิ่งที่ CS เห็น</a><a href="#why">ทำไมใช้ console</a><a href="#assume">2 สมมติฐาน</a><a href="#stack">3 Stack</a>
+    <a href="#arch">4 สถาปัตยกรรม</a><a href="#tools">5 Tool</a><a href="#cases">5b ชั้นเคส</a><a href="#auth">6 Auth</a><a href="#endpoints">6a Endpoint</a><a href="#pii">6b ข้อมูลส่วนบุคคล</a>
+    <a href="#attach">7 ไฟล์แนบ</a><a href="#search">Search</a><a href="#phases">8 ลำดับงาน</a><a href="#agents">9 Agent</a>
     <a href="#flows">10 User flow</a><a href="#research">11 งานวิจัย</a><a href="#risks">12 ความเสี่ยง</a><a href="#review">Review rounds</a>
   </div>
 </nav>
@@ -186,7 +196,7 @@ figure.d figcaption{font-size:12.5px;color:var(--ink-3);margin-top:8px;padding:0
 <table>
   <thead><tr><th>#</th><th>สิ่งที่โจทย์ต้องการ</th><th>Tool</th><th>เกณฑ์ / หัวข้อที่ตอบ</th></tr></thead>
   <tbody>
-    <tr><td>1</td><td>ดูรายการแชทที่กำลังคุยอยู่</td><td><code>list_chats</code></td><td rowspan="5">ใช้งานได้จริง: Phase 2 (บน mock), Phase 4 (บน console จริง)</td></tr>
+    <tr><td>1</td><td>ดูรายการแชทที่กำลังคุยอยู่</td><td><code>list_chats</code></td><td rowspan="5">ใช้งานได้จริง: ขั้น 2–4 (บน mock), ขั้น 5 (บน console จริง)</td></tr>
     <tr><td>2</td><td>อ่านแชทที่ระบุ</td><td><code>read_chat</code></td></tr>
     <tr><td>3</td><td>ค้นข้อความจากทุกแชท</td><td><code>search_messages</code></td></tr>
     <tr><td>4</td><td>ส่งข้อความเข้าแชท</td><td><code>send_message</code></td></tr>
@@ -196,6 +206,53 @@ figure.d figcaption{font-size:12.5px;color:var(--ink-3);margin-top:8px;padding:0
 </table>
 </div></div>
 <p class="dim" style="font-size:13.5px">เกณฑ์อื่น: การจัด repo และคุณภาพโค้ด (หัวข้อ 4, 9) · เข้าใจภาพรวมของระบบ (หัวข้อ 4, 6, 7) · Authentication (หัวข้อ 6) · กระบวนการทำงาน: commit ไปเรื่อย ๆ และเก็บ <code>.claude/</code>, <code>CLAUDE.md</code>, <code>AGENTS.md</code> ไว้ใน repo</p>
+
+<h3 id="scope">ขอบเขต v3: ผู้ช่วย CS ของ Acme Support</h3>
+<p style="font-size:14px">Acme มี LINE OA 2 ตัว <b>OA หลัก</b>คือตัวแอป ลูกค้าบันทึกรายรับรายจ่ายผ่านแชทและ bot ตอบเป็น template ส่วน <b>OA Support</b> เป็นที่ลูกค้าแจ้งปัญหา rich menu มี 4 ปุ่ม (เริ่มใช้งาน / เสนอฟีเจอร์ / แจ้งปัญหา / ขอวิธีใช้) และ bot มี template ขออีเมล ปัญหา และภาพหน้าจอ เราทำให้ทีม CS ของ OA Support</p>
+<div class="card"><div class="card-b scroll">
+<table>
+  <thead><tr><th>ระดับ</th><th>อะไร</th><th>ทำไม</th></tr></thead>
+  <tbody>
+    <tr><td><span class="pill ok">ต้องมี</span></td><td>tool 5 ตัว + <code>get_attachment</code> + <code>webUrl</code>, auth, ไฟล์แนบ บน mock ที่เลียนแบบ Acme Support</td><td>โจทย์ให้คะแนนตรง ๆ</td></tr>
+    <tr><td><span class="pill acc">ควรมี</span></td><td>ชั้นเคส: <code>list_cases</code>, <code>open_case</code>, <code>tag_case</code>, <code>set_case_status</code>, <code>get_person</code>, <code>case_stats</code> (หัวข้อ 5b)</td><td>โชว์ว่าเข้าใจงาน CS จริง งานเล็กเพราะ AI ฝั่ง client ทำส่วนที่ต้องใช้ AI</td></tr>
+    <tr><td><span class="pill warn">ถ้ามีเวลา</span></td><td>บริบทการใช้งานจาก OA หลัก · tool เสนอการ link · เตือนเมื่อลูกค้าพิมพ์หลังปิดเคส · เดโม Telegram ผ่าน Claude Code Channels</td><td>เรื่องเล่าตอนสัมภาษณ์</td></tr>
+    <tr><td><span class="pill mute">เขียนใน README</span></td><td>link กับ OA หลักของจริงในระบบใช้งานจริง · server กลางของทีม · realtime (SSE)</td><td>ข้อจำกัด / สิ่งที่จะทำถ้ามีเวลา</td></tr>
+  </tbody>
+</table>
+</div></div>
+
+<h3 id="ux">สิ่งที่ CS เห็น: ไม่มีเว็บแอป มีแต่แอป AI ที่เรียก tool ของเรา</h3>
+<figure class="d"><div class="scroll">
+<svg viewBox="0 0 900 250" role="img" aria-label="สิ่งที่ CS เห็นและเบื้องหลัง">
+  <rect class="bx acc" x="20" y="30" width="170" height="70" rx="9"/>
+  <text class="b" x="105" y="58" text-anchor="middle">CS หรือ agent อัตโนมัติ</text>
+  <text class="t2" x="105" y="80" text-anchor="middle">"มีแชทไหนรอตอบบ้าง"</text>
+  <line class="ln" x1="190" y1="65" x2="236" y2="65"/>
+  <rect class="bx" x="240" y="30" width="190" height="70" rx="9"/>
+  <text class="b" x="335" y="52" text-anchor="middle">แอป AI (Claude Desktop/Code)</text>
+  <text class="t2" x="335" y="72" text-anchor="middle">สรุป · ร่างคำตอบ</text>
+  <text class="t2" x="335" y="90" text-anchor="middle">ถามอนุญาตก่อน send_message</text>
+  <line class="ln" x1="430" y1="65" x2="476" y2="65"/>
+  <text class="t2 lbl" x="453" y="56" text-anchor="middle">stdio</text>
+  <rect class="bx ok" x="480" y="20" width="210" height="90" rx="9"/>
+  <text class="b" x="585" y="44" text-anchor="middle">lineoa-mcp (ของเรา)</text>
+  <text class="t2" x="585" y="64" text-anchor="middle">tool 6 ตัว + ชั้นเคส</text>
+  <text class="t2" x="585" y="82" text-anchor="middle">ถือ session · ไฟล์แนบ · ปิดบัง PII</text>
+  <text class="t2" x="585" y="100" text-anchor="middle">SQLite ในเครื่อง</text>
+  <line class="ln" x1="690" y1="65" x2="736" y2="65"/>
+  <rect class="bx" x="740" y="30" width="140" height="70" rx="9"/>
+  <text class="b" x="810" y="58" text-anchor="middle">chat.line.biz</text>
+  <text class="t2" x="810" y="80" text-anchor="middle">(หรือ mock)</text>
+  <rect class="bx warn" x="480" y="160" width="210" height="60" rx="9"/>
+  <text class="b" x="585" y="184" text-anchor="middle">npm run login</text>
+  <text class="t2" x="585" y="204" text-anchor="middle">Playwright เปิด browser · คน login เอง</text>
+  <line class="ln" x1="585" y1="160" x2="585" y2="114"/>
+  <text class="t2 lbl" x="592" y="140">session.json (0600)</text>
+  <path class="ln dsh" d="M335 100 V232 H810 V104"/>
+  <text class="t2 lbl" x="420" y="236">webUrl: CS กดไปคุยต่อเองในหน้าเว็บ</text>
+</svg></div>
+<figcaption>Diagram 0: ด้านบนคือการใช้งานทุกวัน ด้านล่างคือ login ครั้งเดียวต่อกะ เส้นประคือการส่งต่อให้คนผ่าน <code>webUrl</code> หน้าเว็บเดียวที่เราทำคือ console เล็ก ๆ ของ mock</figcaption>
+</figure>
 
 <h3 id="why">ทำไมต้องทำงานผ่าน session ของ console แทน Messaging API</h3>
 <div class="two">
@@ -229,13 +286,18 @@ figure.d figcaption{font-size:12.5px;color:var(--ink-3);margin-top:8px;padding:0
 <table>
   <thead><tr><th>id</th><th>สมมติฐาน</th><th>ถ้าผิดจะเปลี่ยนอะไร</th></tr></thead>
   <tbody>
-    <tr><td>A1</td><td>อาจไม่มี LINE OA จริงที่มีประวัติแชท จึงใช้ <b>mock LINE OA</b> เป็นเป้าหลักทั้งตอนทดสอบและตอนให้คะแนน ส่วน adapter ของจริงใช้ interface เดียวกัน <span class="pill warn">experimental</span></td><td>ถ้าได้ OA จริงมา Phase 4 จะกลายเป็นตัว demo หลัก</td></tr>
+    <tr><td>A1</td><td><b>mock LINE OA</b> เป็นเส้นทางที่ใช้ให้คะแนน คนตรวจรันได้โดยไม่ต้องมีบัญชี LINE ตอนนี้เรามี OA จริงด้วย (อ่านอย่างเดียว ดู A11) ไว้เก็บหลักฐาน HAR และ OA ทดสอบฟรีไว้ลองส่ง จึงตรวจ <code>WebClient</code> กับของจริงได้</td><td>ถ้า WebClient ไม่เสร็จ README บอกตรง ๆ และทาง mock ยังใช้ได้</td></tr>
     <tr><td>A2</td><td>MCP server หนึ่ง process = session ของพนักงาน CS หนึ่งคน เข้าได้หลาย OA ("bot") กำหนดใน config ได้ว่าให้เข้า OA ไหนบ้าง</td><td>ถ้าต้องรองรับพนักงานหลายคน ต้องแยก session ต่อคน และใช้ HTTP transport</td></tr>
     <tr><td>A3</td><td>"แชทที่กำลังคุยอยู่" = แชทที่ยังไม่ done/resolved เรียงตามเวลาข้อความล่าสุด มีตัวกรอง <code>unread</code> และ <code>all</code></td><td>แก้แค่ตัวกรอง</td></tr>
     <tr><td>A4</td><td>Search ค้นแบบคำหรือบางส่วนของคำ จากข้อความ ชื่อลูกค้า และชื่อไฟล์ ต้องค้น<b>ภาษาไทย</b>ได้ client ที่เจอ<b>ไม่มี endpoint ค้นข้อความ</b> จึงค้นจาก <b>index ในเครื่อง</b></td><td>ถ้า HAR เจอ API ค้นข้อความจริง <code>WebClient.search</code> จะใช้ API นั้น แล้ว index เหลือหน้าที่เป็นแค่ cache</td></tr>
     <tr><td>A5</td><td>Agent รันในเครื่องเดียวกับพนักงาน CS (stdio)</td><td>ถ้า deploy บน server ต้องใช้ Streamable HTTP และ auth ฝั่ง MCP</td></tr>
     <tr><td>A6</td><td>ข้อความที่ agent ส่ง ขึ้นว่าส่งโดยพนักงานที่ login อยู่ ทุกการส่งถูกบันทึกใน audit log</td><td>ไม่มี</td></tr>
-    <tr><td>A7</td><td>การ mark ว่าอ่านแล้วเป็น API แยก (<code>markAsRead</code>) <code>read_chat</code> จึงไม่ mark read มี flag <code>markRead</code> ซึ่งปิดไว้เป็นค่าเริ่มต้น</td><td>เปิด flag ถ้าทีม CS ต้องการ</td></tr>
+    <tr><td>A7</td><td>การ mark ว่าอ่านแล้วเป็น API แยก (<code>PUT .../markAsRead</code> มีหลักฐานแค่ PUT) <code>read_chat</code> จึงไม่ mark read มี flag <code>markRead</code> ซึ่งปิดไว้เป็นค่าเริ่มต้น</td><td>เปิด flag ถ้าทีม CS ต้องการ</td></tr>
+    <tr><td>A8</td><td>link คนแจ้งปัญหาใน Support ไปที่ <b>OA หลัก</b> เพราะ CS ต้องรู้บริบทการใช้งาน: แพ็กเกจหรือช่วงทดลอง, การเชื่อม Google, sync ล่าสุด, เครดิต, ข้อความตอบกลับที่ error ในข้อมูลตัวอย่าง ลูกค้า sync Google Sheets 4 นาทีก่อนมาแจ้งปัญหาเรื่องนี้</td><td>ถ้าไม่ link CS ต้องถามลูกค้าในสิ่งที่ระบบรู้อยู่แล้ว</td></tr>
+    <tr><td>A9</td><td>1 แชทมี<b>หลายเคส</b> ข้อความจากปุ่ม rich menu เปิดเคสใหม่ตามชนิดของปุ่ม และ AI เปิดเคสเพิ่มได้เมื่อลูกค้าเริ่มเรื่องใหม่โดยไม่กดปุ่ม</td><td>ถ้า CS อยากได้ 1 แชท 1 เคส ก็แค่ไม่ใช้ <code>open_case</code></td></tr>
+    <tr><td>A10</td><td>link คนข้าม OA ด้วยอีเมลที่ลูกค้าพิมพ์ จับคู่ใน server <b>และให้ CS ยืนยัน</b> ข้อความ "เชื่อมต่อ Google สำเร็จ (อีเมล)" ใน OA หลักนับเป็นอีเมลที่ยืนยันแล้ว การ link อัตโนมัติด้วย userId ต้องให้ทั้งสอง OA อยู่ provider เดียวกัน ซึ่งยังไม่ได้เช็ก</td><td>ถ้าอยู่ provider เดียวกัน เพิ่มการ link ด้วย userId ทีหลังได้</td></tr>
+    <tr><td>A11</td><td>OA จริงมีแชทของคนจริง จึง<b>อ่านอย่างเดียว</b>: ห้ามส่ง ห้ามกด Follow up / Resolve และห้ามเปิดแชทที่ยังไม่อ่าน (เปิดแล้วนับว่าอ่าน) ไฟล์ HAR เก็บที่ <code>~/lineoa-har/</code> นอก repo การส่งและอัปโหลดทดสอบกับ OA ทดสอบเท่านั้น</td><td>ไม่มี</td></tr>
+    <tr><td>A12</td><td>AI ฝั่ง client ทำงานที่ต้องใช้ AI (เสนอแท็ก สรุป ร่างคำตอบ) server ไม่มี LLM key และไม่เรียก LLM เอง</td><td>ถ้าให้ server เรียก LLM ต้องมี DPA และ key ใน config</td></tr>
   </tbody>
 </table>
 </div></div>
@@ -423,7 +485,7 @@ figure.d figcaption{font-size:12.5px;color:var(--ink-3);margin-top:8px;padding:0
   <text class="t2" x="346" y="356">ข้อความและไฟล์จากลูกค้าติดป้ายว่าเป็นเนื้อหาที่ไม่น่าเชื่อถือ (กัน prompt injection)</text>
   <text class="t2" x="346" y="378">โครงสร้าง conversation → message → attachment อิงจาก Chatwoot</text>
 </svg></div>
-<figcaption>Diagram 2: data model กลางที่ทุก backend ต้องแปลงข้อมูลให้เป็นรูปแบบนี้</figcaption>
+<figcaption>Diagram 2: data model กลางที่ทุก backend ต้องแปลงข้อมูลให้เป็นรูปแบบนี้ · v3: <code>Chat</code> และ <code>UserProfile</code> มี <code>webUrl</code> เพิ่ม (<code>https://chat.line.biz/{botId}/chat/{chatId}</code> หรือ URL ของ console mock) · ข้อความชนิด <code>flex</code> คืน <code>altText</code> + ข้อความที่แบนแล้ว ไม่ทิ้ง</figcaption>
 </figure>
 
 <h3>โครง repo ที่ตั้งเป้าไว้</h3>
@@ -435,8 +497,10 @@ figure.d figcaption{font-size:12.5px;color:var(--ink-3);margin-top:8px;padding:0
                        send-message.ts get-user-profile.ts get-attachment.ts
   auth/                session-store.ts  login-cli.ts  csrf.ts
   attachments/         fetch.ts  mime.ts  image.ts  outbox.ts
+  cases/               store.ts  case-opener.ts  tool ของชั้นเคส (v3 "ควรมี")
   audit/               audit-log.ts
-mock-server/           app.ts  seed/ (แชทไทย + อังกฤษ, รูป, PDF)  public/ (console เล็ก ๆ)
+mock-server/           app.ts  seed/ (เลียนแบบ Acme Support: rich menu, template ของ bot, flex card, ภาพหน้าจอ, PDF;
+                       2 OA ที่มีคนเดียวกัน, ปิดบังข้อมูลแล้ว)  public/ (console เล็ก ๆ, ปลายทางของ webUrl)
 test/                  e2e/ (InMemoryTransport)  contract/ (รันกับ LineOAClient ตัวไหนก็ได้)  unit/
 docs/                  ASSIGNMENT.md  PLAN*.md/html (spec ร่วม)  plan/  dev/ (+ dev/plans)  research/  ← แยกโฟลเดอร์ตาม lane
 .claude/               skill, agent, rule, profile และ agent-strategy/ จาก plan kit
@@ -444,22 +508,85 @@ CLAUDE.md  AGENTS.md  README.md</code></pre></div>
 
 <!-- ================================================================== -->
 <h2 id="tools">5. สัญญาของแต่ละ tool</h2>
-<p class="lede">ฉบับร่าง จะสรุปให้ลงตัวตอนคุย user flow (Phase 3)</p>
+<p class="lede">v3 · ทุก tool ที่คืนแชทหรือโปรไฟล์มี <code>webUrl</code></p>
 <div class="card"><div class="card-b scroll">
 <table>
   <thead><tr><th>Tool</th><th>Input</th><th>Output</th><th>หมายเหตุ</th></tr></thead>
   <tbody>
-    <tr><td><code>list_chats</code></td><td><code>filter?: ongoing|unread|all</code>, <code>limit≤50</code>, <code>cursor?</code>, <code>botId?</code></td><td><code>chats[]</code>, <code>nextCursor?</code></td><td><span class="pill ok">read-only</span></td></tr>
-    <tr><td><code>read_chat</code></td><td><code>chatId</code>, <code>limit≤100</code>, <code>before?</code></td><td><code>messages[]</code> เก่าไปใหม่, <code>prevCursor?</code>, <code>user</code></td><td><span class="pill ok">read-only</span> ไฟล์แนบเป็นแค่ ref · ไม่ mark read</td></tr>
+    <tr><td><code>list_chats</code></td><td><code>filter?: ongoing|unread|all</code>, <code>limit≤50</code>, <code>cursor?</code>, <code>botId?</code></td><td><code>chats[]</code> (มี <code>webUrl</code>), <code>nextCursor?</code></td><td><span class="pill ok">read-only</span> ยังไม่รู้ค่า folder อื่นนอกจาก <code>ALL</code> จึงกรอง <code>unread</code>/<code>ongoing</code> จาก <code>read</code>/<code>done</code> ฝั่งเราไปก่อน</td></tr>
+    <tr><td><code>read_chat</code></td><td><code>chatId</code>, <code>limit≤100</code>, <code>before?</code></td><td><code>messages[]</code> เก่าไปใหม่, <code>prevCursor?</code>, <code>user</code>, <code>webUrl</code></td><td><span class="pill ok">read-only</span> ไฟล์แนบเป็นแค่ ref · ไม่ mark read</td></tr>
     <tr><td><code>search_messages</code></td><td><code>query</code>, <code>chatId?</code>, <code>from?</code>, <code>since?</code>, <code>until?</code>, <code>limit≤50</code>, <code>cursor?</code></td><td><code>hits[]</code> + <code>contextBefore/After</code>, <code>indexedAt</code></td><td><span class="pill ok">read-only</span> ค้นภาษาไทยได้</td></tr>
     <tr><td><code>send_message</code></td><td><code>chatId</code>, <code>text?</code>, <code>attachmentPaths?[]</code>, <code>dryRun?</code></td><td><code>{messageId, sentAt}</code> หรือ preview</td><td><span class="pill warn">เขียนข้อมูล</span> เปิดด้วย <code>LINEOA_ALLOW_SEND</code> · allowlist · audit log · <b>idempotent ด้วย <code>sendId</code></b> ไม่ส่งซ้ำเอง</td></tr>
-    <tr><td><code>get_user_profile</code></td><td><code>userId</code> หรือ <code>chatId</code></td><td><code>UserProfile</code> + notes / tags / ผู้รับผิดชอบ</td><td><span class="pill ok">read-only</span></td></tr>
+    <tr><td><code>get_user_profile</code></td><td><code>userId</code> หรือ <code>chatId</code></td><td><code>UserProfile</code> + notes / tags / ผู้รับผิดชอบ + <code>webUrl</code></td><td><span class="pill ok">read-only</span> อีเมลและเบอร์โทรถูกปิดบัง (หัวข้อ 6b)</td></tr>
     <tr><td><code>get_attachment</code></td><td><code>chatId</code>, <code>messageId</code>, <code>attachmentId?</code>, <code>mode?: inline|save</code></td><td>รูป → <code>image</code> content · ไฟล์อื่น → path + ข้อมูลไฟล์</td><td><span class="pill ok">read-only</span></td></tr>
     <tr><td><code>auth_status</code></td><td>ไม่มี</td><td>พนักงาน, OA ที่เข้าได้, อายุ session</td><td><span class="pill ok">read-only</span> ให้ agent เช็กก่อนเริ่มงานยาว</td></tr>
   </tbody>
 </table>
 </div></div>
 <p style="font-size:13.5px">error มีชนิดชัดเจนและบอกวิธีแก้: <code>AUTH_EXPIRED</code> · <code>FORBIDDEN</code> · <code>NOT_FOUND</code> · <code>RATE_LIMITED</code> (+<code>retryAfter</code>) · <code>ATTACHMENT_TOO_LARGE</code> · <code>ATTACHMENT_EXPIRED</code> · <code>PATH_NOT_ALLOWED</code> · <code>SEND_UNCERTAIN</code></p>
+
+
+<!-- ================================================================== -->
+<h2 id="cases">5b. ชั้นเคส (v3 "ควรมี" ทำหลังงานหลักผ่านแล้ว)</h2>
+<p class="lede">เก็บใน SQLite ไฟล์เดียวกับ index ค้นหา (<code>~/.local/share/lineoa-mcp/store.db</code>) ฝั่ง LINE อ่านอย่างเดียว ไม่มีอะไรในชั้นนี้เขียนกลับไปที่ LINE</p>
+
+<figure class="d"><div class="scroll">
+<svg viewBox="0 0 900 250" role="img" aria-label="data model ของชั้นเคส">
+  <rect class="bx" x="20" y="20" width="230" height="110" rx="9"/>
+  <text class="b" x="36" y="44">Person</text>
+  <text class="m" x="36" y="70">personRef (p_…)</text>
+  <text class="m" x="36" y="88">maskedEmail?  s***@gmail.com</text>
+  <text class="m" x="36" y="106">identities[]: {oa, chatId, userId}</text>
+  <rect class="bx acc" x="330" y="20" width="270" height="190" rx="9"/>
+  <text class="b" x="346" y="44">Case</text>
+  <text class="m" x="346" y="70">caseId (case_…) · chatId · personRef</text>
+  <text class="m" x="346" y="88">type: onboarding | feature-request |</text>
+  <text class="m" x="346" y="104">      report-problem | how-to</text>
+  <text class="m" x="346" y="122">status: open | waiting |</text>
+  <text class="m" x="346" y="138">        resolve_suggested | resolved</text>
+  <text class="m" x="346" y="156">openedBy: rich_menu | ai | cs</text>
+  <text class="m" x="346" y="174">fromMessageId · openedAt</text>
+  <text class="m" x="346" y="192">summary?  (AI ฝั่ง client เขียน)</text>
+  <rect class="bx" x="660" y="20" width="230" height="110" rx="9"/>
+  <text class="b" x="674" y="44">CaseTag</text>
+  <text class="m" x="674" y="70">name</text>
+  <text class="m" x="674" y="88">group: type | area | severity</text>
+  <text class="m" x="674" y="106">source: ai | cs · confirmed</text>
+  <rect class="bx mute" x="20" y="160" width="230" height="60" rx="9"/>
+  <text class="b" x="36" y="184">Chat (จาก LINE)</text>
+  <text class="m" x="36" y="204">chatId · webUrl</text>
+  <line class="rel" x1="250" y1="70" x2="330" y2="70"/><text class="t2" x="290" y="62" text-anchor="middle">1 — *</text>
+  <line class="rel" x1="600" y1="70" x2="660" y2="70"/><text class="t2" x="630" y="62" text-anchor="middle">1 — *</text>
+  <line class="rel" x1="250" y1="190" x2="330" y2="190"/><text class="t2" x="290" y="182" text-anchor="middle">1 — *</text>
+</svg></div>
+<figcaption>Diagram 2b: 1 คนมีหลายเคส · 1 แชทมีหลายเคส · แท็กจาก AI ยังไม่ยืนยันจนกว่า CS เห็นด้วย</figcaption>
+</figure>
+
+<div class="card"><div class="card-b scroll">
+<table>
+  <thead><tr><th>Tool</th><th>Input</th><th>Output</th><th>หมายเหตุ</th></tr></thead>
+  <tbody>
+    <tr><td><code>list_cases</code></td><td><code>status?</code>, <code>type?</code>, <code>tag?</code>, <code>since?</code>, <code>personRef?</code>, <code>limit≤50</code>, <code>cursor?</code></td><td><code>cases[]</code> (มี <code>webUrl</code>)</td><td><span class="pill ok">read-only</span> sync ข้อความใหม่ก่อน ข้อความจาก rich menu เปิดเคสให้อัตโนมัติ (A9)</td></tr>
+    <tr><td><code>open_case</code></td><td><code>chatId</code>, <code>fromMessageId</code>, <code>type</code></td><td><code>Case</code></td><td>AI แยกเรื่องใหม่ที่มาโดยไม่กดปุ่ม · idempotent ตาม <code>fromMessageId</code></td></tr>
+    <tr><td><code>tag_case</code></td><td><code>caseId</code>, <code>add?[]</code>, <code>remove?[]</code></td><td><code>Case</code></td><td>แท็กจาก AI เก็บเป็น <code>source: ai, confirmed: false</code> จะยืนยันเมื่อ CS สั่งแท็กนั้น</td></tr>
+    <tr><td><code>set_case_status</code></td><td><code>caseId</code>, <code>status</code>, <code>summary?</code>, <code>confirmedByStaff?</code></td><td><code>Case</code></td><td><span class="pill warn">ต้องมีคนยืนยัน</span> <code>resolved</code> ต้องส่ง <code>confirmedByStaff: true</code> ซึ่ง agent ใส่ได้ก็ต่อเมื่อคนบอกเท่านั้น ไม่งั้นเป็น <code>resolve_suggested</code> · มี audit log</td></tr>
+    <tr><td><code>get_person</code></td><td><code>personRef</code> หรือ <code>chatId</code></td><td><code>Person</code> + <code>cases[]</code> + <code>linkCandidates[]</code> (+ <code>usage[]</code> จาก OA หลักถ้า link แล้ว)</td><td>อีเมลถูกปิดบัง · การ link ต้องให้ CS ยืนยัน (A10)</td></tr>
+    <tr><td><code>case_stats</code></td><td><code>from</code>, <code>to</code>, <code>groupBy: type|area|severity|status</code></td><td>จำนวน, ค่ามัธยฐานของเวลาตอบครั้งแรก, จำนวนที่ยังเปิด</td><td>ใช้ SQL อย่างเดียว สรุปรายช่วงมาจาก <code>summary</code> ของแต่ละเคส ให้ AI ฝั่ง client เขียนเป็นข้อความ</td></tr>
+  </tbody>
+</table>
+</div></div>
+
+<div class="two">
+  <div class="card"><div class="card-h"><h3>แท็กชุดแรก</h3></div><div class="card-b" style="font-size:13.5px">
+    <p><b>type:</b> <code>onboarding</code> <code>feature-request</code> <code>report-problem</code> <code>how-to</code></p>
+    <p><b>area:</b> <code>dashboard</code> <code>google-sheet</code> <code>currency</code> <code>billing-credit</code> <code>login</code> <code>line-bot</code> <code>other</code></p>
+    <p><b>severity:</b> <code>low</code> <code>medium</code> <code>high</code></p>
+  </div></div>
+  <div class="card"><div class="card-h"><h3>บริบทจาก OA หลัก</h3><span class="pill warn">ถ้ามีเวลา</span></div><div class="card-b" style="font-size:13.5px">
+    <p>parser แบบกฎแปลง template ของ bot เป็น event: <code>plan</code>, <code>trial_expired</code>, <code>google_connected</code>, <code>sheets_sync</code>, <code>credits_left</code>, <code>payment_notice</code>, <code>bot_error</code></p>
+    <p>ดึงเฉพาะคนที่ link แล้ว ช่วงประมาณ 14 วันก่อนเปิดเคส · ยอดเงินซ่อนไว้จนกว่า CS ขอดู · <code>payment_notice</code> ที่ขึ้นซ้ำทุกวันเป็นเคสเตือนล่วงหน้า (ยังไม่รู้ว่าเตือนจ่ายหรือตัดเงินซ้ำ ต้องถาม Acme)</p>
+  </div></div>
+</div>
 
 <!-- ================================================================== -->
 <h2 id="auth">6. Authentication: server ทำงานแทนพนักงาน CS ได้อย่างไร</h2>
@@ -547,7 +674,7 @@ CLAUDE.md  AGENTS.md  README.md</code></pre></div>
 
 <!-- ================================================================== -->
 <h2 id="endpoints">6a. Endpoint ภายในของ chat.line.biz ที่รู้แล้ว</h2>
-<p class="lede">มาจาก <a href="https://github.com/PrakritManStudio/linebiz">PrakritManStudio/linebiz</a> (TS, อ่านได้อย่างเดียว) และ <a href="https://github.com/Madoa5561/LINELib">Madoa5561/LINELib</a> (Python, มี send/upload/SSE) <span class="pill warn">ยังไม่ได้ยืนยันจนกว่าจะเก็บ HAR เอง (Phase 4)</span></p>
+<p class="lede">มาจาก <a href="https://github.com/PrakritManStudio/linebiz">PrakritManStudio/linebiz</a> (TS, อ่านได้อย่างเดียว) และ <a href="https://github.com/Madoa5561/LINELib">Madoa5561/LINELib</a> (Python, มี send/upload/SSE) <span class="pill warn">ยังไม่ได้ยืนยันจนกว่าจะเก็บ HAR เอง (OA จริงแบบอ่านอย่างเดียว + OA ทดสอบ)</span> · fixture ของทุก endpoint อยู่ที่ <code>test/research/line-api-shapes/</code> (branch research)</p>
 <div class="card"><div class="card-b scroll">
 <table>
   <thead><tr><th>Tool</th><th>Endpoint (base <code>https://chat.line.biz</code>)</th></tr></thead>
@@ -555,16 +682,43 @@ CLAUDE.md  AGENTS.md  README.md</code></pre></div>
     <tr><td>auth / <code>auth_status</code></td><td><code>GET /api/v1/me</code>, <code>GET /api/v1/bots?noFilter=true&amp;limit=1000</code></td></tr>
     <tr><td>CSRF</td><td><code>GET /api/v1/csrfToken</code> → <code>{token}</code> ส่งใน <code>X-XSRF-TOKEN</code></td></tr>
     <tr><td><code>list_chats</code></td><td><code>GET /api/v2/bots/{botId}/chats?folderType=ALL&amp;limit=25&amp;next=</code></td></tr>
-    <tr><td><code>read_chat</code></td><td><code>GET /api/v3/bots/{botId}/chats/{chatId}/messages?backward=&lt;cursor&gt;</code> <span class="pill warn">pagination ต้องยืนยัน</span></td></tr>
+    <tr><td><code>read_chat</code></td><td><code>GET /api/v3/bots/{botId}/chats/{chatId}/messages?backward=&lt;cursor&gt;</code> <span class="pill warn">pagination ต้องยืนยัน</span> 3 repo ใช้ <code>backward</code> ส่วน LINELib ใช้ <code>before</code>/<code>after</code></td></tr>
     <tr><td><code>search_messages</code></td><td><span class="pill crit">ไม่รู้จัก endpoint</span> ใช้ index ในเครื่อง · ค้นรายชื่อลูกค้า: <code>GET /api/v2/bots/{botId}/contacts?query=</code></td></tr>
     <tr><td><code>send_message</code></td><td><code>POST /api/v1/bots/{botId}/chats/{chatId}/messages/send</code> <code>{type:"text", text, sendId}</code></td></tr>
     <tr><td>ส่งไฟล์</td><td><code>POST /api/v1/bots/{botId}/messages/{chatId}/uploadFile</code> → <code>contentMessageToken</code> → <code>POST .../messages/bulkSendFiles</code></td></tr>
     <tr><td><code>get_user_profile</code></td><td><code>GET /api/v1/bots/{botId}/chats/{chatId}</code> + <code>/notes</code> + <code>/tags</code></td></tr>
     <tr><td><code>get_attachment</code></td><td><code>GET https://chat-content.line.biz/bot/{botId}/{contentHash}</code> (<code>/preview</code> = รูปย่อ) ใช้ cookie ไม่ใช่ URL ที่เซ็นไว้</td></tr>
+    <tr><td>mark read (<code>read_chat</code> ไม่เรียก)</td><td><code>PUT /api/v2/bots/{botId}/chats/{chatId}/markAsRead</code> มีหลักฐานแค่ PUT</td></tr>
+    <tr><td>ลิงก์หน้าแชท (<code>webUrl</code>)</td><td><code>https://chat.line.biz/{botId}/chat/{chatId}</code> <span class="pill ok">เห็นในหน้าเว็บจริงแล้ว</span> chatId หน้าตาเหมือน userId (<code>U…</code>)</td></tr>
     <tr><td>realtime (ทำทีหลัง)</td><td><code>POST /api/v1/bots/{botId}/streamingApiToken</code> → SSE <code>chat-streaming-api.line.biz/api/v2/sse</code></td></tr>
   </tbody>
 </table>
 </div></div>
+
+<p class="note">HAR ต้องเก็บเพิ่ม: คำค้นในช่อง Search · Tags · Standard replies · Contact list · Follow up / Resolve (ดูแค่รูปแบบ request ห้ามกดบน OA จริง) · <code>bulkSendFiles</code> ส่ง PDF ได้ไหม (ทดสอบบน OA ทดสอบ)</p>
+
+<!-- ================================================================== -->
+<h2 id="pii">6b. กฎข้อมูลส่วนบุคคล (PDPA) <span class="pill acc">v3</span></h2>
+<div class="two">
+  <div>
+    <div class="colhead">ข้อมูลไปถึง AI แค่ไหน</div>
+    <div class="flow">
+      <div class="step">ข้อความ / โปรไฟล์จาก LINE</div><div class="arrow">↓</div>
+      <div class="step new">server ปิดบังอีเมลและเบอร์โทร (s***@gmail.com)</div><div class="arrow">↓</div>
+      <div class="step new">AI เห็น personRef + ค่าที่ปิดบังแล้ว</div><div class="arrow">↓</div>
+      <div class="step">CS ขอดูจริง → <code>reveal: true</code> → บันทึก audit log</div>
+    </div>
+  </div>
+  <div class="card"><div class="card-b" style="font-size:13.5px">
+    <ul>
+      <li>จับคู่อีเมลเพื่อ link ทำใน server อีเมลจริงไม่ไปถึง LLM</li>
+      <li>รูปไม่ไปถึง model จนกว่าจะเรียก <code>get_attachment</code> เพราะภาพหน้าจออาจมีข้อมูลของคนอื่น</li>
+      <li>ยอดเงินจาก OA หลักซ่อนไว้เป็นค่าเริ่มต้น</li>
+      <li>เก็บข้อมูลตามค่าใน config (ค่าเริ่มต้น 180 วัน เท่ากับประวัติแชทของแพ็กเกจฟรี) และลบข้อมูลของคนหนึ่งได้ทั้งระบบด้วย <code>npm run forget -- &lt;personRef&gt;</code></li>
+      <li>README เขียนฐานทางกฎหมาย (สัญญา / ประโยชน์โดยชอบธรรม) และบอกว่าผู้ให้บริการ LLM เป็นผู้ประมวลผลที่ต้องมี DPA</li>
+    </ul>
+  </div></div>
+</div>
 
 <!-- ================================================================== -->
 <h2 id="attach">7. ไฟล์แนบ (Attachments)</h2>
@@ -639,62 +793,68 @@ CLAUDE.md  AGENTS.md  README.md</code></pre></div>
 <p class="note">ภาษาไทยไม่มีช่องว่างระหว่างคำ ตัวอย่างเช่นคำค้น "คืนเงิน" ในประโยค "อยากขอคืนเงินค่ะ" ถ้าใช้ tokenizer <code>unicode61</code> จะหาไม่เจอ เพราะทั้งประโยคถูกนับเป็น token เดียว ส่วน <code>trigram</code> หาเจอ</p>
 
 <!-- ================================================================== -->
-<h2 id="phases">8. Phase, เวลา และ commit</h2>
-<p class="lede">commit ทุกครั้งที่ทำขั้นที่มีความหมายเสร็จ commit ละเรื่อง ห้าม squash เวลาในกราฟเป็นค่าประมาณตามแผน ยังไม่ใช่เวลาที่วัดจริง</p>
+<h2 id="phases">8. ลำดับงานและ commit</h2>
+<p class="lede">commit ทุกครั้งที่ทำขั้นที่มีความหมายเสร็จ commit ละเรื่อง ห้าม squash · <b>ไม่ผูกกับเวลา</b> เวลาที่ตายตัวมีแค่กำหนดส่ง ศ. 6 พ.ย. 2026 23:59 · prompt ของแต่ละ lane อยู่ใน <code>docs/plan/2026-11-06-tonight.md</code></p>
 
 <figure class="d"><div class="scroll">
-<svg viewBox="0 0 900 325" role="img" aria-label="Timeline ของแต่ละ phase">
-  <!-- vertical markers -->
-  <line class="vl warn" x1="765" y1="40" x2="765" y2="285"/>
-  <text class="t2 warn" x="761" y="34" text-anchor="end">18:00 ตัดสินใจเรื่องโบนัส</text>
-  <line class="vl crit" x1="876" y1="40" x2="876" y2="285"/>
-  <text class="t2 crit" x="880" y="34" text-anchor="end">23:59 ส่ง</text>
+<svg viewBox="0 0 900 300" role="img" aria-label="ลำดับขั้นของแต่ละ lane">
+  <text class="t2" x="190" y="20" text-anchor="middle">ขั้น 0</text>
+  <text class="t2" x="315" y="20" text-anchor="middle">ขั้น 1</text>
+  <text class="t2" x="450" y="20" text-anchor="middle">ขั้น 2</text>
+  <text class="t2" x="600" y="20" text-anchor="middle">ขั้น 3</text>
+  <text class="t2" x="740" y="20" text-anchor="middle">ขั้น 4</text>
+  <text class="t2 crit" x="848" y="20" text-anchor="middle">✓</text>
+  <line class="sep" x1="10" y1="96" x2="800" y2="96"/><line class="sep" x1="10" y1="160" x2="800" y2="160"/><line class="sep" x1="10" y1="224" x2="800" y2="224"/>
+  <text class="b" x="14" y="58">plan</text><text class="t2" x="14" y="76">session นี้</text>
+  <text class="b" x="14" y="124">dev</text><text class="t2" x="14" y="142">agent คู่ขนาน</text>
+  <text class="b" x="14" y="188">research</text><text class="t2" x="14" y="206">แปลง HAR</text>
+  <text class="b" x="14" y="252">คุณ</text><text class="t2" x="14" y="270">มือคน</text>
 
-  <!-- rows: x(h)=210+h*18.5, h from Thu 12:00 -->
-  <text class="t2" x="200" y="64" text-anchor="end">0 แผน + ค้นข้อมูล</text>
-  <rect class="bx acc" x="247" y="50" width="74" height="20" rx="5"/>
-  <text class="t2" x="200" y="94" text-anchor="end">1 Setup + plan kit</text>
-  <rect class="bx" x="321" y="80" width="55.5" height="20" rx="5"/>
-  <text class="t2" x="200" y="124" text-anchor="end">2 MVP บน mock</text>
-  <rect class="bx ok" x="376.5" y="110" width="222" height="20" rx="5"/>
-  <text class="t2" x="200" y="154" text-anchor="end">3 คุย user flow</text>
-  <rect class="bx acc" x="598.5" y="140" width="18.5" height="20" rx="5"/>
-  <text class="t2" x="200" y="184" text-anchor="end">4 WebClient (ของจริง)</text>
-  <rect class="bx warn" x="617" y="170" width="74" height="20" rx="5"/>
-  <text class="t2" x="200" y="214" text-anchor="end">5 ไฟล์แนบ + README</text>
-  <rect class="bx ok" x="691" y="200" width="74" height="20" rx="5"/>
-  <text class="t2" x="200" y="244" text-anchor="end">6 วิดีโอโบนัส (ถ้ามีเวลา)</text>
-  <rect class="bx dash" x="765" y="230" width="74" height="20" rx="5"/>
-  <text class="t2" x="200" y="274" text-anchor="end">เผื่อเวลา + ส่งงาน</text>
-  <rect class="bx mute" x="839" y="260" width="37" height="20" rx="5"/>
+  <rect class="bx acc" x="120" y="36" width="140" height="50" rx="7"/><text class="b" x="130" y="56">PLAN v3 ✓</text><text class="t2" x="130" y="74">merge · ปลด pause dev</text>
+  <rect class="bx mute dash" x="265" y="42" width="530" height="38" rx="7"/><text class="t2" x="280" y="66">ตอบคำถาม · review งาน dev · อัปเดต STATUS</text>
 
-  <!-- axis -->
-  <line class="axis" x1="210" y1="290" x2="876" y2="290"/>
-  <line class="axis" x1="210" y1="286" x2="210" y2="294"/><text class="t2" x="210" y="310" text-anchor="middle">พฤ. 12:00</text>
-  <line class="axis" x1="321" y1="286" x2="321" y2="294"/><text class="t2" x="321" y="310" text-anchor="middle">พฤ. 18:00</text>
-  <line class="axis" x1="432" y1="286" x2="432" y2="294"/><text class="t2" x="432" y="310" text-anchor="middle">ศ. 00:00</text>
-  <line class="axis" x1="543" y1="286" x2="543" y2="294"/><text class="t2" x="543" y="310" text-anchor="middle">ศ. 06:00</text>
-  <line class="axis" x1="654" y1="286" x2="654" y2="294"/><text class="t2" x="654" y="310" text-anchor="middle">ศ. 12:00</text>
-  <line class="axis" x1="765" y1="286" x2="765" y2="294"/><text class="t2" x="765" y="310" text-anchor="middle">ศ. 18:00</text>
-  <line class="axis" x1="876" y1="286" x2="876" y2="294"/>
+  <rect class="bx mute dash" x="120" y="106" width="140" height="44" rx="7"/><text class="t2" x="130" y="133">รอ PLAN v3</text>
+  <rect class="bx ok" x="265" y="104" width="100" height="48" rx="7"/><text class="b" x="273" y="124">scaffold</text><text class="t2" x="273" y="142">TS · vitest · CI</text>
+  <rect class="bx ok" x="370" y="104" width="160" height="48" rx="7"/><text class="b" x="378" y="124">mock ‖ auth</text><text class="t2" x="378" y="142">mock จาก fixtures · login</text>
+  <rect class="bx ok" x="535" y="104" width="130" height="48" rx="7"/><text class="b" x="543" y="124">tool 6 ตัว</text><text class="t2" x="543" y="142">+ webUrl · ปิดการส่ง</text>
+  <rect class="bx ok" x="670" y="104" width="125" height="48" rx="7"/><text class="b" x="678" y="124">e2e test</text><text class="t2" x="678" y="142">+ แก้ตาม HAR</text>
+
+  <rect class="bx mute dash" x="120" y="170" width="140" height="44" rx="7"/><text class="t2" x="130" y="197">รอไฟล์ HAR</text>
+  <rect class="bx warn" x="265" y="168" width="400" height="48" rx="7"/><text class="b" x="273" y="188">HAR → แผนที่ endpoint (ลบข้อมูลจริง) + เทียบ fixtures</text><text class="t2" x="273" y="206">cursor · markAsRead · search · flex · tags/notes · ส่ง PDF</text>
+
+  <rect class="bx" x="120" y="232" width="245" height="50" rx="7"/><text class="b" x="130" y="252">สร้าง OA ทดสอบ + เก็บ HAR</text><text class="t2" x="130" y="270">OA จริง: อ่านอย่างเดียว · OA ทดสอบ: ลองส่ง</text>
+  <rect class="bx mute dash" x="370" y="238" width="425" height="38" rx="7"/><text class="t2" x="380" y="262">ว่าง · ตอบคำถามถ้ามี</text>
+
+  <rect class="bx crit" x="802" y="36" width="92" height="246" rx="7"/>
+  <text class="b" x="848" y="58" text-anchor="middle">Checkpoint</text>
+  <text class="t2" x="848" y="82" text-anchor="middle">merge → dev</text><text class="t2" x="848" y="100" text-anchor="middle">CI ผ่าน</text>
+  <text class="t2" x="848" y="118" text-anchor="middle">เดโมบน mock</text><text class="t2" x="848" y="136" text-anchor="middle">ทุก lane</text><text class="t2" x="848" y="152" text-anchor="middle">อัปเดต</text><text class="t2" x="848" y="168" text-anchor="middle">STATUS</text>
+
+  <path class="ln" d="M260 86 C275 94 280 96 290 103"/>
+  <path class="ln" d="M300 232 C300 225 300 222 300 219"/>
+  <path class="ln" d="M650 168 C665 160 690 158 705 153"/>
 </svg></div>
-<figcaption>Diagram 4: timeline โดยประมาณ (Phase 2 รวมเวลานอนแล้ว) ถ้าเวลาไม่พอ ตัดตามลำดับ: วิดีโอโบนัส → Streamable HTTP → ดึงข้อความจาก PDF → WebClient เส้นทางบน mock ต้องผ่านตลอด</figcaption>
+<figcaption>Diagram 4: ลำดับขั้นของแต่ละ lane ทำขนานกัน ลูกศร = ต้องรออีก lane ก่อน (dev รอ PLAN v3 · research รอ HAR · dev แก้ตามผลของ research)</figcaption>
 </figure>
 
-<div class="card"><div class="card-b scroll">
-<table>
-  <thead><tr><th>Phase</th><th>งาน</th><th>Commit (ที่วางไว้)</th></tr></thead>
-  <tbody>
-    <tr><td>0 แผน + ค้นข้อมูล</td><td>แผนนี้และบันทึกงานวิจัย <span class="pill ok">commit แล้ว</span></td><td><code>docs: add plan</code> · <code>docs: add research reading list</code></td></tr>
-    <tr><td>1 Setup</td><td>ติดตั้ง plan kit (<code>~/claude-skill/install.sh</code>) · กรอก <code>.claude/plan-kit-profile.md</code> · CLAUDE.md + AGENTS.md · ตั้งโปรเจกต์ TS + Biome + vitest</td><td><code>chore: install plan kit</code> · <code>chore: scaffold ts project</code></td></tr>
-    <tr><td>2 MVP บน mock</td><td>domain + <code>LineOAClient</code> → mock server ‖ tool + MockClient ‖ auth → e2e test</td><td><code>feat(domain)</code> · <code>feat(mock)</code> · <code>feat(tools)</code> · <code>feat(auth)</code> · <code>test(e2e)</code></td></tr>
-    <tr><td>3 คุย user flow</td><td>ไล่ F1–F6 แล้วปรับสัญญาของ tool</td><td><code>docs: user flows</code></td></tr>
-    <tr><td>4 WebClient</td><td>Playwright login · HAR → ตาราง endpoint → <code>WebClient</code> → contract test</td><td><code>feat(web-client)</code> · <code>docs: endpoint map</code></td></tr>
-    <tr><td>5 ไฟล์แนบ + README</td><td>ส่วนรูปภาพ · outbox allowlist · README ครบหัวข้อที่โจทย์ขอ</td><td><code>feat(attachments)</code> · <code>docs: readme</code></td></tr>
-    <tr><td>6 วิดีโอโบนัส</td><td>teaser 15 วินาที "น่ารัก" ทำใน repo สาธารณะแยกต่างหาก (เช่น Remotion)</td><td>อยู่ใน repo นั้น</td></tr>
-  </tbody>
-</table>
-</div></div>
+<figure class="d"><div class="scroll">
+<svg viewBox="0 0 900 96" role="img" aria-label="ขั้นหลัง checkpoint">
+  <rect class="bx ok" x="10" y="20" width="118" height="52" rx="7"/><text class="b" x="20" y="42">5 WebClient</text><text class="t2" x="20" y="60">ของจริง · OA ทดสอบ</text>
+  <line class="ln" x1="128" y1="46" x2="140" y2="46"/>
+  <rect class="bx acc" x="142" y="20" width="100" height="52" rx="7"/><text class="b" x="152" y="42">6 ชั้นเคส</text><text class="t2" x="152" y="60">หัวข้อ 5b</text>
+  <line class="ln" x1="242" y1="46" x2="254" y2="46"/>
+  <rect class="bx ok" x="256" y="20" width="118" height="52" rx="7"/><text class="b" x="266" y="42">7 README</text><text class="t2" x="266" y="60">+ GIF เดโม</text>
+  <line class="ln" x1="374" y1="46" x2="386" y2="46"/>
+  <rect class="bx dash" x="388" y="20" width="108" height="52" rx="7"/><text class="b" x="398" y="42">8 Telegram</text><text class="t2" x="398" y="60">ถ้ามีเวลา</text>
+  <line class="ln" x1="496" y1="46" x2="508" y2="46"/>
+  <rect class="bx warn" x="510" y="20" width="108" height="52" rx="7"/><text class="b" x="520" y="42">9 v0.1.0</text><text class="t2" x="520" y="60">dev → main + tag</text>
+  <line class="ln" x1="618" y1="46" x2="630" y2="46"/>
+  <rect class="bx dash" x="632" y="20" width="118" height="52" rx="7"/><text class="b" x="642" y="42">10 วิดีโอโบนัส</text><text class="t2" x="642" y="60">repo แยก · ถ้ามีเวลา</text>
+  <line class="ln" x1="750" y1="46" x2="762" y2="46"/>
+  <rect class="bx crit" x="764" y="20" width="126" height="52" rx="7"/><text class="b" x="774" y="42">push + ตอบอีเมล</text><text class="t2" x="774" y="60">ก่อน 23:59</text>
+</svg></div>
+<figcaption>Diagram 4b: หลัง checkpoint ถ้าเวลาไม่พอ ตัดตามลำดับ: วิดีโอโบนัส → Telegram → บริบทจาก OA หลัก → ชั้นเคส → WebClient · เส้นทางบน mock ต้องผ่านตลอด สิ่งที่ตัดเขียนเหตุผลไว้ใน README</figcaption>
+</figure>
 
 <!-- ================================================================== -->
 <h2 id="agents">9. แบ่งงานให้ agent อย่างไร</h2>
@@ -770,18 +930,23 @@ CLAUDE.md  AGENTS.md  README.md</code></pre></div>
 </div></div>
 
 <!-- ================================================================== -->
-<h2 id="flows">10. User flow ที่ต้องคุยให้ตรงกัน (Phase 3)</h2>
-<p class="lede">Acme เป็นผลิตภัณฑ์ด้านการชำระเงิน เคส CS หลักน่าจะเป็นเรื่องสลิป การคืนเงิน และสถานะคำสั่งซื้อ</p>
+<h2 id="flows">10. User flow (v3, Acme Support)</h2>
+<p class="lede">ตัดสินใจครบแล้ว คอลัมน์ขวาคือกฎที่ใช้</p>
 <div class="card"><div class="card-b scroll">
 <table>
-  <thead><tr><th>id</th><th>Flow</th><th>Tool</th><th>ต้องตัดสินใจ</th></tr></thead>
+  <thead><tr><th>id</th><th>Flow</th><th>Tool</th><th>กฎ</th></tr></thead>
   <tbody>
-    <tr><td>F1</td><td>คัดแชทตอนเช้า: "สรุปแชทที่ยังไม่อ่าน"</td><td><code>list_chats(unread)</code> → <code>read_chat</code> ×N</td><td><code>read_chat</code> ไม่ mark read (A7) ควรให้ agent mark read หลังจัดการแชทเสร็จไหม</td></tr>
-    <tr><td>F2</td><td>ตอบลูกค้า</td><td><code>read_chat</code> → <code>get_user_profile</code> → ร่าง → <code>send_message</code></td><td>ยืนยันก่อนส่งทุกครั้ง (<code>dryRun</code>) หรือให้ส่งเองเลย</td></tr>
-    <tr><td>F3</td><td>ลูกค้าส่งรูปสลิปโอนเงิน</td><td><code>read_chat</code> → <code>get_attachment(inline)</code> → ตรวจยอด / เลขอ้างอิง → ตอบ</td><td>ให้ agent ดูรูปเลยเป็นค่าเริ่มต้น หรือดูเฉพาะเมื่อขอ</td></tr>
-    <tr><td>F4</td><td>"หาทุกคนที่ถามเรื่อง order #1234 / คืนเงิน"</td><td><code>search_messages</code> → <code>read_chat</code></td><td>ค้นแค่ OA เดียว หรือทุก OA</td></tr>
-    <tr><td>F5</td><td>Session หมดอายุระหว่างทำงาน</td><td>tool ใดก็ได้ → <code>AUTH_EXPIRED</code> → <code>npm run login</code></td><td>UX แบบนี้รับได้ไหม</td></tr>
-    <tr><td>F6</td><td>ส่งใบเสร็จ PDF</td><td>วางไฟล์ใน outbox → <code>send_message(attachmentPaths)</code></td><td>โฟลเดอร์ outbox อยู่ที่ไหน</td></tr>
+    <tr><td>F1</td><td>คัดแชทตอนเช้า: "มีแชทไหนรอตอบ"</td><td><code>list_chats(ongoing)</code> → <code>read_chat</code> ×N</td><td>ไม่ mark read (A7) · คำตอบมี <code>webUrl</code> ทุกแชท</td></tr>
+    <tr><td>F2</td><td>ตอบคนแจ้งปัญหา</td><td><code>read_chat</code> → <code>get_user_profile</code> → ร่าง → <code>send_message</code></td><td>AI ร่าง คนกดอนุญาตในกล่องถามของแอป · มี <code>dryRun</code></td></tr>
+    <tr><td>F3</td><td>ลูกค้าส่งภาพหน้าจอบั๊ก</td><td><code>read_chat</code> → <code>get_attachment(inline)</code></td><td>รูปไปถึง model เมื่อขอเท่านั้น (6b)</td></tr>
+    <tr><td>F4</td><td>"มีคนอื่นแจ้งบั๊กสกุลเงินไหม"</td><td><code>search_messages</code> → <code>read_chat</code></td><td>ค้นบางส่วนของคำภาษาไทยได้ · ผลมีข้อความรอบ ๆ และ <code>webUrl</code></td></tr>
+    <tr><td>F5</td><td>Session หมดอายุระหว่างทำงาน</td><td>tool ใดก็ได้ → <code>AUTH_EXPIRED</code> → <code>npm run login</code></td><td>ไม่ login ใหม่ให้เองเงียบ ๆ</td></tr>
+    <tr><td>F6</td><td>ส่ง PDF วิธีใช้</td><td>วางไฟล์ใน outbox → <code>send_message(attachmentPaths)</code></td><td>ส่งจาก outbox เท่านั้น · ต้องยืนยันใน HAR ว่าส่ง PDF ได้</td></tr>
+    <tr><td>F7</td><td>คัดเคส</td><td><code>list_cases(open)</code> → <code>tag_case</code> → <code>set_case_status(waiting)</code></td><td>แท็กจาก AI ยังไม่ยืนยันจนกว่า CS เห็นด้วย</td></tr>
+    <tr><td>F8</td><td>ปิดเคส</td><td>คนบอกว่า "เสร็จ" → <code>set_case_status(resolved, confirmedByStaff)</code></td><td>ถ้ามีข้อความหลังปิด เคสกลับเป็น <code>open</code> และติดธงเตือน</td></tr>
+    <tr><td>F9</td><td>สรุปรายสัปดาห์</td><td><code>case_stats(groupBy=area)</code> + <code>list_cases(since)</code></td><td>AI ฝั่ง client เขียนสรุปจาก <code>summary</code> ที่เก็บไว้</td></tr>
+    <tr><td>F10</td><td>คนแจ้งคือใคร</td><td><code>get_person</code> → ผู้ที่น่าจะเป็นคนเดียวกัน → CS ยืนยัน</td><td>อีเมลถูกปิดบัง · บริบท OA หลักหลัง link แล้วเท่านั้น (ถ้ามีเวลา)</td></tr>
+    <tr><td>F11</td><td>CS ขอคุยเอง</td><td>ผลจาก tool ไหนก็ได้ → เปิด <code>webUrl</code></td><td>คนคุยต่อใน chat.line.biz</td></tr>
   </tbody>
 </table>
 </div></div>
@@ -825,13 +990,15 @@ CLAUDE.md  AGENTS.md  README.md</code></pre></div>
 <table>
   <thead><tr><th>ความเสี่ยง / คำถาม</th><th>ระดับ</th><th>วิธีรับมือ</th></tr></thead>
   <tbody>
-    <tr><td>ไม่มีสิทธิ์เข้า LINE OA จริง → ยืนยัน endpoint ไม่ได้</td><td><span class="pill crit">สูง</span></td><td>mock เป็นเส้นทางที่ใช้ให้คะแนน · WebClient เป็น experimental · ถาม Acme ว่าขอ OA สำหรับทดสอบได้ไหม</td></tr>
+    <tr><td>endpoint จริงยังไม่ได้ยืนยัน</td><td><span class="pill warn">กลาง</span></td><td>เก็บ HAR จาก OA จริง (อ่านอย่างเดียว) และ OA ทดสอบ · mock ยังเป็นเส้นทางที่ใช้ให้คะแนน</td></tr>
+    <tr><td>ไปยุ่งกับแชทของคนจริงใน OA จริง</td><td><span class="pill crit">สูง</span></td><td>กฎ A11 · <code>LINEOA_ALLOW_SEND=false</code> · allowlist ของ bot · HAR เก็บนอก repo</td></tr>
+    <tr><td>ขอบเขตบานจากชั้นเคสและของแถม</td><td><span class="pill warn">กลาง</span></td><td>แบ่ง ต้องมี / ควรมี / ถ้ามีเวลา (หัวข้อ 1) · ลำดับการตัดงาน (หัวข้อ 8) · งานหลักส่งก่อน</td></tr>
     <tr><td>Internal API เปลี่ยน หรือไม่มีเอกสาร</td><td><span class="pill warn">กลาง</span></td><td>endpoint อยู่ใน module เดียว + contract test</td></tr>
     <tr><td>ToS / ความปลอดภัยของบัญชี</td><td><span class="pill warn">กลาง</span></td><td>คน login เอง · rate limit ต่ำ · ไม่ login ใหม่ให้เอง · จำกัด OA · audit log · เขียนบอกตรง ๆ ใน README</td></tr>
     <tr><td>index สดเท่ากับการ sync ครั้งล่าสุดเท่านั้น</td><td><span class="pill warn">กลาง</span></td><td>sync แชทที่เพิ่งเปลี่ยนก่อนค้น · ส่ง <code>indexedAt</code> กลับไปด้วย</td></tr>
     <tr><td>คุณภาพการค้นภาษาไทย</td><td><span class="pill mute">ต่ำ</span></td><td>FTS5 trigram · คำค้นสั้นกว่า 3 ตัวอักษรใช้ <code>LIKE</code></td></tr>
     <tr><td>Prompt injection จากลูกค้า</td><td><span class="pill warn">กลาง</span></td><td>ป้ายบอกว่าเนื้อหาไม่น่าเชื่อถือ · outbox allowlist · <code>dryRun</code> · ปิดการส่งเป็นค่าเริ่มต้น</td></tr>
-    <tr><td>กำหนดส่ง (เหลือประมาณวันครึ่ง)</td><td><span class="pill crit">สูง</span></td><td>มีลำดับการตัดงาน (หัวข้อ 8) · เส้นทางบน mock พร้อมส่งได้ตลอด</td></tr>
+    <tr><td>กำหนดส่ง (ศ. 23:59)</td><td><span class="pill crit">สูง</span></td><td>มีลำดับการตัดงาน (หัวข้อ 8) · เส้นทางบน mock พร้อมส่งได้ตลอด</td></tr>
   </tbody>
 </table>
 </div></div>

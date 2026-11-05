@@ -84,3 +84,14 @@
 - Commits: `0794786 docs(plan): v3 — Acme Support scope, webUrl, case layer, PII rules, new schedule`, this
   commit, and the merge commits on `dev` and `research`.
 - For other lanes: dev, start now (see Requests). Research waits for the HAR.
+
+## 2026-11-06 01:30 ICT · PLAN v3 in full Thai HTML; stages instead of clock times
+- What: `docs/PLAN.html` is now a full Thai v3, with new diagrams: what the CS person sees (Diagram 0), the case
+  model (2b), a stage swimlane (4) and the post-checkpoint chain (4b). New sections cover the v3 scope, 5b and 6b,
+  plus A8–A12, F1–F11 and the risks. `docs/PLAN_thai.md` was re-translated from v3 by a Sonnet agent, and its §8 was
+  aligned to the same stages 0–10. PLAN.md §8, the run plan (md + html) and STATUS no longer use clock times, at
+  the user's request; the only fixed time is the 23:59 deadline. Also fixed leftover v2 rows in PLAN.md §8 and §10:
+  a `---` search had matched a table separator.
+- Why: the user wants the plan readable as HTML, and does not want a 03:00 target in the timeline.
+- Commits: this commit plus the merges into `dev` and `research`.
+- For other lanes: PLAN.md §8 now uses stage numbers (0–10). Dev's work is unchanged.
