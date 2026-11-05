@@ -12,6 +12,8 @@ project at a time.
 | `takeaways.html` | Orchestrator's summary of what we will reuse (embedded at the top of the page) |
 | `tools/AGENT_BRIEF.md` | Shared brief for every research agent: safety rules, JSON schema, scoring rubric |
 | `tools/build.py` | Turns the JSON into `index.html` and draws every diagram/chart |
+| `line-api-shapes/` | Fake chat.line.biz API fixtures for the mock server, with field sources (round 3) |
+| `tools/gen_line_api_shapes.py` | Generates `line-api-shapes/*.json` |
 | `_vendor/` | Third-party repos cloned for trials. Gitignored, never committed |
 
 Rebuild after changing any JSON:
@@ -24,6 +26,9 @@ How it was made: the plan session (Opus) split the work into 5 groups and launch
 per group, in parallel. Every agent installed with `--ignore-scripts`, used only fake credentials, and sent nothing to
 any real chat service. Scores 1-5 per criterion come from the agents, each with a reason. Popularity is computed from
 GitHub stars. The total is a weighted 0-100.
+
+Round 4 (2026-11-05) added 6 more (Intercom MCP, Zendesk, Freshchat, Trengo, ChatCone, OHO Chat) with 2 more Sonnet
+agents under the same brief, for 23 projects in total. Round 3's API fixtures for the mock are in `line-api-shapes/`.
 
 Note: the MVP's own tests will live elsewhere (e.g. `tests/` or `src/**/*.test.ts`), so this folder stays separate
 from the test runner.
