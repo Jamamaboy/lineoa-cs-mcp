@@ -1,7 +1,10 @@
 # dev status
-Last updated: 2026-11-06 03:20 ICT · branch feat/read-core
+Last updated: 2026-11-06 03:35 ICT · branch feat/try-it
 
 ## Now
+- **Try it in one command** (`feat/try-it`): `npm run try` (no AI client needed); `.mcp.json` registers
+  `lineoa-cs-mock` for Claude Code in this folder; `LINEOA_MOCK=1` starts the mock inside the server; the mock now
+  serves a small web console (`/` and the `webUrl` page `/{botId}/chat/{chatId}`).
 - **MVP core works on the mock** (`feat/read-core`): MCP server over stdio with `auth_status`, `list_chats`,
   `read_chat`. One HTTP client (`LineOAClient`) for mock and real. Typed errors (AUTH_EXPIRED incl. login
   redirects, FORBIDDEN, NOT_FOUND, RATE_LIMITED, ENDPOINT_CHANGED). `webUrl` on every chat. 10 tests; stdio smoke

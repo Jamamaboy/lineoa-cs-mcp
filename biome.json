@@ -1,7 +1,22 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
-  "files": { "includes": ["src/**", "mock-server/**", "tests/**", "*.json", "*.ts"] },
-  "formatter": { "indentStyle": "space", "indentWidth": 2, "lineWidth": 110 },
-  "linter": { "rules": { "recommended": true } },
-  "javascript": { "formatter": { "quoteStyle": "double", "semicolons": "always" } }
+  "files": {
+    "includes": ["src/**", "mock-server/**", "tests/**", "*.json", "*.ts", "scripts/**"]
+  },
+  "formatter": {
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 110
+  },
+  "linter": {
+    "rules": {
+      "recommended": true
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "double",
+      "semicolons": "always"
+    }
+  }
 }
