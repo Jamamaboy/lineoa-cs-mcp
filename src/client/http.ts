@@ -82,3 +82,29 @@ export async function getBytes(
   const contentType = res.headers.get("content-type") ?? undefined;
   return { bytes, ...(contentType ? { contentType } : {}) };
 }
+
+/** POST JSON with the CSRF header. Returns the HTTP status so the caller can refresh the token on 403. */
+export async function postJson(
+  deps: HttpDeps,
+  path: string,
+  body: unknown,
+  csrfToken: string,
+): Promise<{ status: number }> {
+  const cookie = deps.cookie();
+  if (!cookie) throw authExpired();
+  const res = await (deps.fetch ?? fetch)(new URL(deps.baseUrl + path), {
+    method: "POST",
+    headers: {
+      Accept: "application/json, text/plain, */*",
+      "Content-Type": "application/json",
+      Cookie: cookie,
+      "X-XSRF-TOKEN": csrfToken,
+      "x-oa-chat-client-version": CLIENT_VERSION,
+    },
+    body: JSON.stringify(body),
+    redirect: "manual",
+  });
+  if ((res.status >= 300 && res.status < 400) || res.status === 401) throw authExpired();
+  await res.body?.cancel();
+  return { status: res.status };
+}
