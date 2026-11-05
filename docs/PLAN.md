@@ -107,7 +107,7 @@ src/
   audit/               audit-log.ts
 mock-server/           app.ts  seed/ (Thai + English chats, images, PDF)  public/ (mini console)
 test/                  e2e/ (InMemoryTransport)  contract/ (runs on any LineOAClient)  unit/
-docs/                  ASSIGNMENT.md  PLAN.md  DESIGN.md  research/  plans/ (plan-kit HTML pages)
+docs/                  ASSIGNMENT.md  PLAN*.md/html (shared spec)  plan/  dev/ (+ dev/plans)  research/  ← one folder per lane
 .claude/               plan-kit skills, agents, rules, profile, agent-strategy/
 CLAUDE.md  AGENTS.md  README.md
 ```
@@ -263,7 +263,7 @@ README documents what's missing and the auth design. The mock path must always s
 - **Orchestrator** (main session, Opus): owns this plan, writes the **domain types + `LineOAClient` interface**
   itself, because every slice depends on them. It also integrates, makes small fixes and does the final acceptance
   walkthrough.
-- `/write-plan` → one HTML plan page per phase in `docs/plans/`, each checked by `plan-reviewer` and
+- `/write-plan` → one HTML plan page per phase in `docs/dev/plans/`, each checked by `plan-reviewer` and
   `plan-risk-auditor`. Because of the deadline, **one review round only**.
 - `/implement-plan` batches `coder` agents (Sonnet) **with no file overlap**:
   - Wave 1 (after the contract exists): `mock-server/**` ‖ `src/tools/** + src/client/mock/**` ‖ `src/auth/**`
@@ -272,7 +272,7 @@ README documents what's missing and the auth design. The mock path must always s
   `src/attachments/**`, `src/client/web/**` and `src/audit/**`. `uxui-reviewer` is off (the mock console is
   not graded UI).
 - Every run is logged in `.claude/agent-strategy/runs.md`. That log shows how we worked with coding agents.
-- Profile values to fill in: plan dir `docs/plans`, base branch `main`, verify = `npm run lint && npm run typecheck && npm test`,
+- Profile values to fill in: plan dir `docs/dev/plans`, base branch `main`, verify = `npm run lint && npm run typecheck && npm test`,
   high-risk = `src/auth/**`, `src/attachments/outbox.ts`, `src/tools/send-message.ts`; hard rules: never commit
   sessions or cookies, never log message bodies at info level.
 

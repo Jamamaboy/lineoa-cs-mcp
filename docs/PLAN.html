@@ -437,7 +437,7 @@ figure.d figcaption{font-size:12.5px;color:var(--ink-3);margin-top:8px;padding:0
   audit/               audit-log.ts
 mock-server/           app.ts  seed/ (แชทไทย + อังกฤษ, รูป, PDF)  public/ (console เล็ก ๆ)
 test/                  e2e/ (InMemoryTransport)  contract/ (รันกับ LineOAClient ตัวไหนก็ได้)  unit/
-docs/                  ASSIGNMENT.md  PLAN.md  PLAN_thai.md  PLAN.html  DESIGN.md  research/  plans/
+docs/                  ASSIGNMENT.md  PLAN*.md/html (spec ร่วม)  plan/  dev/ (+ dev/plans)  research/  ← แยกโฟลเดอร์ตาม lane
 .claude/               skill, agent, rule, profile และ agent-strategy/ จาก plan kit
 CLAUDE.md  AGENTS.md  README.md</code></pre></div>
 
@@ -761,10 +761,10 @@ CLAUDE.md  AGENTS.md  README.md</code></pre></div>
 
 <div class="card"><div class="card-b">
 <ul>
-  <li><code>/write-plan</code> ทำแผน HTML หนึ่งหน้าต่อ phase ใน <code>docs/plans/</code> เพราะเวลาจำกัด <b>review แค่รอบเดียว</b></li>
+  <li><code>/write-plan</code> ทำแผน HTML หนึ่งหน้าต่อ phase ใน <code>docs/dev/plans/</code> เพราะเวลาจำกัด <b>review แค่รอบเดียว</b></li>
   <li><code>security-reviewer</code> ทำงานเมื่อแก้ <code>src/auth/**</code>, <code>src/attachments/**</code>, <code>src/client/web/**</code>, <code>src/audit/**</code> · ปิด <code>uxui-reviewer</code> (console ของ mock ไม่ถูกให้คะแนน)</li>
   <li>ทุกการรันบันทึกลง <code>.claude/agent-strategy/runs.md</code> เป็นหลักฐานว่าเราทำงานกับ coding agent อย่างไร</li>
-  <li>ค่าใน profile: plan dir <code>docs/plans</code> · base <code>main</code> · verify <code>npm run lint &amp;&amp; npm run typecheck &amp;&amp; npm test</code> · high-risk <code>src/auth/**</code>, <code>src/attachments/outbox.ts</code>, <code>src/tools/send-message.ts</code> · hard rule: ห้าม commit session หรือ cookie และห้าม log เนื้อหาข้อความที่ระดับ info</li>
+  <li>ค่าใน profile: plan dir <code>docs/dev/plans</code> · base <code>main</code> · verify <code>npm run lint &amp;&amp; npm run typecheck &amp;&amp; npm test</code> · high-risk <code>src/auth/**</code>, <code>src/attachments/outbox.ts</code>, <code>src/tools/send-message.ts</code> · hard rule: ห้าม commit session หรือ cookie และห้าม log เนื้อหาข้อความที่ระดับ info</li>
 </ul>
 </div></div>
 
