@@ -1,5 +1,5 @@
-import { readFileSync } from "node:fs";
 import { DEFAULT_SESSION_FILE, expandHome } from "./auth/session-file.js";
+import { envSource, fileSource, firstOf } from "./auth/session-source.js";
 import { LineOAError } from "./domain/errors.js";
 
 export interface Config {
@@ -25,19 +25,6 @@ export interface Config {
   syncLimits: { maxChats: number; maxMessagesPerChat: number };
 }
 
-/** Reads a Playwright storageState file and builds a Cookie header for the console host. */
-export function cookieFromSessionFile(path: string, host: string): string | undefined {
-  let raw: string;
-  try {
-    raw = readFileSync(expandHome(path), "utf8");
-  } catch {
-    return undefined;
-  }
-  const state = JSON.parse(raw) as { cookies?: { name: string; value: string; domain: string }[] };
-  const cookies = (state.cookies ?? []).filter((c) => host.endsWith(c.domain.replace(/^\./, "")));
-  return cookies.length ? cookies.map((c) => `${c.name}=${c.value}`).join("; ") : undefined;
-}
-
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
   // The real console by default; the mock is used only when asked for (LINEOA_MOCK=1 or a mock URL).
   const baseUrl = (env.LINEOA_BASE_URL ?? "https://chat.line.biz").replace(/\/$/, "");
@@ -47,12 +34,15 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
   } catch {
     throw new LineOAError("CONFIG_ERROR", `LINEOA_BASE_URL is not a URL: ${baseUrl}`);
   }
-  const sessionFile = env.LINEOA_SESSION_FILE ?? DEFAULT_SESSION_FILE;
+  const session = firstOf(
+    envSource(env.LINEOA_COOKIE),
+    fileSource(expandHome(env.LINEOA_SESSION_FILE ?? DEFAULT_SESSION_FILE)),
+  );
   return {
     baseUrl,
     webBaseUrl: (env.LINEOA_WEB_BASE_URL ?? baseUrl).replace(/\/$/, ""),
     // Read on every request, so a fresh `npm run login` works without restarting the server.
-    cookie: (h = host) => env.LINEOA_COOKIE || cookieFromSessionFile(sessionFile, h),
+    cookie: (h = host) => session.cookieFor(h),
     contentBaseUrl: (
       env.LINEOA_CONTENT_URL ??
       (host === "chat.line.biz" ? "https://chat-content.line.biz" : `${baseUrl}/content`)
