@@ -65,3 +65,11 @@
 - Why: Phase 4 needs real endpoint evidence; real data carries PDPA risk, so reading and writing are split across OAs.
 - Commits: this commit (status/log only).
 - For other lanes: research gets the HAR when the user captures it. Real IDs and HAR files never enter the repo.
+
+## 2026-11-06 00:55 ICT · Tonight's run plan (00:45 → 03:00)
+- What: added `docs/plan/2026-11-06-tonight.md` (timeline per lane, done-at-03:00 checklist, cut rule, Friday
+  schedule, prompts to start the dev and research sessions) and a Thai swimlane diagram `2026-11-06-tonight.html`.
+- Why: the user asked for one picture of what happens until 03:00 so every lane works in parallel toward a green
+  mock-based MVP, and the HAR capture runs at the same time.
+- Commits: this commit.
+- For other lanes: dev starts as soon as PLAN v3 is merged; research starts when the HAR lands in `~/lineoa-har/`.

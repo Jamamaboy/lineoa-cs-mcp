@@ -1,5 +1,5 @@
 # plan status
-Last updated: 2026-11-06 01:00 ICT · branch plan
+Last updated: 2026-11-06 00:55 ICT · branch plan
 
 ## Now
 - Re-scoping with the user around the **Acme Support** OA (bug-report OA) instead of a generic CS agent.
@@ -12,6 +12,8 @@ Last updated: 2026-11-06 01:00 ICT · branch plan
   chat-history CSV exists; chat history is kept 6 months on the free plan; PDPA calls for masking, a DPA and retention).
 
 ## Next
+- **Tonight's run (00:45 → 03:00) is in `docs/plan/2026-11-06-tonight.md`** (Thai diagram: `.html`). Plan lane's
+  next step: write PLAN v3, add DECISIONS rows, merge `plan` → `dev`, `research`, unpause dev.
 - Real-console access: the user has a live OA (an HR app OA, real employee chats). Proposed: use it **read-only**
   for HAR capture (no send, no Follow up/Resolve, don't open unread chats), and create a free test OA for send/upload.
   Waiting on the user's OK.
