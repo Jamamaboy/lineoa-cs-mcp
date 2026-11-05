@@ -126,3 +126,9 @@
 - Why: The user wants an install a non-technical person can do, a pretty terminal view, and more than one browser.
 - Commits: feat(auth): log in with Chrome, Edge…; fix(client): fetch chats 25 at a time; fix(mock): reject chat pages over 25…; feat(cli): add the lineoa terminal command…; feat(cli): lineoa setup adds the server…
 - For other lanes: none.
+
+## 2026-11-06 03:50 ICT · extension points, README and guides
+- What: SessionSource interface (env + file today; web login, extension or vault later) with no behaviour change; CONTRIBUTING.md (map, 6 safety rules, recipes for a tool, a backend, a login method, an HTTP transport); README in the reviewer's style (what it unblocks, setup, tools, how it works, auth, attachments, safety, limitations, what it could grow into, how it was built); Thai user guide docs/USAGE.th.md.
+- Why: The user wants the project easy to build on with a clear guideline, a README graders understand, and a Thai guide on how to use it.
+- Commits: refactor(auth): pluggable session sources; docs: add a guide for building on the server; docs: write the README; docs: add a Thai user guide
+- For other lanes: none.
