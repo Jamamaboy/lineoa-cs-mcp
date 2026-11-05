@@ -180,6 +180,8 @@ a{color:#0b6} .row{background:#fff;border-radius:10px;padding:10px 12px;margin:6
     const list = seed.chats.get(c.req.param("botId"));
     if (!list) return c.json({ code: "not_found" }, 404);
     const offset = decodeCursor(c.req.query("next"));
+    // The real console rejects chat pages over 25 with a 400; the mock does the same.
+    if (Number(c.req.query("limit") ?? 25) > 25) return c.json({ code: "bad_request" }, 400);
     const limit = clampLimit(c.req.query("limit"), 25);
     const page = list.slice(offset, offset + limit);
     const more = offset + limit < list.length;
