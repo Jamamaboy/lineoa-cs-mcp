@@ -115,8 +115,13 @@ export function toMessage(ev: RawEvent): Message | undefined {
 export function toChat(raw: RawChat, botId: string, webBase: string): Chat {
   const kind = raw.chatType === "GROUP" ? "group" : raw.chatType === "ROOM" ? "room" : "user";
   const last = raw.latestEvent;
-  const lastMsg = last?.message
-    ? { at: iso(last.timestamp) ?? "", from: senderOf(last), preview: previewOf(last.message) }
+  // A chat whose latest event is not a message (a follow, an unsend) still gets a readable preview.
+  const lastMsg = last
+    ? {
+        at: iso(last.timestamp) ?? "",
+        from: senderOf(last),
+        preview: last.message ? previewOf(last.message) : `[${last.type}]`,
+      }
     : undefined;
   return {
     chatId: raw.chatId,

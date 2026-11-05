@@ -96,3 +96,9 @@
 - Why: Required action 5 of the assignment (see a user's profile).
 - Commits: feat(mock): serve chat notes, tags and owners; feat(client): read a profile…; feat(tools): add get_user_profile
 - For other lanes: none.
+
+## 2026-11-06 03:37 ICT · needs_reply filter
+- What: list_chats gains filter needs_reply (ongoing + customer spoke last); non-message latest events get a preview such as [follow] instead of empty or [-].
+- Why: The user wants the MCP to find chats that went silent without an answer.
+- Commits: fix(domain): give non-message events a preview; feat(tools): list_chats filter needs_reply…
+- For other lanes: none.
