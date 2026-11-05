@@ -147,8 +147,8 @@ write("bots.json", envelope(
     {
         "userName": "ปุ้ย ฝ่ายบริการลูกค้า",
         "list": [
-            bot(BOT_ID, "@acme-demo", "Acme Demo Shop", 2),
-            bot(BOT2_ID, "@acme-test2", "Acme ร้านทดสอบ 2", 0, perm="OPERATOR"),
+            bot(BOT_ID, "@demo-shop", "Demo Shop", 2),
+            bot(BOT2_ID, "@test-shop2", "ร้านทดสอบ 2", 0, perm="OPERATOR"),
         ],
     },
     query={"noFilter": "true", "limit": 1000, "next": "(optional cursor)"},
@@ -185,7 +185,7 @@ older = []  # second (older, last) page
 older.append({"type": "follow", "timestamp": t, "source": src(S, S)})
 t += 2 * MIN
 older.append(ev_sent(t, S, S, {"id": mid(), "type": "text",
-                               "text": "ขอบคุณที่เพิ่มเพื่อน Acme Demo Shop ค่ะ 🙏 พิมพ์สอบถามได้เลยนะคะ",
+                               "text": "ขอบคุณที่เพิ่มเพื่อน Demo Shop ค่ะ 🙏 พิมพ์สอบถามได้เลยนะคะ",
                                "originalType": "flex", "quoteToken": "FAKE-quote-1"}, biz=None))
 t += 5 * MIN
 older.append(ev_msg(t, S, S, {"id": mid(), "type": "text", "text": "สวัสดีครับ สนใจสั่งเคสมือถือ 2 ชิ้นครับ",
@@ -252,7 +252,7 @@ newer.append(ev_sent(t, S, S, {"id": mid(), "type": "file",
 t += 1 * MIN
 last_sent_ts = t
 last_sent = ev_sent(t, S, S, {"id": mid(), "type": "text",
-                              "text": "ได้รับสลิปแล้วค่ะ ยอด 1,250 บาท ตรวจสอบเรียบร้อย ขอบคุณที่ใช้บริการ Acme นะคะ 🙏",
+                              "text": "ได้รับสลิปแล้วค่ะ ยอด 1,250 บาท ตรวจสอบเรียบร้อย ขอบคุณที่ใช้บริการนะคะ 🙏",
                               "quoteToken": "FAKE-quote-10", "quotedMessageId": slip_id},
                     send_id=send_id(S, t))
 newer.append(last_sent)
@@ -349,9 +349,9 @@ chats = [
          ev_msg(T0 + 3 * HOUR, U_NOK, U_NOK, {"id": "586900000000000301", "type": "text",
                                               "text": "ขอคืนเงินออเดอร์ #1250 ได้ไหมคะ ของมาไม่ครบค่ะ"}),
          read=False, tags=[TAG_REFUND], last_recv=T0 + 3 * HOUR),
-    chat(G_AGENTS, {"groupId": G_AGENTS, "count": 6, "name": "ทีมตัวแทนขาย Acme", "iconHash": "FAKE-group-iconhash"},
+    chat(G_AGENTS, {"groupId": G_AGENTS, "count": 6, "name": "ทีมตัวแทนขาย", "iconHash": "FAKE-group-iconhash"},
          ev_msg(T0 + 2 * HOUR, G_AGENTS, U_ARTHIT, {"id": "586900000000000201", "type": "text",
-                                                    "text": "@Acme Demo Shop รบกวนเช็กยอดขายเมื่อวานให้หน่อยครับ",
+                                                    "text": "@Demo Shop รบกวนเช็กยอดขายเมื่อวานให้หน่อยครับ",
                                                     "mention": {"mentionees": [{"index": 0, "length": 18, "type": "self"}]}}),
          read=False, read_mentioned=True, chat_type="GROUP", last_recv=T0 + 2 * HOUR),
     chat(S, uprof(S, "สมชาย ใจดี"), last_sent, read=True, tags=[TAG_VIP], assigned=BIZ_ME,
@@ -618,7 +618,7 @@ csv_rows = [
     ("User", "สมชาย ใจดี", "2026/11/05", "09:00", "โอนแล้วนะครับ order #1234 ครับ (emoji)"),
     ("User", "สมชาย ใจดี", "2026/11/05", "09:01", "Photo"),
     ("User", "สมชาย ใจดี", "2026/11/05", "09:02", "File"),
-    ("Account", "ปุ้ย ฝ่ายบริการลูกค้า", "2026/11/05", "09:18", "ได้รับสลิปแล้วค่ะ ยอด 1,250 บาท ตรวจสอบเรียบร้อย ขอบคุณที่ใช้บริการ Acme นะคะ 🙏"),
+    ("Account", "ปุ้ย ฝ่ายบริการลูกค้า", "2026/11/05", "09:18", "ได้รับสลิปแล้วค่ะ ยอด 1,250 บาท ตรวจสอบเรียบร้อย ขอบคุณที่ใช้บริการนะคะ 🙏"),
     ("Account", "ปุ้ย ฝ่ายบริการลูกค้า", "2026/11/05", "09:19", "ขึ้นบรรทัดใหม่\nและมี, จุลภาค"),
 ]
 _buf = io.StringIO()

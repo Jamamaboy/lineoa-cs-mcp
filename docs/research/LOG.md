@@ -37,3 +37,10 @@
   research folder, plus a markdown file that explains the documents.
 - Commits: this commit (research branch, worktree now at ~/.lineoa-lanes/research).
 - For other lanes: 5 proposed plan additions are under Requests → plan.
+
+## 2026-11-06 04:17 ICT · Company-neutral fixtures
+- What: the fake shop names in the API fixtures, their generator and the comparison page no longer carry a company
+  name ("Demo Shop", "ร้านทดสอบ 2", "@demo-shop"). Field names and shapes are unchanged.
+- Why: the repo goes public and should describe only what the MCP server does.
+- Commits: this commit.
+- For other lanes: the mock shows "Demo Shop"; tests do not depend on the shop names.
