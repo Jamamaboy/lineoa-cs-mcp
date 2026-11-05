@@ -50,6 +50,7 @@ npm run mock       # browse the mock's chats at http://127.0.0.1:8787
 | `LINEOA_SEND_CHAT_ALLOWLIST` | empty | only these chat ids may receive messages |
 | `LINEOA_SEND_DAILY_LIMIT` | `50` | sends per day before the tool refuses |
 | `LINEOA_BOT_ALLOWLIST` | empty | only these OAs are reachable |
+| `LINEOA_DEFAULT_OA` | empty | OA to use when a request names none (name, @id or botId). Without it, an account with several OAs makes the AI ask which one. |
 | `LINEOA_MOCK` | unset | `1` runs the built-in mock instead of LINE |
 | `LINEOA_SESSION_FILE` | `~/.config/lineoa-mcp/session.json` | written by `npm run login` |
 | `LINEOA_INDEX_FILE` | `~/.local/share/lineoa-mcp/index.db` | local search index |
@@ -72,6 +73,9 @@ npm run mock       # browse the mock's chats at http://127.0.0.1:8787
 | `send_message` | sends text as the staff member; `dryRun` previews | **yes**, only if `LINEOA_ALLOW_SEND=true` |
 
 The same features are in a terminal command: `npm run lineoa -- status | chats --needs-reply | read <chatId> | search <text>`.
+
+**Several OAs?** Every tool takes `oa` (a name like `"Shop A"`, an `@id` or a botId). If the account reaches more
+than one OA and the request doesn't say which, the tool answers `CHOOSE_OA` with the list, and the AI asks you.
 
 ## How it works
 

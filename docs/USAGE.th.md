@@ -37,6 +37,9 @@ npm run login     # browser เด้งขึ้นมา ให้ login LINE 
 | ดู OA อื่น | "ใน OA TestOA มีแชทไหนรอตอบ" | ทุก tool รับ `botId` |
 | ส่งข้อความ (ต้องเปิดก่อน ดูข้อ 4) | "ร่างคำตอบให้ LAY แล้วให้ฉันดูก่อนส่ง" | `send_message` (dryRun แล้วส่ง) |
 
+**ถ้าบัญชีเข้าได้หลาย OA** แล้วคำถามไม่ได้บอกว่า OA ไหน Claude จะถามกลับก่อน (tool ตอบ `CHOOSE_OA` พร้อมรายชื่อ OA)
+ถ้าใช้ OA เดียวประจำ ให้ตั้ง `LINEOA_DEFAULT_OA="ชื่อ OA"` จะได้ไม่ต้องตอบทุกครั้ง
+
 ## 3. ใช้ใน terminal (ไม่ต้องมี AI)
 
 ```bash
@@ -80,6 +83,7 @@ npm run mock                # หน้าเว็บของ LINE ปลอ�
 | "No browser could be opened" | ไม่เจอ browser ที่ใช้ได้ | ติดตั้ง Chrome หรือ Edge หรือ `npx playwright-core install chromium` |
 | `FORBIDDEN` | บัญชีนี้ไม่มีสิทธิ์ใน OA หรือแชทนั้น | ขอสิทธิ์จากแอดมิน OA |
 | `ENDPOINT_CHANGED` | LINE เปลี่ยน API ภายใน | แจ้งผู้ดูแล repo (ดู CONTRIBUTING.md) |
+| `CHOOSE_OA` | บัญชีเข้าได้หลาย OA แต่ไม่ได้บอกว่าเอา OA ไหน | ตอบชื่อ OA หรือใส่ `--oa "ชื่อ"` |
 | `SEND_UNCERTAIN` | ไม่แน่ใจว่าส่งไปแล้วหรือยัง | เปิดแชทดูก่อน **อย่าส่งซ้ำ** |
 | `ATTACHMENT_EXPIRED` | LINE ลบไฟล์นั้นแล้ว | ขอให้ลูกค้าส่งใหม่ |
 
