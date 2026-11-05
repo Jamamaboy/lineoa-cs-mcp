@@ -1,6 +1,6 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { resolveBotId, run, type ToolContext } from "./shared.js";
+import { oaInput, resolveBotId, run, type ToolContext } from "./shared.js";
 
 export function registerListChats(server: McpServer, ctx: ToolContext) {
   server.registerTool(
@@ -16,13 +16,13 @@ export function registerListChats(server: McpServer, ctx: ToolContext) {
         filter: z.enum(["ongoing", "unread", "needs_reply", "all"]).default("ongoing"),
         limit: z.number().int().min(1).max(50).default(20),
         cursor: z.string().optional().describe("`nextCursor` from the previous page"),
-        botId: z.string().optional().describe("OA id from auth_status; default is the first OA"),
+        oa: oaInput,
       },
       annotations: { readOnlyHint: true, openWorldHint: true },
     },
-    ({ filter, limit, cursor, botId }) =>
+    ({ filter, limit, cursor, oa }) =>
       run(async () => {
-        const bot = await resolveBotId(ctx, botId);
+        const bot = await resolveBotId(ctx, oa);
         const page = await ctx.client.listChats(bot, { limit, ...(cursor ? { cursor } : {}) });
         // The console's folder filters are unconfirmed (PLAN §6a), so we filter this page ourselves.
         const keep: Record<typeof filter, (c: (typeof page.items)[number]) => boolean> = {

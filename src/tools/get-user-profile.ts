@@ -1,6 +1,6 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { resolveBotId, run, type ToolContext } from "./shared.js";
+import { oaInput, resolveBotId, run, type ToolContext } from "./shared.js";
 
 export function registerGetUserProfile(server: McpServer, ctx: ToolContext) {
   server.registerTool(
@@ -13,10 +13,10 @@ export function registerGetUserProfile(server: McpServer, ctx: ToolContext) {
         "chat the chatId is the customer's userId, so either works.",
       inputSchema: {
         chatId: z.string().describe("chatId (or userId) from list_chats"),
-        botId: z.string().optional(),
+        oa: oaInput,
       },
       annotations: { readOnlyHint: true, openWorldHint: true },
     },
-    ({ chatId, botId }) => run(async () => ctx.client.getProfile(await resolveBotId(ctx, botId), chatId)),
+    ({ chatId, oa }) => run(async () => ctx.client.getProfile(await resolveBotId(ctx, oa), chatId)),
   );
 }

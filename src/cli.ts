@@ -10,6 +10,7 @@ import { BROWSERS, type BrowserName } from "./auth/browsers.js";
 import { login } from "./auth/login.js";
 import { setup } from "./cli/setup.js";
 import { cut, ui, when } from "./cli/ui.js";
+import { chooseOa } from "./client/choose-oa.js";
 import { createLineClient } from "./client/line-client.js";
 import { loadConfig } from "./config.js";
 import { LineOAError } from "./domain/errors.js";
@@ -33,10 +34,7 @@ const config = loadConfig();
 const client = createLineClient(config);
 
 async function pickOa() {
-  const bots = await client.bots();
-  const bot = opt.oa ? bots.find((b) => b.name === opt.oa || b.botId === opt.oa) : bots[0];
-  if (!bot) throw new Error(`OA not found: ${opt.oa ?? "(none)"}. Run \`lineoa status\` to see your OAs.`);
-  return bot;
+  return chooseOa(await client.bots(), opt.oa, config.defaultOa);
 }
 
 const commands: Record<string, () => Promise<void>> = {
@@ -149,10 +147,14 @@ try {
   if (!run) throw new Error(`Unknown command "${cmd}". Run \`lineoa help\`.`);
   await run();
 } catch (err) {
+  const code = err instanceof LineOAError ? err.code : "";
+  const msg = (err as Error).message;
   ui.fail(
-    err instanceof LineOAError && err.code === "AUTH_EXPIRED"
+    code === "AUTH_EXPIRED"
       ? "Not logged in. Run: lineoa login"
-      : (err as Error).message,
+      : code === "CHOOSE_OA"
+        ? `${msg.split(" Ask the person")[0]} Pick one with --oa "<name>".`
+        : msg,
   );
   process.exitCode = 1;
 }

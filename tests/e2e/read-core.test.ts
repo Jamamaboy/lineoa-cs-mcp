@@ -96,6 +96,17 @@ describe("MCP read core against the mock", () => {
     expect(text.isError).toBe(true);
   });
 
+  it("asks which OA when several are reachable and none was named", async () => {
+    const s = await startStack({ LINEOA_DEFAULT_OA: "" });
+    const r = await s.call("list_chats");
+    expect(r.text).toMatch(/^CHOOSE_OA: This account can reach 2 OAs: "Demo Shop".*Ask the person/);
+    const named = await s.call("list_chats", { oa: "Demo Shop", filter: "all" });
+    expect(named.json.chats.length).toBeGreaterThan(0);
+    const empty = await s.call("list_chats", { oa: "@test-shop2", filter: "all" });
+    expect(empty.json.chats).toHaveLength(0);
+    await s.stop();
+  });
+
   it("turns a missing session into AUTH_EXPIRED with the fix in the message", async () => {
     const bad = await startStack({ LINEOA_COOKIE: "__Host-chat-ses=wrong" });
     const r = await bad.call("list_chats");

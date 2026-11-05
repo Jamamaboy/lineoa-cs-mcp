@@ -1,6 +1,6 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { resolveBotId, run, type ToolContext } from "./shared.js";
+import { oaInput, resolveBotId, run, type ToolContext } from "./shared.js";
 
 export function registerReadChat(server: McpServer, ctx: ToolContext) {
   server.registerTool(
@@ -13,7 +13,7 @@ export function registerReadChat(server: McpServer, ctx: ToolContext) {
         "mark the chat as read. Use `prevCursor` to load older messages.",
       inputSchema: {
         chatId: z.string(),
-        botId: z.string().optional(),
+        oa: oaInput,
         limit: z.number().int().min(1).max(100).default(30),
         cursor: z.string().optional().describe("`prevCursor` from the previous call, for older messages"),
         includeSystem: z
@@ -23,9 +23,9 @@ export function registerReadChat(server: McpServer, ctx: ToolContext) {
       },
       annotations: { readOnlyHint: true, openWorldHint: true },
     },
-    ({ chatId, botId, limit, cursor, includeSystem }) =>
+    ({ chatId, oa, limit, cursor, includeSystem }) =>
       run(async () => {
-        const bot = await resolveBotId(ctx, botId);
+        const bot = await resolveBotId(ctx, oa);
         const [chat, page] = await Promise.all([
           ctx.client.getChat(bot, chatId),
           ctx.client.listMessages(bot, chatId, { limit, ...(cursor ? { cursor } : {}) }),

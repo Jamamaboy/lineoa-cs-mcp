@@ -1,7 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { LineOAError } from "../domain/errors.js";
-import { resolveBotId, run, type ToolContext } from "./shared.js";
+import { oaInput, resolveBotId, run, type ToolContext } from "./shared.js";
 
 /**
  * The only tool that changes anything. It is registered only when LINEOA_ALLOW_SEND=true, so in the
@@ -20,7 +20,7 @@ export function registerSendMessage(server: McpServer, ctx: ToolContext) {
       inputSchema: {
         chatId: z.string(),
         text: z.string().min(1).max(2000),
-        botId: z.string().optional(),
+        oa: oaInput,
         dryRun: z
           .boolean()
           .default(false)
@@ -28,9 +28,9 @@ export function registerSendMessage(server: McpServer, ctx: ToolContext) {
       },
       annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: true },
     },
-    ({ chatId, text, botId, dryRun }) =>
+    ({ chatId, text, oa, dryRun }) =>
       run(async () => {
-        const bot = await resolveBotId(ctx, botId);
+        const bot = await resolveBotId(ctx, oa);
         const log = (
           outcome: "sent" | "dry_run" | "refused" | "failed",
           extra: Record<string, string> = {},
