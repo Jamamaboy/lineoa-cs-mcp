@@ -1,0 +1,174 @@
+{
+  "slug": "telegram-mcp",
+  "name": "chigwell/telegram-mcp",
+  "category": "chat-mcp-unofficial",
+  "url": "https://github.com/chigwell/telegram-mcp",
+  "one_liner_th": "MCP Telegram ที่ใช้ Telethon user session พร้อม guard บัญชี, read-only mode, allowed roots",
+  "language": "Python",
+  "license": "Apache-2.0",
+  "github": {
+    "stars": 1992,
+    "forks": 496,
+    "open_issues": 44,
+    "last_push": "2026-10-31",
+    "created": "2025-03-20",
+    "fetched_at": "2026-11-05"
+  },
+  "users_claim": null,
+  "auth": {
+    "method_th": "ใช้ API_ID/API_HASH จาก my.telegram.org + session ของผู้ใช้จริง สร้างนอก MCP ด้วย session_string_generator.py (login ด้วยเบอร์โทร+รหัส+2FA หรือ --qr) ได้ StringSession. server ไม่ถาม login แบบ interactive (stdio) ถ้าไม่ authorized จะ error. ตอนสตาร์ท connect() แล้วเช็ก is_user_authorized และ TELEGRAM_EXPECTED_USERNAME (ไม่ตรง = disconnect และปฏิเสธเริ่ม); มี per-session lock กัน instance ซ้ำ, session pool, หลายบัญชีด้วย label",
+    "storage_th": "TELEGRAM_SESSION_STRING ใน .env หรือไฟล์ .session ของ Telethon; ไฟล์ aliases/transcript cache chmod 600; ตั้งชื่ออุปกรณ์ได้ (TELEGRAM_DEVICE_MODEL) ให้เห็นใน Settings > Devices",
+    "borrow_th": "ควรเลียนแบบ: guard 'ล็อกอินเป็นบัญชีที่คาดไว้เท่านั้น' ก่อนให้ใช้งาน, สร้าง session นอก MCP server, lock กัน instance ซ้ำ, ไม่ prompt login ใน stdio. ควรหลีกเลี่ยง: session string ใน .env เป็น plaintext ที่ให้สิทธิ์เต็มบัญชี"
+  },
+  "attachments": {
+    "how_th": "download_media ดาวน์โหลดลง temp dir แล้ว os.replace ไปยังพาธที่ผ่านการตรวจใน allowed roots (ค่าเริ่มต้น <root>/downloads/; ไม่มี root = deny-all); จำกัด 200MB (เช็ก declared size + progress callback + ขนาดจริง) คืนข้อความ 'Media downloaded to <path>'. inspect_document อ่านในหน่วยความจำ: PDF คืนข้อความ (pypdf) รูปคืน Image(jpeg/png ตามที่ Claude รับ) ไม่ลงดิสก์; open_photo/get_photo_sheet คืน Image. ขาส่ง send_file/upload_file/send_voice/send_sticker มี limit ขนาดต่อ tool + allowlist นามสกุลไฟล์ (TELEGRAM_FILE_EXTENSIONS) + ตรวจพาธใต้ allowed roots",
+    "borrow_th": "ควรเลียนแบบมาก: allowed-roots sandbox แบบ deny-all, ดาวน์โหลดผ่าน temp แล้วย้าย (atomic), limit ขนาดหลายชั้น, allowlist นามสกุลต่อ tool, tool อ่านในหน่วยความจำคืน Image/ข้อความให้ LLM, เตือนว่าเนื้อหารูปเป็น untrusted (prompt injection)"
+  },
+  "core_features": [
+    {
+      "name": "Expected-username guard",
+      "detail_th": "TELEGRAM_EXPECTED_USERNAME ไม่ตรง session = ไม่ยอมเริ่ม"
+    },
+    {
+      "name": "Tool exposure control",
+      "detail_th": "TELEGRAM_EXPOSED_TOOLS=read-only / read-only+send_message / all-<tool> เปิดเฉพาะ tool ที่ต้องการ; ชื่อ tool ผิดแล้ว abort"
+    },
+    {
+      "name": "Per-chat allowlist",
+      "detail_th": "TELEGRAM_ALLOWED_CHAT_IDS จำกัดแชตที่ tool เข้าถึงได้"
+    },
+    {
+      "name": "Allowed file roots",
+      "detail_th": "ใช้ MCP Roots/CLI roots จำกัดพาธอ่าน-เขียน; ไม่มี root = deny-all"
+    },
+    {
+      "name": "Size + extension limits",
+      "detail_th": "MAX_FILE_BYTES ต่อ tool (200MB/100MB/50MB/10MB) และ allowlist นามสกุลไฟล์"
+    },
+    {
+      "name": "Pagination",
+      "detail_th": "get_messages ใช้ page/page_size; list_messages/get_history ใช้ limit; get_messages_after ใช้ after_id"
+    },
+    {
+      "name": "In-memory doc/photo reading",
+      "detail_th": "inspect_document/open_photo คืน Image หรือข้อความ PDF ไม่ลงดิสก์"
+    },
+    {
+      "name": "Multi-account + lock",
+      "detail_th": "หลายบัญชีด้วย label, session pool, singleton lock ต่อ session"
+    }
+  ],
+  "flow": [
+    {
+      "actor": "user",
+      "label": "สร้าง session string (QR/OTP)"
+    },
+    {
+      "actor": "storage",
+      "label": "เก็บใน .env"
+    },
+    {
+      "actor": "tool",
+      "label": "สตาร์ท: connect + เช็ก username"
+    },
+    {
+      "actor": "agent",
+      "label": "list_chats / get_history"
+    },
+    {
+      "actor": "tool",
+      "label": "inspect_document / download_media"
+    },
+    {
+      "actor": "agent",
+      "label": "send_message (ถ้าเปิดไว้)"
+    }
+  ],
+  "highlights_th": [
+    "guard บัญชี + read-only/allowlist + allowed roots ครบที่สุดในกลุ่ม ตรงกับเกณฑ์ auth/attachment ของเรา",
+    "annotation readOnlyHint ทุก tool (65 จาก 147 เป็น read-only) ทำให้กรอง tool ตาม risk ได้",
+    "มี test จริง (รัน 68 เคสที่เกี่ยวกับ path/allowlist ผ่านหมด) และ push ล่าสุดต.ค. 2026"
+  ],
+  "weaknesses_th": [
+    "147 tools มากเกินไปสำหรับ agent (และ context ใหญ่) ต่างจาก 5 tool ของเรา",
+    "session string ใน .env ให้สิทธิ์เต็มบัญชี; send_file/upload_file รับนามสกุลใดก็ได้เป็นค่าเริ่มต้น",
+    "สตาร์ทแล้วต่อ Telegram ทันที จึงลองรัน server ไม่ได้ในการทดสอบนี้"
+  ],
+  "tools_or_endpoints": [
+    "list_chats",
+    "get_chats",
+    "get_chat",
+    "get_messages",
+    "list_messages",
+    "get_history",
+    "get_messages_after",
+    "get_message_context",
+    "search_messages",
+    "search_global",
+    "send_message",
+    "reply_to_message",
+    "edit_message",
+    "delete_message",
+    "forward_message",
+    "send_file",
+    "send_album",
+    "send_voice",
+    "upload_file",
+    "download_media",
+    "get_media_info",
+    "inspect_document",
+    "open_photo",
+    "list_photos",
+    "get_photo_sheet",
+    "transcribe_voice",
+    "get_me",
+    "list_accounts",
+    "resolve_username",
+    "mark_as_read",
+    "wait_for_new_message",
+    "wait_for_events",
+    "enable_incoming_feed",
+    "export_unread_messages",
+    "get_direct_chat_by_contact",
+    "get_contact_chats",
+    "get_last_interaction",
+    "search_contacts",
+    "list_contacts",
+    "get_user_status"
+  ],
+  "trial": {
+    "status": "partial",
+    "summary_th": "ติดตั้งด้วย uv venv. ไม่รัน server เพราะ runner เรียก client.connect() ไปยัง Telegram ตอนสตาร์ท (ตามกฎ: หยุดและบันทึก). แทนด้วย import offline ด้วย env ปลอมแล้ว mcp.list_tools() ได้ 147 tools (read-only 65) และรัน pytest ส่วน file-path/allowlist/content-safeguard ผ่าน 68 เคส ไม่มีการเชื่อมต่อเครือข่าย. TELEGRAM_EXPOSED_TOOLS=read-only ไม่ได้ลดรายการตอน import (ไม่ได้ยืนยันว่าบังคับใช้ตอนไหน)",
+    "log": "trials/telegram-mcp.md"
+  },
+  "screenshots": [
+    {
+      "file": "shots/telegram-mcp-1.png",
+      "caption_th": "ผล list_tools แบบ offline 147 tools + pytest 68 ผ่าน",
+      "kind": "real-run"
+    },
+    {
+      "file": "shots/telegram-mcp-2.png",
+      "caption_th": "หน้า GitHub ของ repo",
+      "kind": "github-page"
+    }
+  ],
+  "scores": {
+    "relevance": 4,
+    "auth": 5,
+    "attachments": 5,
+    "maturity": 4,
+    "tryability": 3,
+    "reasons_th": {
+      "relevance": "ทำงานเป็นผู้ใช้จริงผ่าน user session และมี list/read/search/send/attachments ครบ แต่เป็น Telegram และมี tool มากเกิน",
+      "auth": "session นอก MCP + expected-username guard + lock + read-only/allowlist เป็นแบบที่ควรเลียนแบบ",
+      "attachments": "allowed roots deny-all, temp+atomic move, limit หลายชั้น, ext allowlist, คืน Image/ข้อความในหน่วยความจำ",
+      "maturity": "ดูแลสม่ำเสมอ, test จำนวนมาก, เอกสารละเอียด, 2k ดาว",
+      "tryability": "รัน test และ list tools แบบ offline ได้ แต่ server จริงต่อ Telegram ตอนสตาร์ทจึงไม่ได้รัน"
+    }
+  },
+  "sources": [
+    "https://github.com/chigwell/telegram-mcp",
+    "https://docs.telethon.dev/"
+  ]
+}

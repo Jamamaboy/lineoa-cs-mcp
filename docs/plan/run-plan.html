@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><title>แผนรอบนี้: จาก PLAN v3 ถึง MVP บน mock</title>
+<style>
+:root{
+  --bg:var(--background,#fff);--fg:var(--foreground,#18181b);--mu:var(--muted-foreground,#71717a);
+  --bd:var(--border,#e4e4e7);--sf:var(--muted,#f4f4f5);--cd:var(--card,var(--background,#fff));
+  --c1:var(--chart-1,#2563eb);--c2:var(--chart-2,#16a34a);--c3:var(--chart-3,#d97706);--c4:var(--chart-4,#9333ea);--c5:var(--chart-5,#e11d48);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.65 system-ui,-apple-system,"Noto Sans Thai","Sarabun",sans-serif;padding:18px 18px 26px}
+h1{font-size:20px;margin:0 0 4px}h2{font-size:16px;margin:26px 0 8px}h3{font-size:14px;margin:0 0 6px}
+p{margin:0 0 8px}.mu{color:var(--mu)}.sm{font-size:12.5px}
+code{font:12px ui-monospace,Menlo,monospace;background:var(--sf);padding:1px 5px;border-radius:4px}
+.card{background:var(--cd);border:1px solid var(--bd);border-radius:12px;padding:12px 14px;margin:8px 0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:760px){.grid2{grid-template-columns:1fr}}
+.note{border-left:3px solid var(--c1);padding:8px 12px;background:var(--sf);border-radius:0 8px 8px 0;margin:8px 0;font-size:13px}
+.note.warn{border-color:var(--c5)}.note.ok{border-color:var(--c2)}
+ul{margin:4px 0;padding-left:20px}li{margin:2px 0}
+.ck li{list-style:none;margin-left:-18px}.ck li:before{content:"☐ ";color:var(--mu)}
+table{border-collapse:collapse;width:100%}th{text-align:left;font-size:12px;color:var(--mu);font-weight:600;padding:4px 8px;border-bottom:1px solid var(--bd)}
+td{padding:6px 8px;border-bottom:1px solid var(--bd);vertical-align:top;font-size:13px}tr:last-child td{border-bottom:0}
+.scroll{overflow-x:auto}.scroll svg{min-width:860px}
+svg{width:100%;height:auto;display:block}
+svg text{fill:var(--fg);font:12px system-ui,-apple-system,"Noto Sans Thai",sans-serif}
+svg .s{fill:var(--mu);font-size:11px}svg .b{font-weight:650}svg .lane{font-weight:700;font-size:12.5px}
+svg .grid{stroke:var(--bd);stroke-width:1}svg .now{stroke:var(--c5);stroke-width:1.5;stroke-dasharray:4 3}
+svg .t1{fill:var(--c1);fill-opacity:.14;stroke:var(--c1);stroke-width:1.2}
+svg .t2{fill:var(--c2);fill-opacity:.14;stroke:var(--c2);stroke-width:1.2}
+svg .t3{fill:var(--c3);fill-opacity:.16;stroke:var(--c3);stroke-width:1.2}
+svg .t4{fill:var(--c4);fill-opacity:.14;stroke:var(--c4);stroke-width:1.2}
+svg .t5{fill:var(--c5);fill-opacity:.12;stroke:var(--c5);stroke-width:1.4}
+svg .idle{fill:var(--sf);stroke:var(--bd);stroke-dasharray:4 3}
+svg .ar{stroke:var(--mu);stroke-width:1.3;fill:none;marker-end:url(#a)}#a path{fill:var(--mu)}
+</style></head><body>
+
+<h1>แผนรอบนี้: ทำอะไร ใครทำ เสร็จแล้วได้อะไร</h1>
+<p class="mu sm">ศุกร์ 6 พ.ย. 2026 · ฉบับภาษาอังกฤษสำหรับ agent: <code>docs/plan/run-plan.md</code> · ส่งงานศุกร์ 6 พ.ย. 23:59</p>
+
+<div class="note"><b>เป้าหมายรอบนี้:</b> MCP server ทำงานครบบน mock คือ tool 5 ตัวตามโจทย์ + <code>get_attachment</code> + <code>webUrl</code> และ test ผ่านทั้งหมด
+และได้หลักฐาน endpoint จริงจาก HAR งานที่เหลือทำต่อหลัง checkpoint</div>
+
+<h2>1. ลำดับงาน 4 สาย (swimlane)</h2>
+<div class="scroll"><svg viewBox="0 0 900 372" role="img" aria-label="timeline">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z"/></marker></defs>
+<!-- stage columns, no clock times -->
+<g>
+<line class="grid" x1="120" y1="28" x2="120" y2="360"/><text x="108" y="20" class="s">ขั้น 0</text>
+<line class="grid" x1="373" y1="28" x2="373" y2="360"/><text x="358" y="20" class="s">ขั้น 2</text>
+<line class="grid" x1="542" y1="28" x2="542" y2="360"/><text x="527" y="20" class="s">ขั้น 3</text>
+<line class="grid" x1="711" y1="28" x2="711" y2="360"/><text x="696" y="20" class="s">ขั้น 4</text>
+<line class="grid" x1="795" y1="28" x2="795" y2="360"/><text x="832" y="20" class="s">✓</text>
+<line class="grid" x1="880" y1="28" x2="880" y2="360"/>
+<line class="grid" x1="289" y1="28" x2="289" y2="360"/><text x="274" y="20" class="s">ขั้น 1</text>
+</g>
+<!-- lanes -->
+<text x="8" y="66" class="lane" style="fill:var(--c1)">plan</text><text x="8" y="82" class="s">session นี้</text>
+<text x="8" y="146" class="lane" style="fill:var(--c2)">dev</text><text x="8" y="162" class="s">agent คู่ขนาน</text>
+<text x="8" y="226" class="lane" style="fill:var(--c3)">research</text><text x="8" y="242" class="s">แปลง HAR</text>
+<text x="8" y="306" class="lane" style="fill:var(--c4)">คุณ</text><text x="8" y="322" class="s">มือคน</text>
+<line class="grid" x1="0" y1="110" x2="880" y2="110"/><line class="grid" x1="0" y1="190" x2="880" y2="190"/><line class="grid" x1="0" y1="270" x2="880" y2="270"/>
+<!-- plan -->
+<rect class="t1" x="122" y="44" width="165" height="54" rx="7"/><text x="130" y="64" class="b">PLAN v3 ✓ เสร็จแล้ว</text><text x="130" y="81" class="s">merge → dev, research</text><text x="130" y="94" class="s">ปลด pause dev</text>
+<rect class="idle" x="291" y="50" width="502" height="42" rx="7"/><text x="300" y="75" class="s">ตอบคำถาม · review งาน dev · อัปเดต STATUS</text>
+<!-- dev -->
+<rect class="idle" x="122" y="130" width="165" height="42" rx="7"/><text x="130" y="155" class="s">รอ PLAN v3</text>
+<rect class="t2" x="291" y="124" width="80" height="54" rx="7"/><text x="298" y="144" class="b">scaffold</text><text x="298" y="160" class="s">TS · Biome</text><text x="298" y="172" class="s">vitest · CI</text>
+<rect class="t2" x="375" y="124" width="165" height="54" rx="7"/><text x="382" y="144" class="b">mock + auth</text><text x="382" y="160" class="s">mock จาก fixtures</text><text x="382" y="172" class="s">‖ session + login CLI</text>
+<rect class="t2" x="544" y="124" width="165" height="54" rx="7"/><text x="551" y="144" class="b">tool 6 ตัว + webUrl</text><text x="551" y="160" class="s">list · read · search</text><text x="551" y="172" class="s">send(ปิดไว้) · profile · ไฟล์</text>
+<rect class="t2" x="713" y="124" width="80" height="54" rx="7"/><text x="720" y="144" class="b">e2e test</text><text x="720" y="160" class="s">+ แก้ตาม</text><text x="720" y="172" class="s">HAR</text>
+<!-- research -->
+<rect class="idle" x="122" y="210" width="165" height="42" rx="7"/><text x="130" y="235" class="s">รอไฟล์ HAR</text>
+<rect class="t3" x="291" y="204" width="418" height="54" rx="7"/><text x="298" y="224" class="b">HAR → แผนที่ endpoint (ลบข้อมูลจริงออก) + เทียบกับ fixtures</text>
+<text x="298" y="243" class="s">ตอบ: cursor · markAsRead · search · flex · tags/notes · ส่ง PDF</text>
+<!-- you -->
+<rect class="t4" x="122" y="284" width="250" height="54" rx="7"/><text x="130" y="304" class="b">สร้าง OA ทดสอบ + เก็บ HAR</text><text x="130" y="320" class="s">LiveOA: อ่านอย่างเดียว</text><text x="130" y="333" class="s">OA ทดสอบ: ลองส่งข้อความ/รูป/PDF</text>
+<rect class="idle" x="376" y="290" width="417" height="42" rx="7"/><text x="384" y="315" class="s">ว่าง (พักได้) · ตอบคำถามถ้ามี</text>
+<!-- checkpoint -->
+<rect class="t5" x="797" y="44" width="81" height="294" rx="7"/>
+<text x="804" y="66" class="b">Checkpoint</text><text x="804" y="88" class="s">merge → dev</text><text x="804" y="106" class="s">CI ผ่าน</text><text x="804" y="124" class="s">เดโมบน</text><text x="804" y="140" class="s">mock</text><text x="804" y="158" class="s">อัปเดต</text><text x="804" y="174" class="s">STATUS</text><text x="804" y="200" class="b">แล้วนอน</text>
+<!-- dependencies -->
+<path class="ar" d="M287 98 C300 110 300 115 304 123"/>
+<path class="ar" d="M372 300 C330 290 300 270 300 259"/>
+<path class="ar" d="M690 204 C705 194 728 190 748 180"/>
+<text x="120" y="366" class="s">ลูกศร = ต้องรออีกสายก่อน: dev รอ PLAN v3 · research รอ HAR จากคุณ · dev แก้ mock ตามผลของ research</text>
+</svg></div>
+
+<h2>2. ถึง checkpoint = ติ๊กครบ</h2>
+<div class="card"><ul class="ck">
+<li>PLAN v3 merge เข้า dev และ research แล้ว dev ไม่ pause แล้ว</li>
+<li><code>npm test</code> ผ่าน: e2e ครอบคลุม 5 อย่างของโจทย์ + <code>get_attachment</code> บน mock</li>
+<li><code>send_message</code> ปิดไว้เป็นค่าเริ่มต้น มี allowlist, <code>dryRun</code>, audit log, <code>sendId</code> กันส่งซ้ำ</li>
+<li>ผลของแชทและโปรไฟล์ทุกตัวมี <code>webUrl</code> กดไปหน้าแชทใน chat.line.biz (หรือหน้าเว็บ mock)</li>
+<li>เก็บ HAR แล้ว (LiveOA อ่านอย่างเดียว + OA ทดสอบที่ลองส่ง) และมีแผนที่ endpoint ที่ลบข้อมูลจริงแล้วใน <code>test/research/</code></li>
+<li>STATUS ของทุกสายบอกชัดว่าหยุดตรงไหน</li>
+</ul></div>
+
+<div class="grid2">
+<div class="note warn"><b>กติกา LiveOA (แชทพนักงานจริง)</b>
+<ul class="sm"><li>อ่านอย่างเดียว ห้ามส่ง ห้ามกด Follow up / Resolve</li><li>อย่าเปิดแชทที่ยังไม่อ่าน เพราะเปิดแล้วนับว่าอ่าน</li><li>HAR เก็บที่ <code>~/lineoa-har/</code> นอก repo ห้าม commit</li><li>server ต่อด้วย <code>LINEOA_ALLOW_SEND=false</code></li></ul></div>
+<div class="note"><b>ถ้าไม่ทัน</b>
+<ul class="sm"><li>ขั้นไหนลากยาว หยุดที่ส่วนที่ test ผ่านแล้ว</li><li>ทาง mock ต้องผ่านเสมอ</li><li>ที่เหลือย้ายไปขั้นถัดไป</li></ul></div>
+</div>
+
+<h2>3. หลัง checkpoint ถึงส่งงาน</h2>
+<div class="scroll"><svg viewBox="0 0 900 70" role="img" aria-label="friday"><rect class="t2" x="12" y="10" width="150" height="48" rx="7"/><text x="20" y="30" class="b">ต่อของจริง</text><text x="20" y="47" class="s">ขั้น 5 · WebClient</text><rect class="t2" x="167" y="10" width="105" height="48" rx="7"/><text x="175" y="30" class="b">ชั้นเคส</text><text x="175" y="47" class="s">ขั้น 6</text><rect class="t1" x="277" y="10" width="115" height="48" rx="7"/><text x="285" y="30" class="b">README + GIF</text><text x="285" y="47" class="s">ขั้น 7</text><rect class="idle" x="397" y="10" width="95" height="48" rx="7"/><text x="405" y="30" class="b">Telegram</text><text x="405" y="47" class="s">ขั้น 8 · ถ้าทัน</text><rect class="t5" x="497" y="10" width="85" height="48" rx="7"/><text x="505" y="30" class="b">v0.1.0</text><text x="505" y="47" class="s">ขั้น 9 · tag</text><rect class="idle" x="587" y="10" width="170" height="48" rx="7"/><text x="595" y="30" class="b">วิดีโอ bonus</text><text x="595" y="47" class="s">ขั้น 10 · ถ้าทัน</text><rect class="t4" x="762" y="10" width="125" height="48" rx="7"/><text x="770" y="30" class="b">push + อีเมล</text><text x="770" y="47" class="s">ก่อน 23:59</text></svg></div>
+
+</body></html>

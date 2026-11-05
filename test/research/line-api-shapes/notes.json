@@ -1,0 +1,51 @@
+{
+  "_meta": {
+    "endpoint": "GET /api/v1/bots/{botId}/chats/{chatId}/notes",
+    "host": "https://chat.line.biz",
+    "requestHeaders": {
+      "Accept": "application/json, text/plain, */*",
+      "x-oa-chat-client-version": "20240513144702",
+      "Cookie": "__Host-chat-ses=FAKE-SESSION; chat-device-group=FAKE-DEVICE; XSRF-TOKEN=FAKE-XSRF"
+    },
+    "query": {
+      "limit": 20,
+      "withTotal": "true",
+      "next": "(omit on first page)"
+    },
+    "sources": [
+      "propertyos-line-importer src/oam-api.js:503-575, test/fixtures/notes-page.json, notes-empty-page.json",
+      "LINELib ChatService.py:788 (path + query only)"
+    ],
+    "uncertain": [
+      "Sort order of notes",
+      "noteId format",
+      "`next` cursor when more than `limit` notes"
+    ],
+    "notes": [
+      "Empty chat: {\"list\": [], \"total\": 0} (propertyos notes-empty-page.json)",
+      "userBizId = author, join with owners.json bizId"
+    ]
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "list": [
+        {
+          "noteId": "fakenote0001",
+          "body": "ลูกค้า VIP ชอบให้ส่งของด่วน (Kerry) · เคยขอใบกำกับภาษีเต็มรูป",
+          "userBizId": "00000000-0000-4000-8000-0000000000a1",
+          "createdAt": 1792116000000,
+          "updatedAt": 1793671200000
+        },
+        {
+          "noteId": "fakenote0002",
+          "body": "5 พ.ย. โอน 1,250 บาท order #1234 ตรวจแล้ว",
+          "userBizId": "00000000-0000-4000-8000-0000000000a2",
+          "createdAt": 1793844540000,
+          "updatedAt": 1793844540000
+        }
+      ],
+      "total": 2
+    }
+  }
+}

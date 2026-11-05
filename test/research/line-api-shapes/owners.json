@@ -1,0 +1,40 @@
+{
+  "_meta": {
+    "endpoint": "GET /api/v1/bots/{botId}/owners",
+    "host": "https://chat.line.biz",
+    "requestHeaders": {
+      "Accept": "application/json, text/plain, */*",
+      "x-oa-chat-client-version": "20240513144702",
+      "Cookie": "__Host-chat-ses=FAKE-SESSION; chat-device-group=FAKE-DEVICE; XSRF-TOKEN=FAKE-XSRF"
+    },
+    "query": {
+      "bizIds": "(optional filter, UUIDs)"
+    },
+    "sources": [
+      "linebiz src/types/owners.ts:2-6, src/resources/owners.ts:33, test/fixtures/owners.ts",
+      "propertyos-line-importer src/oam-api.js:~470-476, test/oam-api.test.js:1031-1039"
+    ],
+    "conflicts": [
+      "Envelope: linebiz expects {list:[...]}; propertyos accepts a bare array OR {list} because it was never confirmed."
+    ],
+    "notes": [
+      "Chat.assignedBizId / note.userBizId / messageSent.bizId all point at owners[].bizId."
+    ]
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "list": [
+        {
+          "bizId": "00000000-0000-4000-8000-0000000000a1",
+          "name": "ปุ้ย ฝ่ายบริการลูกค้า",
+          "linePictureUri": "https://profile.line-scdn.net/FAKE-staff-picture"
+        },
+        {
+          "bizId": "00000000-0000-4000-8000-0000000000a2",
+          "name": "Ton (Admin)"
+        }
+      ]
+    }
+  }
+}

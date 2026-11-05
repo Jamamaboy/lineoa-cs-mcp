@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>สรุปแผน: ผู้ช่วย CS บน LINE OA</title>
+<!-- ฉบับภาษาไทยพร้อม diagram ของ docs/PLAN.md (PLAN.md เป็นฉบับหลัก)
+     ใช้ token และ class ชุดเดียวกับ plan kit (skills/write-plan/references/plan-template.html)
+     ไม่มี CDN · เปิดจาก file:// ได้ · diagram เป็น inline SVG -->
+<style>
+:root{
+  --ground:#F7F8FA; --surface:#FFFFFF; --surface-2:#F1F4F9;
+  --line:#E2E7F0; --line-soft:#EDF1F7;
+  --ink:#141A22; --ink-2:#4A5568; --ink-3:#8A94A6;
+  --accent:#2563EB; --accent-soft:#E8EFFE; --accent-ink:#1D4ED8;
+  --ok:#15803D; --ok-soft:#E6F4EA;
+  --warn:#B45309; --warn-soft:#FDF0DC;
+  --crit:#B91C1C; --crit-soft:#FBE9E9;
+  --code-bg:#12161C; --code-ink:#E6EDF3;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --sans:system-ui,-apple-system,"Segoe UI","Noto Sans Thai","Sarabun",sans-serif;
+  --r:10px; --r-lg:14px;
+  --shadow:0 1px 2px rgba(20,26,34,.06),0 1px 3px rgba(20,26,34,.04);
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --ground:#0E1218; --surface:#161C24; --surface-2:#1D242E;
+    --line:#2A323D; --line-soft:#232A34;
+    --ink:#EDF1F6; --ink-2:#A8B3C2; --ink-3:#6D7889;
+    --accent:#5B8DEF; --accent-soft:#1B2740; --accent-ink:#8FB2F5;
+    --ok:#4ADE80; --ok-soft:#16281D;
+    --warn:#FBBF24; --warn-soft:#2C2313;
+    --crit:#F87171; --crit-soft:#2E1717;
+    --code-bg:#0A0D12; --code-ink:#E6EDF3;
+    --shadow:0 1px 2px rgba(0,0,0,.4);
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);
+     font-size:15px;line-height:1.65;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{margin:0;line-height:1.3}
+p{margin:0}
+a{color:var(--accent-ink)}
+table{border-collapse:collapse;width:100%}
+th{text-align:left;font-size:11.5px;letter-spacing:.04em;color:var(--ink-3);
+   font-weight:600;padding:0 10px 8px;border-bottom:1px solid var(--line)}
+td{padding:9px 10px;border-bottom:1px solid var(--line-soft);font-size:13.5px;vertical-align:top}
+tbody tr:last-child td{border-bottom:0}
+ul,ol{margin:0;padding-left:20px}
+li + li{margin-top:4px}
+
+.wrap{max-width:980px;margin:0 auto;padding:28px 20px 90px}
+.masthead h1{font-size:26px;letter-spacing:-.01em}
+.masthead .sub{color:var(--ink-2);font-size:14px;margin-top:6px;max-width:75ch}
+
+.nav{position:sticky;top:0;z-index:9;background:var(--ground);border-bottom:1px solid var(--line);
+     padding:9px 0;margin:16px 0 26px}
+.navrow{display:flex;gap:4px;align-items:baseline;flex-wrap:wrap;font-size:12.5px}
+.navrow a{color:var(--ink-2);text-decoration:none;padding:2px 7px;border-radius:6px}
+.navrow a:hover{background:var(--surface-2);color:var(--ink)}
+
+h2{font-size:19px;margin:40px 0 4px;scroll-margin-top:70px}
+h2 + .lede{color:var(--ink-2);font-size:14px;margin-bottom:14px}
+h3{font-size:15px;margin:22px 0 8px}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);
+      box-shadow:var(--shadow);margin-bottom:12px;overflow:hidden}
+.card-h{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+        padding:11px 15px;border-bottom:1px solid var(--line-soft)}
+.card-h h3{font-size:14.5px;font-weight:650;margin:0}
+.card-b{padding:14px 15px}
+.card-b > * + *{margin-top:9px}
+
+.pill{display:inline-flex;align-items:center;font-size:11.5px;font-weight:600;
+      padding:2px 9px;border-radius:99px;white-space:nowrap}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.crit{background:var(--crit-soft);color:var(--crit)}
+.pill.mute{background:var(--surface-2);color:var(--ink-3)}
+.pill.acc{background:var(--accent-soft);color:var(--accent-ink)}
+
+.dim{color:var(--ink-3)}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+pre{background:var(--code-bg);color:var(--code-ink);border-radius:var(--r);padding:13px 15px;
+    margin:0;overflow-x:auto;font-family:var(--mono);font-size:12.5px;line-height:1.55}
+code{font-family:var(--mono);font-size:.9em;background:var(--surface-2);padding:1px 5px;border-radius:4px}
+pre code{background:none;padding:0;font-size:inherit}
+
+.note{border-left:3px solid var(--warn);background:var(--warn-soft);padding:11px 14px;
+      border-radius:0 var(--r) var(--r) 0;font-size:13.5px;margin:12px 0}
+.note.crit{border-color:var(--crit);background:var(--crit-soft)}
+.note.ok{border-color:var(--ok);background:var(--ok-soft)}
+
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:760px){.two{grid-template-columns:1fr}}
+.colhead{font-size:12px;font-weight:700;letter-spacing:.04em;color:var(--ink-3);margin-bottom:7px}
+
+.flow{display:flex;flex-direction:column;font-size:12.5px}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:8px;
+      padding:8px 11px;font-family:var(--mono);font-size:12px}
+.step.new{border-color:var(--accent);background:var(--accent-soft);color:var(--accent-ink)}
+.step.gone{border-style:dashed;color:var(--ink-3);text-decoration:line-through}
+.step.bad{border-color:var(--crit);background:var(--crit-soft);color:var(--crit)}
+.step.okk{border-color:var(--ok);background:var(--ok-soft);color:var(--ok)}
+.arrow{color:var(--ink-3);text-align:center;font-size:13px;line-height:1;padding:5px 0}
+.branch{display:grid;grid-template-columns:110px 1fr;gap:8px;align-items:center;
+        font-family:var(--mono);font-size:11.5px;color:var(--ink-3);padding-left:12px;margin-top:6px}
+
+.bar{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));margin:18px 0 6px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:11px 14px}
+.stat b{display:block;font-size:13px}
+.stat span{font-size:12.5px;color:var(--ink-2)}
+
+/* ---- inline SVG diagrams ---- */
+figure.d{margin:0 0 14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);
+         padding:14px 12px 10px;box-shadow:var(--shadow)}
+figure.d svg{width:100%;height:auto;display:block;min-width:680px}
+figure.d figcaption{font-size:12.5px;color:var(--ink-3);margin-top:8px;padding:0 4px}
+.d text{fill:var(--ink);font-family:var(--sans);font-size:13px}
+.d text.b{font-weight:650}
+.d text.t2{fill:var(--ink-2);font-size:11.5px}
+.d text.m{font-family:var(--mono);font-size:11px;fill:var(--ink-2)}
+.d text.crit{fill:var(--crit)} .d text.ok{fill:var(--ok)} .d text.warn{fill:var(--warn)}
+.d text.lbl{paint-order:stroke;stroke:var(--surface);stroke-width:4px;stroke-linejoin:round}
+.d .bx{fill:var(--surface);stroke:var(--line);stroke-width:1.3}
+.d .bx.acc{fill:var(--accent-soft);stroke:var(--accent)}
+.d .bx.ok{fill:var(--ok-soft);stroke:var(--ok)}
+.d .bx.warn{fill:var(--warn-soft);stroke:var(--warn)}
+.d .bx.crit{fill:var(--crit-soft);stroke:var(--crit)}
+.d .bx.mute{fill:var(--surface-2);stroke:var(--line)}
+.d .bx.dash{stroke-dasharray:5 4}
+.d .grp{fill:none;stroke:var(--ink-3);stroke-width:1.2;stroke-dasharray:6 5}
+.d .ln{stroke:var(--ink-3);stroke-width:1.4;fill:none;marker-end:url(#ah)}
+.d .ln.crit{stroke:var(--crit);marker-end:url(#ahc)}
+.d .ln.ok{stroke:var(--ok);marker-end:url(#aho)}
+.d .ln.dsh{stroke-dasharray:5 4}
+.d .rel{stroke:var(--ink-3);stroke-width:1.4;fill:none}
+.d .life{stroke:var(--line);stroke-width:1.4;stroke-dasharray:4 4}
+.d .sep{stroke:var(--ink-3);stroke-width:1;stroke-dasharray:2 4}
+.d .vl{stroke-width:1.6;stroke-dasharray:4 3}
+.d .vl.crit{stroke:var(--crit)} .d .vl.warn{stroke:var(--warn)}
+.d .axis{stroke:var(--ink-3);stroke-width:1}
+.d .hdr{fill:var(--accent)}
+#ah path{fill:var(--ink-3)} #ahc path{fill:var(--crit)} #aho path{fill:var(--ok)}
+</style>
+<style>
+.tree{font-family:var(--mono);font-size:12.3px;line-height:1.6;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:14px 16px;white-space:pre;overflow-x:auto;color:var(--ink)}
+.tree .c{color:var(--ink-3)} .tree .n{color:var(--accent-ink);font-weight:600} .tree .k{color:var(--ok)} .tree .w{color:var(--warn)}
+.uc{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.uc .card-b p{font-size:13.5px}
+.say{background:var(--surface-2);border-radius:12px 12px 12px 4px;padding:7px 11px;font-size:13.5px;margin:4px 0 8px}
+.tl{font-family:var(--mono);font-size:11.5px;color:var(--accent-ink)}
+.chatmock{border:1px solid var(--line);border-radius:12px;background:var(--surface);overflow:hidden}
+.chatmock .bar{padding:7px 12px;border-bottom:1px solid var(--line);background:var(--surface-2);font-size:12.5px}
+.chatmock .in{padding:10px 12px;font-size:13px}
+.me{margin-left:auto;max-width:80%;background:var(--accent-soft);border-radius:12px 12px 4px 12px;padding:6px 10px;margin-bottom:8px;width:fit-content}
+.tool{font-family:var(--mono);font-size:11.5px;border:1px solid var(--line);border-radius:7px;padding:3px 8px;margin:3px 0;color:var(--accent-ink);width:fit-content}
+.ask{border:1px solid var(--warn);background:var(--warn-soft);border-radius:8px;padding:6px 10px;font-size:12.5px;margin:6px 0}
+.term{background:var(--code-bg);color:var(--code-ink);border-radius:var(--r);padding:10px 12px;font-family:var(--mono);font-size:12px;line-height:1.55;white-space:pre-wrap}
+.term .g{color:#86efac}.term .d{color:#9ca3af}
+.console{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface);font-size:12.5px}
+.console .top{background:#06c755;color:#fff;padding:6px 10px;font-weight:600}
+.console .cols{display:grid;grid-template-columns:150px 1fr}
+.console .list div{padding:6px 10px;border-bottom:1px solid var(--line-soft)}
+.console .list .on{background:var(--accent-soft)}
+.console .msgs{padding:8px 10px;border-left:1px solid var(--line)}
+.console .b1{background:var(--surface-2);border-radius:10px;padding:4px 8px;margin:4px 0;width:fit-content;max-width:90%}
+.console .b2{background:#d9f7e3;color:#14532d;border-radius:10px;padding:4px 8px;margin:4px 0 4px auto;width:fit-content;max-width:90%}
+.stat b.big{font-size:28px;font-weight:700;line-height:1.2;margin:2px 0}
+</style>
+</head>
+<body>
+
+<!-- arrow markers shared by every diagram -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z"/></marker>
+    <marker id="ahc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z"/></marker>
+    <marker id="aho" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z"/></marker>
+  </defs>
+</svg>
+
+<div class="wrap">
+
+<header class="masthead">
+  <h1>สรุปแผน: ผู้ช่วย CS บน LINE OA</h1>
+  <p class="sub">สรุปจาก <code>docs/PLAN.md</code> (v3) ตามที่ผมเข้าใจ ภาษาไทย อ่านจบใน 5 นาที · รายละเอียดเต็มอยู่ใน <code>docs/PLAN.html</code> · 6 พ.ย. 2026 · กำหนดส่ง ศ. 6 พ.ย. 23:59</p>
+  <div class="bar">
+    <div class="stat"><span>Tool ทั้งหมด</span><b class="big">13</b><span>ตามโจทย์ 5 + ไฟล์/auth 2 + ชั้นเคส 6</span></div>
+    <div class="stat"><span>Use case</span><b class="big">11</b><span>flow ของ support OA</span></div>
+    <div class="stat"><span>ไฟล์ใน repo ตอนส่ง</span><b class="big">~270</b><span>มีแล้ว 156 · จะเพิ่มประมาณ 115</span></div>
+    <div class="stat"><span>หน้าเว็บที่เราทำ</span><b class="big">1</b><span>console เล็ก ๆ ของ mock เท่านั้น</span></div>
+  </div>
+</header>
+
+<nav class="nav"><div class="navrow">
+  <a href="#what">1 สรุปสั้น</a><a href="#look">2 หน้าตาผลสุดท้าย</a><a href="#uc">3 Use case</a><a href="#tools">4 Tool</a>
+  <a href="#how">5 ทำงานยังไง</a><a href="#tree">6 Folder และจำนวนไฟล์</a><a href="#steps">7 ลำดับงาน</a><a href="#grader">8 Grader ได้อะไร</a><a href="#risk">9 ยังไม่รู้</a>
+</div></nav>
+
+<!-- ======================================================= -->
+<h2 id="what">1. สรุปสั้นที่สุด</h2>
+<div class="card"><div class="card-b">
+<ul>
+  <li><b>สร้างอะไร:</b> MCP server ที่ให้ AI (เช่น Claude) ทำงานในหน้าแชท LINE OA Manager (chat.line.biz) แทนพนักงาน CS ได้ คือดูรายการแชท อ่านแชท ค้นข้อความ ตอบลูกค้า และดูโปรไฟล์</li>
+  <li><b>ให้ใคร:</b> ทีม CS ของ <b>support OA</b> ซึ่งเป็นที่ลูกค้าแจ้งปัญหา (ธุรกิจอาจมี OA ของผลิตภัณฑ์ที่ลูกค้าใช้บริการผ่านแชทอีกตัว)</li>
+  <li><b>เข้าบัญชียังไง:</b> CS login เองใน browser จริงครั้งเดียวต่อกะ server เก็บแค่ session cookie แล้วเรียก API ภายในของหน้าเว็บ ไม่เคยเห็นรหัสผ่าน และไม่ใช้ Messaging API เพราะอ่านแชทเก่าและค้นหาไม่ได้</li>
+  <li><b>ไฟล์แนบ:</b> ในแชทส่งแค่ข้อมูลไฟล์ จะโหลดไฟล์จริงก็ต่อเมื่อ AI ขอ รูปจะถูกย่อแล้วส่งให้ AI เห็น ไฟล์อื่นบันทึกลงเครื่องแล้วคืน path · ส่งไฟล์ได้เฉพาะจากโฟลเดอร์ outbox</li>
+  <li><b>ของแถมที่ทำให้ต่าง:</b> <b>ชั้นเคส</b> (1 แชทมีหลายเคส แท็ก สถานะ สถิติ) และ <b><code>webUrl</code></b> ลิงก์ให้ CS กดไปคุยเองในหน้าเว็บ</li>
+  <li><b>ความปลอดภัย:</b> ปิดการส่งไว้เป็นค่าเริ่มต้น · แอป AI ถามอนุญาตก่อนส่งทุกครั้ง · ปิดบังอีเมลและเบอร์โทร · บันทึก log ทุกการส่ง</li>
+</ul>
+</div></div>
+
+<!-- ======================================================= -->
+<h2 id="look">2. ผลสุดท้ายหน้าตาเป็นยังไง (มี 3 จอ)</h2>
+<p class="lede">ไม่มีเว็บแอปให้ CS ใช้ CS ใช้แอป AI ที่มีอยู่แล้ว เราทำแค่ "เครื่องมือ" ให้ AI · ตัวอย่างข้างล่างเป็นข้อมูลสมมติ</p>
+<div class="two">
+  <div>
+    <div class="colhead">① จอหลัก: CS คุยกับ Claude</div>
+    <div class="chatmock"><div class="bar"><b>Claude Desktop</b> · lineoa-cs · 13 tools</div><div class="in">
+      <div class="me">เช้านี้มีเคสไหนรอตอบบ้าง</div>
+      <div class="tool">list_chats(ongoing)</div><div class="tool">list_cases(open)</div>
+      <div>มี 3 เคสรอตอบ:<br>• <b>Somchai</b> แจ้งปัญหา เชื่อม integration ไม่สำเร็จ (มีรูป 1) <span class="dim">· เปิดในหน้าเว็บ ↗</span><br>• <b>Arm</b> ถามเรื่องการเรียกเก็บเงิน (เรื่องเงิน ควรตอบก่อน)<br>• <b>Nok</b> ขอวิธี export PDF</div>
+      <div class="me" style="margin-top:8px">เปิดของ Somchai แล้วร่างคำตอบให้หน่อย</div>
+      <div class="tool">read_chat</div><div class="tool">get_attachment → รูป</div><div class="tool">get_person → มีกิจกรรมใน OA ผลิตภัณฑ์ก่อนแจ้ง</div>
+      <div>ร่าง: "สวัสดีครับคุณ Somchai ทีมรับเรื่องแล้ว…"</div>
+      <div class="ask"><b>อนุญาตให้ใช้ send_message ไหม?</b> ส่งถึง Somchai · [อนุญาต] [ไม่อนุญาต]</div>
+    </div></div>
+  </div>
+  <div>
+    <div class="colhead">② ตอน login (ครั้งเดียวต่อกะ)</div>
+    <div class="term"><span class="g">$</span> npm run login
+<span class="d">เปิด browser… login LINE Business ID เอง</span>
+✓ Logged in as มิ้นท์ · OA: Support
+✓ Session saved (chmod 600)</div>
+    <div class="colhead" style="margin-top:14px">③ console ของ mock (ให้ grader เห็นว่า AI ทำอะไร)</div>
+    <div class="console"><div class="top">Mock LINE OA · Support</div><div class="cols">
+      <div class="list"><div class="on">Somchai K. <span class="dim">· 1</span></div><div>Arm</div><div>Nok</div></div>
+      <div class="msgs"><div class="b1">[ปุ่ม] แจ้งปัญหา</div><div class="b1">som***@gmail.com เชื่อม integration ไม่สำเร็จ</div><div class="b1">🖼 screenshot.jpg</div><div class="b2">สวัสดีครับคุณ Somchai ทีมรับเรื่องแล้ว… <span style="opacity:.7">· ส่งโดย agent</span></div></div>
+    </div></div>
+    <p class="dim" style="font-size:12.5px;margin-top:6px">mock เลียนแบบ chat.line.biz รันในเครื่อง ไม่ต้องมีบัญชี LINE · <code>webUrl</code> ใน mock จะเปิดหน้านี้</p>
+  </div>
+</div>
+
+<!-- ======================================================= -->
+<h2 id="uc">3. Use case (11 แบบ)</h2>
+<p class="lede">แต่ละช่อง: CS พิมพ์อะไร → AI เรียก tool อะไร → กฎที่ใช้</p>
+<div class="uc">
+  <div class="card"><div class="card-h"><h3>F1 คัดแชทตอนเช้า</h3><span class="pill ok">หลัก</span></div><div class="card-b"><div class="say">"มีแชทไหนรอตอบ"</div><p class="tl">list_chats → read_chat ×N</p><p class="dim">ไม่ทำเครื่องหมายว่าอ่าน · มีลิงก์ทุกแชท</p></div></div>
+  <div class="card"><div class="card-h"><h3>F2 ตอบลูกค้า</h3><span class="pill ok">หลัก</span></div><div class="card-b"><div class="say">"ร่างคำตอบแล้วส่ง"</div><p class="tl">read_chat → get_user_profile → send_message</p><p class="dim">AI ร่าง คนกดอนุญาต · มี dryRun</p></div></div>
+  <div class="card"><div class="card-h"><h3>F3 ดูภาพหน้าจอบั๊ก</h3><span class="pill ok">หลัก</span></div><div class="card-b"><div class="say">"รูปที่ลูกค้าส่งมาคืออะไร"</div><p class="tl">read_chat → get_attachment</p><p class="dim">รูปไปถึง AI เมื่อขอเท่านั้น</p></div></div>
+  <div class="card"><div class="card-h"><h3>F4 ค้นเรื่องเดียวกัน</h3><span class="pill ok">หลัก</span></div><div class="card-b"><div class="say">"มีใครแจ้งเรื่องเดียวกันอีกไหม"</div><p class="tl">search_messages → read_chat</p><p class="dim">ค้นภาษาไทยได้ · มีข้อความรอบ ๆ</p></div></div>
+  <div class="card"><div class="card-h"><h3>F5 session หมดอายุ</h3><span class="pill ok">หลัก</span></div><div class="card-b"><div class="say">(ระหว่างทำงาน)</div><p class="tl">AUTH_EXPIRED → npm run login</p><p class="dim">ไม่ login ใหม่ให้เองเงียบ ๆ</p></div></div>
+  <div class="card"><div class="card-h"><h3>F6 ส่ง PDF วิธีใช้</h3><span class="pill ok">หลัก</span></div><div class="card-b"><div class="say">"ส่งคู่มือ export ให้ Nok"</div><p class="tl">send_message(attachmentPaths)</p><p class="dim">ส่งจาก outbox เท่านั้น</p></div></div>
+  <div class="card"><div class="card-h"><h3>F7 คัดเคส</h3><span class="pill acc">ชั้นเคส</span></div><div class="card-b"><div class="say">"แท็กเคสที่เปิดอยู่ให้หน่อย"</div><p class="tl">list_cases → tag_case → set_case_status(waiting)</p><p class="dim">แท็กจาก AI รอ CS ยืนยัน</p></div></div>
+  <div class="card"><div class="card-h"><h3>F8 ปิดเคส</h3><span class="pill acc">ชั้นเคส</span></div><div class="card-b"><div class="say">"เคสนี้เสร็จแล้ว"</div><p class="tl">set_case_status(resolved, confirmedByStaff)</p><p class="dim">ลูกค้าพิมพ์มาอีก = เปิดเคสใหม่ + เตือน</p></div></div>
+  <div class="card"><div class="card-h"><h3>F9 สรุปรายสัปดาห์</h3><span class="pill acc">ชั้นเคส</span></div><div class="card-b"><div class="say">"สัปดาห์นี้ปัญหาไหนเยอะสุด"</div><p class="tl">case_stats(groupBy=area) + list_cases</p><p class="dim">ตัวเลขจาก SQL · AI เขียนสรุป</p></div></div>
+  <div class="card"><div class="card-h"><h3>F10 คนแจ้งคือใคร</h3><span class="pill acc">ชั้นเคส</span></div><div class="card-b"><div class="say">"ลูกค้าคนนี้ใช้งานอะไรล่าสุด"</div><p class="tl">get_person → CS ยืนยันการ link</p><p class="dim">อีเมลปิดบัง · บริบท OA ผลิตภัณฑ์ = ถ้ามีเวลา</p></div></div>
+  <div class="card"><div class="card-h"><h3>F11 CS ขอคุยเอง</h3><span class="pill ok">หลัก</span></div><div class="card-b"><div class="say">"ขอคุยเองดีกว่า"</div><p class="tl">เปิด webUrl</p><p class="dim">ไปที่หน้าแชทนั้นใน chat.line.biz</p></div></div>
+</div>
+
+<!-- ======================================================= -->
+<h2 id="tools">4. Tool 13 ตัว</h2>
+<div class="two">
+<div class="card"><div class="card-h"><h3>งานหลัก 7 ตัว</h3><span class="pill ok">ต้องมี</span></div><div class="card-b scroll"><table><tbody>
+<tr><td><code>list_chats</code></td><td>ดูรายการแชทที่ยังคุยอยู่</td></tr>
+<tr><td><code>read_chat</code></td><td>อ่านแชท ไฟล์แนบเป็นแค่ข้อมูลไฟล์</td></tr>
+<tr><td><code>search_messages</code></td><td>ค้นข้อความทุกแชท (ภาษาไทยได้)</td></tr>
+<tr><td><code>send_message</code></td><td>ส่งข้อความ/ไฟล์ <span class="pill warn">เขียน</span> ปิดไว้เป็นค่าเริ่มต้น</td></tr>
+<tr><td><code>get_user_profile</code></td><td>โปรไฟล์ + แท็ก + โน้ต (ปิดบัง PII)</td></tr>
+<tr><td><code>get_attachment</code></td><td>โหลดไฟล์ รูปส่งให้ AI เห็น</td></tr>
+<tr><td><code>auth_status</code></td><td>เช็กว่า login อยู่ไหม เข้า OA ไหนได้</td></tr>
+</tbody></table></div></div>
+<div class="card"><div class="card-h"><h3>ชั้นเคส 6 ตัว</h3><span class="pill acc">ควรมี</span></div><div class="card-b scroll"><table><tbody>
+<tr><td><code>list_cases</code></td><td>รายการเคส กรองตามสถานะ / ชนิด / แท็ก</td></tr>
+<tr><td><code>open_case</code></td><td>AI แยกเรื่องใหม่เป็นเคสใหม่</td></tr>
+<tr><td><code>tag_case</code></td><td>แท็ก (AI เสนอ CS ยืนยัน)</td></tr>
+<tr><td><code>set_case_status</code></td><td>open / waiting / resolved (resolved ต้องให้คนยืนยัน)</td></tr>
+<tr><td><code>get_person</code></td><td>คนนี้คือใคร มีเคสอะไร link ข้าม OA</td></tr>
+<tr><td><code>case_stats</code></td><td>สถิติตามช่วงเวลา</td></tr>
+</tbody></table></div></div>
+</div>
+
+<!-- ======================================================= -->
+<h2 id="how">5. ทำงานยังไง (ภาพเดียว)</h2>
+<figure class="d"><div class="scroll">
+<svg viewBox="0 0 900 200" role="img" aria-label="ภาพรวมการทำงาน">
+  <rect class="bx acc" x="10" y="40" width="150" height="64" rx="9"/><text class="b" x="85" y="66" text-anchor="middle">CS / agent</text><text class="t2" x="85" y="86" text-anchor="middle">พิมพ์สั่งภาษาคน</text>
+  <line class="ln" x1="160" y1="72" x2="196" y2="72"/>
+  <rect class="bx" x="200" y="40" width="150" height="64" rx="9"/><text class="b" x="275" y="66" text-anchor="middle">แอป Claude</text><text class="t2" x="275" y="86" text-anchor="middle">ถามก่อนส่ง</text>
+  <line class="ln" x1="350" y1="72" x2="386" y2="72"/>
+  <rect class="bx ok" x="390" y="20" width="230" height="104" rx="9"/><text class="b" x="505" y="44" text-anchor="middle">MCP server ของเรา</text><text class="t2" x="505" y="64" text-anchor="middle">13 tool · ไฟล์แนบ · ปิดบัง PII</text><text class="t2" x="505" y="82" text-anchor="middle">SQLite: ค้นหา + เคส · audit log</text><text class="t2" x="505" y="100" text-anchor="middle">LineOAClient (mock ↔ ของจริง)</text>
+  <line class="ln" x1="620" y1="60" x2="686" y2="50"/><line class="ln" x1="620" y1="90" x2="686" y2="110"/>
+  <rect class="bx" x="690" y="22" width="200" height="50" rx="9"/><text class="b" x="790" y="44" text-anchor="middle">chat.line.biz จริง</text><text class="t2" x="790" y="62" text-anchor="middle">cookie ของ CS</text>
+  <rect class="bx mute" x="690" y="88" width="200" height="50" rx="9"/><text class="b" x="790" y="110" text-anchor="middle">mock (Hono)</text><text class="t2" x="790" y="128" text-anchor="middle">ใช้ test และเดโม</text>
+  <rect class="bx warn" x="390" y="148" width="230" height="44" rx="9"/><text class="b" x="505" y="168" text-anchor="middle">npm run login (Playwright)</text><text class="t2" x="505" y="184" text-anchor="middle">คน login เอง → session.json</text>
+  <line class="ln" x1="505" y1="148" x2="505" y2="128"/>
+</svg></div>
+<figcaption>จุดสำคัญคือ interface <code>LineOAClient</code> ตัวเดียว tool ไม่รู้ว่าคุยกับ mock หรือของจริง และทั้งสองฝั่งผ่าน test ชุดเดียวกัน</figcaption>
+</figure>
+
+<!-- ======================================================= -->
+<h2 id="tree">6. Folder และจำนวนไฟล์ตอนส่ง</h2>
+<p class="lede">ตอนนี้ repo มี <b>156 ไฟล์</b> (เอกสาร + รีเซิร์จ) ยังไม่มีโค้ด · ตัวเลขของโฟลเดอร์ที่ยังไม่มีเป็นค่าประมาณจากแผน</p>
+<div class="tree"><span class="n">lineoa-cs-mcp/</span>                       <span class="c">~270 ไฟล์</span>
+├─ README.md  CHANGELOG.md  CLAUDE.md  AGENTS.md      <span class="c">หน้าแรกของ grader + กติกา agent</span>
+├─ package.json  tsconfig.json  biome.json  vitest.config.ts  .env.example
+├─ .github/workflows/ci.yml                          <span class="c">lint · typecheck · test</span>
+├─ .claude/                    <span class="w">~25 (ใหม่)</span>   <span class="c">plan kit: skill, agent, rule, agent-strategy/runs.md</span>
+├─ <span class="n">src/</span>                       <span class="w">~45 (ใหม่)</span>
+│  ├─ index.ts  server.ts  config.ts
+│  ├─ domain/      types · errors · cursor · ids · mask (ปิดบัง PII)
+│  ├─ client/      LineOAClient.ts · mock/ · web/ (endpoints, csrf)
+│  ├─ auth/        session-store · login-cli · lock
+│  ├─ tools/       7 ไฟล์ = 7 tool หลัก
+│  ├─ attachments/ fetch · mime · image · outbox
+│  ├─ index/       SQLite FTS5 trigram · sync
+│  ├─ cases/       store · case-opener · tools/ 6 ไฟล์
+│  └─ audit/       audit-log
+├─ <span class="n">mock-server/</span>               <span class="w">~20 (ใหม่)</span>   <span class="c">app.ts · routes · seed (2 OA, รูป, PDF) · public/ console</span>
+├─ <span class="n">tests/</span>                     <span class="w">~20 (ใหม่)</span>   <span class="c">e2e/ · contract/ (mock + ของจริง) · unit/</span>
+├─ <span class="n">docs/</span>                      <span class="k">17 (มีแล้ว)</span>  <span class="c">+ dev/plans/ ~5</span>
+│  ├─ README.md               <span class="c">แผนที่เอกสาร</span>
+│  ├─ PLAN.md · PLAN.html · PLAN_thai.md
+│  ├─ plan/    STATUS · LOG · DECISIONS · run-plan · how-cs-uses-it · plan-summary (หน้านี้)
+│  ├─ dev/     STATUS · LOG · plans/
+│  └─ research/ README · reading-list · refs-comparison.html · STATUS · LOG
+└─ <span class="n">test/research/</span>             <span class="k">136 (มีแล้ว)</span> <span class="c">23 โปรไฟล์ · 54 ภาพ · 23 log การลอง · fixture API 29 ไฟล์</span></div>
+<p class="dim" style="font-size:13px;margin-top:8px">ไม่เข้า repo เด็ดขาด: <code>docs/ASSIGNMENT.md</code> · session/cookie (<code>~/.config/lineoa-mcp/</code>) · ไฟล์ HAR (<code>~/lineoa-har/</code>) · cache ไฟล์แนบ · <code>test/research/_vendor/</code></p>
+
+<!-- ======================================================= -->
+<h2 id="steps">7. ลำดับงานถึงส่ง</h2>
+<figure class="d"><div class="scroll">
+<svg viewBox="0 0 900 120" role="img" aria-label="ลำดับขั้น">
+  <rect class="bx ok" x="10" y="14" width="100" height="44" rx="7"/><text class="b" x="20" y="33">0 แผน ✓</text><text class="t2" x="20" y="50">+ HAR (คุณ)</text>
+  <rect class="bx acc" x="116" y="14" width="100" height="44" rx="7"/><text class="b" x="126" y="33">1 ตั้งโปรเจกต์</text><text class="t2" x="126" y="50">TS · test · CI</text>
+  <rect class="bx acc" x="222" y="14" width="110" height="44" rx="7"/><text class="b" x="232" y="33">2 mock ‖ auth</text><text class="t2" x="232" y="50">จาก fixture</text>
+  <rect class="bx acc" x="338" y="14" width="110" height="44" rx="7"/><text class="b" x="348" y="33">3 tool 7 ตัว</text><text class="t2" x="348" y="50">+ webUrl</text>
+  <rect class="bx acc" x="454" y="14" width="100" height="44" rx="7"/><text class="b" x="464" y="33">4 e2e test</text><text class="t2" x="464" y="50">ทั้งเส้น</text>
+  <rect class="bx crit" x="560" y="14" width="110" height="44" rx="7"/><text class="b" x="570" y="33">✓ Checkpoint</text><text class="t2" x="570" y="50">เดโมบน mock</text>
+  <rect class="bx ok" x="10" y="68" width="120" height="44" rx="7"/><text class="b" x="20" y="87">5 ต่อของจริง</text><text class="t2" x="20" y="104">WebClient</text>
+  <rect class="bx acc" x="136" y="68" width="100" height="44" rx="7"/><text class="b" x="146" y="87">6 ชั้นเคส</text><text class="t2" x="146" y="104">6 tool</text>
+  <rect class="bx ok" x="242" y="68" width="110" height="44" rx="7"/><text class="b" x="252" y="87">7 README</text><text class="t2" x="252" y="104">+ GIF เดโม</text>
+  <rect class="bx dash" x="358" y="68" width="100" height="44" rx="7"/><text class="b" x="368" y="87">8 Telegram</text><text class="t2" x="368" y="104">ถ้ามีเวลา</text>
+  <rect class="bx warn" x="464" y="68" width="100" height="44" rx="7"/><text class="b" x="474" y="87">9 v0.1.0</text><text class="t2" x="474" y="104">tag + main</text>
+  <rect class="bx dash" x="570" y="68" width="110" height="44" rx="7"/><text class="b" x="580" y="87">10 วิดีโอโบนัส</text><text class="t2" x="580" y="104">ถ้ามีเวลา</text>
+  <rect class="bx crit" x="690" y="68" width="200" height="44" rx="7"/><text class="b" x="700" y="87">push + ตอบอีเมล</text><text class="t2" x="700" y="104">ก่อน ศ. 23:59</text>
+</svg></div>
+<figcaption>ถ้าไม่ทัน ตัดตามลำดับ: วิดีโอโบนัส → Telegram → บริบท OA ผลิตภัณฑ์ → ชั้นเคส → WebClient · ทาง mock ต้องผ่านเสมอ</figcaption>
+</figure>
+
+<!-- ======================================================= -->
+<h2 id="grader">8. Grader ได้อะไรตอนเปิด repo</h2>
+<div class="card"><div class="card-b scroll"><table>
+<thead><tr><th>เกณฑ์ของโจทย์</th><th>เขาจะเห็นอะไร</th></tr></thead><tbody>
+<tr><td>Functionality (5 อย่าง)</td><td>ทำตาม README ไม่กี่คำสั่ง (เช่น <code>npm install</code> → เปิด mock → <code>claude mcp add</code>) แล้วคุยกับ Claude ได้เลย · e2e test ผ่านทั้ง 5 อย่าง · GIF เดโม</td></tr>
+<tr><td>Repo / code quality</td><td>โครง folder ข้อ 6 · TypeScript strict · Biome · CI · commit ทีละเรื่อง ไม่ squash</td></tr>
+<tr><td>High-level understanding</td><td>README มีแผนภาพสถาปัตยกรรม + เหตุผลแต่ละทางเลือก</td></tr>
+<tr><td>Authentication</td><td>คน login เองผ่าน Playwright · session 0600 · ตรวจบัญชี · <code>AUTH_EXPIRED</code> บอกวิธีแก้</td></tr>
+<tr><td>Attachments</td><td>ข้อมูลไฟล์ก่อน โหลดเมื่อขอ · ตรวจชนิดจาก magic bytes · ย่อรูป · จำกัดขนาด · outbox</td></tr>
+<tr><td>วิธีทำงานกับ coding agent</td><td><code>CLAUDE.md</code> · <code>.claude/</code> · lane plan/dev/research · STATUS/LOG · DECISIONS · รีเซิร์จ 34 ref</td></tr>
+</tbody></table></div></div>
+
+<!-- ======================================================= -->
+<h2 id="risk">9. สิ่งที่ยังไม่รู้</h2>
+<div class="note">
+<ul>
+  <li>endpoint ของ chat.line.biz มาจากการอ่านโค้ดของคนอื่น ยังไม่ได้ยืนยันกับของจริง <b>รอไฟล์ HAR</b> จาก OA จริง (อ่านอย่างเดียว) และ OA ทดสอบ</li>
+  <li>ยังไม่รู้ว่าหน้าเว็บส่ง PDF ได้ไหม และมี API ค้นข้อความหรือเปล่า (ถ้าไม่มี เราค้นจาก index ในเครื่อง)</li>
+  <li>ข้อความแจ้งเตือนที่ซ้ำทุกวันใน OA ของผลิตภัณฑ์ เป็นการเตือนปกติหรือส่งซ้ำ ต้องถามเจ้าของ OA</li>
+  <li>รอตัดสินใจ: ข้อเสนอ 5 ข้อจากรีเซิร์จรอบ 5 (จำกัดการส่งต่อวัน, <code>ENDPOINT_CHANGED</code>, redirect = หมดอายุ, กรองสติกเกอร์, บอกชัดว่าอ่านไม่ mark read)</li>
+</ul>
+</div>
+
+</div>
+</body>
+</html>

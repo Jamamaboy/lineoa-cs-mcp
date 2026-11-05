@@ -1,0 +1,151 @@
+{
+  "slug": "linelib",
+  "name": "Madoa5561/LINELib",
+  "category": "line-internal-api",
+  "url": "https://github.com/Madoa5561/LINELib",
+  "one_liner_th": "ไลบรารี Python (pkg lineoa) ล็อกอินและส่ง/อ่าน/อัปโหลด/SSE ผ่าน chat.line.biz",
+  "language": "Python",
+  "license": "MIT",
+  "github": {
+    "stars": 13,
+    "forks": 2,
+    "open_issues": 0,
+    "last_push": "2026-08-25",
+    "created": "2026-01-25",
+    "fetched_at": "2026-11-05"
+  },
+  "users_claim": null,
+  "auth": {
+    "method_th": "ลำดับ: ใช้ cookie ที่บันทึกไว้ (ตรวจโดยเปิด chat.line.biz จริง) -> ถ้าไม่ได้ interactive_login=True เปิด Chrome/Edge แบบเห็นหน้าจอด้วย Playwright ให้ผู้ใช้ผ่าน reCAPTCHA เอง -> ไม่งั้น HTTP ตรง POST account.line.biz/api/login/email (ถ้าต้อง captcha โยน InteractiveLoginRequired) -> OTP อีเมล 6 หลักผ่าน callback ที่ POST /api/verification/verify (resend ได้) -> GET /api/v1/csrfToken แล้วตั้ง cookie XSRF-TOKEN. ไม่ทำลาย captcha. Header ใช้ UA/sec-ch-ua ของ Chrome 151 บน Windows",
+    "storage_th": "ไฟล์ JSON (cookie_path) เขียนแบบ atomic, chmod 0600, file lock (fcntl/msvcrt); เก็บเฉพาะ cookie *.line.biz (เช่น __Host-chat-ses, chat-device-group, XSRF-TOKEN) ไม่เก็บอีเมล/รหัสผ่าน; มีประวัติ rate-limit ในไฟล์เดียวกัน",
+    "borrow_th": "ควรลอก: login ครบวงจร, reCAPTCHA fallback แบบคนทำเอง, ตรวจ cookie ว่ายังใช้ได้จริงก่อนใช้, ไฟล์ 0600+lock. ควรเลี่ยง: การเก็บ/ส่งรหัสผ่านใน library และ UA ปลอมเป็น Windows"
+  },
+  "attachments": {
+    "how_th": "อัปโหลด 2 ขั้น: POST /api/v1/bots/{bot}/messages/{chat}/uploadFile (multipart, ได้ contentMessageToken) แล้ว POST /api/v1/bots/{bot}/chats/{chat}/messages/bulkSendFiles ด้วย {items:[{sendId,contentMessageToken}]}. ดาวน์โหลด: GET chat-content.line.biz/bot/{bot}/{contentHash}/preview คืน bytes; SSE normalized_message สร้าง media_url ให้ image/video/file; มี save_message_media, สติกเกอร์จาก stickershop.line-scdn.net",
+    "borrow_th": "ลอก flow อัปโหลด 2 ขั้นและ URL ดาวน์โหลดแบบ on-demand ตาม contentHash. ระวัง: ส่ง MIME เป็น application/octet-stream เสมอ และไม่เห็นการจำกัดขนาด/ชนิดไฟล์"
+  },
+  "core_features": [
+    {
+      "name": "Login",
+      "detail_th": "อีเมล+รหัสผ่าน+OTP, Playwright interactive"
+    },
+    {
+      "name": "Cookie persistence",
+      "detail_th": "JSON 0600 + lock"
+    },
+    {
+      "name": "send_message / send_file",
+      "detail_th": "POST .../messages/send และ upload 2 ขั้น"
+    },
+    {
+      "name": "get_chats / get_chat_messages",
+      "detail_th": "v2 chats, v3 messages (before/after cursor)"
+    },
+    {
+      "name": "SSE listen",
+      "detail_th": "streamingApiToken แล้ว stream chat-streaming-api.line.biz/v2/sse"
+    },
+    {
+      "name": "Media save",
+      "detail_th": "save_message_media / save_image_preview"
+    },
+    {
+      "name": "Rate limit",
+      "detail_th": "จำกัดส่ง 18 ข้อความต่อ 60 วินาทีในเครื่อง"
+    },
+    {
+      "name": "Async + Flex",
+      "detail_th": "aiohttp และ Flex/card message"
+    }
+  ],
+  "flow": [
+    {
+      "actor": "user",
+      "label": "email+password"
+    },
+    {
+      "actor": "browser",
+      "label": "Playwright/reCAPTCHA"
+    },
+    {
+      "actor": "service",
+      "label": "OTP verify"
+    },
+    {
+      "actor": "storage",
+      "label": "บันทึก cookie 0600"
+    },
+    {
+      "actor": "service",
+      "label": "GET csrfToken"
+    },
+    {
+      "actor": "tool",
+      "label": "send/upload/SSE"
+    }
+  ],
+  "highlights_th": [
+    "ครอบคลุมที่สุดในกลุ่ม: login, ส่ง, ไฟล์, SSE",
+    "เอกสารหลายหน้าและ test 150 ข้อผ่าน",
+    "อัปโหลด/ดาวน์โหลดไฟล์ใช้งานได้จริงตามซอร์ส"
+  ],
+  "weaknesses_th": [
+    "เก็บ/รับรหัสผ่านใน process",
+    "ไม่เห็น auto re-login เมื่อ session หมดอายุกลางทาง (ล้มด้วย LINEOAError)",
+    "ไม่จำกัดขนาด/MIME ไฟล์"
+  ],
+  "tools_or_endpoints": [
+    "POST https://account.line.biz/api/login/email",
+    "POST https://account.line.biz/api/verification/verify",
+    "POST https://account.line.biz/api/verification/resend",
+    "GET https://account.line.biz/oauth2/authorize",
+    "GET https://chat.line.biz/api/v1/csrfToken",
+    "GET https://chat.line.biz/api/v1/bots?limit=1000&noFilter=true",
+    "GET /api/v1/me",
+    "GET /api/v2/bots/{bot_id}/chats",
+    "GET /api/v3/bots/{bot_id}/chats/{chat_id}/messages",
+    "POST /api/v1/bots/{bot_id}/chats/{chat_id}/messages/send",
+    "POST /api/v1/bots/{bot_id}/messages/{chat_id}/uploadFile",
+    "POST /api/v1/bots/{bot_id}/chats/{chat_id}/messages/bulkSendFiles",
+    "POST /api/v1/bots/{bot_id}/streamingApiToken",
+    "GET https://chat-streaming-api.line.biz/api/v2/sse",
+    "GET https://chat-content.line.biz/bot/{bot_id}/{content_hash}/preview",
+    "GET https://stickershop.line-scdn.net/stickershop/v1/sticker/{id}/android/sticker.png",
+    "cookies: __Host-chat-ses, chat-device-group, XSRF-TOKEN",
+    "headers: X-XSRF-TOKEN, Origin, Referer, Sec-Fetch-*"
+  ],
+  "trial": {
+    "status": "partial",
+    "summary_th": "uv venv + ติดตั้ง, import ด้วย python -I แล้วลิสต์ method สาธารณะ (LineBot 41, LINELib 56, ChatService 48), pytest 150 ข้อผ่าน. ไม่ได้รัน login/ไม่เรียก LINE",
+    "log": "trials/linelib.md"
+  },
+  "screenshots": [
+    {
+      "file": "shots/linelib-1.png",
+      "caption_th": "หน้า GitHub ของ LINELib",
+      "kind": "github-page"
+    },
+    {
+      "file": "shots/linelib-2.png",
+      "caption_th": "ผล import/ลิสต์ method และ pytest ที่รันจริง",
+      "kind": "real-run"
+    }
+  ],
+  "scores": {
+    "relevance": 5,
+    "auth": 4,
+    "attachments": 4,
+    "maturity": 3,
+    "tryability": 3,
+    "reasons_th": {
+      "relevance": "ทำสิ่งเดียวกับเรา: ล็อกอินแล้วอ่าน/ส่ง/ไฟล์ผ่านเว็บ chat",
+      "auth": "login ครบ + reCAPTCHA แบบคนทำ + เก็บ cookie 0600 แต่รับรหัสผ่าน",
+      "attachments": "มีทั้งอัปโหลด 2 ขั้นและดาวน์โหลดตาม hash แต่ไม่จำกัดขนาด/MIME",
+      "maturity": "13 ดาว เอกสาร+test ดี แต่โปรเจกต์ใหม่คนเดียว",
+      "tryability": "import และ test รันได้ แต่เรียกจริงไม่ได้"
+    }
+  },
+  "sources": [
+    "https://github.com/Madoa5561/LINELib"
+  ]
+}

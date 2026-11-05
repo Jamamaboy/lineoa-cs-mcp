@@ -1,0 +1,54 @@
+{
+  "_meta": {
+    "endpoint": "Other error responses (bodies are NOT evidenced by any repo; statuses are)",
+    "sources": [
+      "linebiz src/core/errors.ts:204-208,245-255",
+      "linebiz src/resources/messages.ts:82",
+      "omnichat-bridge test (mock 400 body, repo-authored)",
+      "propertyos-line-importer src/oam-api.js:37-41,664-690",
+      "LINELib docs/messages-and-media.md:20"
+    ],
+    "uncertain": [
+      "Every body below is a placeholder guess except the status codes and the Retry-After header."
+    ]
+  },
+  "examples": {
+    "400_validation": {
+      "status": 400,
+      "body": {
+        "code": "INVALID_ARGUMENT",
+        "message": "sendId is required",
+        "details": [
+          {
+            "property": "sendId",
+            "message": "must not be empty"
+          }
+        ]
+      },
+      "source": "omnichat-bridge test:973-976 (guessed-by-repo)"
+    },
+    "403_csrf_or_role": {
+      "status": 403,
+      "body": {},
+      "source": "linebiz errors.ts:205; LINELib: responseMode=BOT accounts get 403 on manual chat"
+    },
+    "404_not_found": {
+      "status": 404,
+      "body": {},
+      "source": "linebiz errors.ts:206"
+    },
+    "429_rate_limited": {
+      "status": 429,
+      "headers": {
+        "Retry-After": "2"
+      },
+      "body": {},
+      "source": "linebiz errors.ts:245-255; propertyos (csv ~1000 req/60s)"
+    },
+    "500_unknown_flex": {
+      "status": 500,
+      "body": {},
+      "source": "linebiz src/resources/messages.ts:82 (flexJson on unknown message, never retry)"
+    }
+  }
+}

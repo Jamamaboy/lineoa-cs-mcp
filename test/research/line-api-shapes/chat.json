@@ -1,0 +1,69 @@
+{
+  "_meta": {
+    "endpoint": "GET /api/v1/bots/{botId}/chats/{chatId}",
+    "host": "https://chat.line.biz",
+    "requestHeaders": {
+      "Accept": "application/json, text/plain, */*",
+      "x-oa-chat-client-version": "20240513144702",
+      "Cookie": "__Host-chat-ses=FAKE-SESSION; chat-device-group=FAKE-DEVICE; XSRF-TOKEN=FAKE-XSRF"
+    },
+    "sources": [
+      "LINELib ChatService.py (get_chat; response keys never read)",
+      "PLAN.md §6a (get_user_profile)"
+    ],
+    "uncertain": [
+      "Whole shape is ASSUMED to equal one item of chats.json `list` — no repo types or reads it. Confirm in HAR."
+    ]
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "chatId": "Uc5000000000000000000000000000001",
+      "updatedAt": 1793844910000,
+      "tagIds": [
+        "fakevip000000000000000000a"
+      ],
+      "autoTagIds": [],
+      "read": true,
+      "done": false,
+      "followedUp": false,
+      "spam": false,
+      "muteAtPc": false,
+      "muteAtApp": false,
+      "profile": {
+        "userId": "Uc5000000000000000000000000000001",
+        "name": "สมชาย ใจดี",
+        "friend": true,
+        "lastActivityExpiresAt": 1794448800000,
+        "iconHash": "FAKE-user-iconhash"
+      },
+      "lastReadAt": 1793844480000,
+      "lastReceivedAt": 1793844480000,
+      "lastTalkedAt": 1793844910000,
+      "lastReadMessageId": "586900000000000050",
+      "chatType": "USER",
+      "status": "active",
+      "assignedBizId": "00000000-0000-4000-8000-0000000000a1",
+      "latestEvent": {
+        "type": "messageSent",
+        "timestamp": 1793844910000,
+        "source": {
+          "chatId": "Uc5000000000000000000000000000001",
+          "userId": "Uc5000000000000000000000000000001"
+        },
+        "message": {
+          "id": "586900000000000115",
+          "type": "text",
+          "text": "ได้รับสลิปแล้วค่ะ ยอด 1,250 บาท ตรวจสอบเรียบร้อย ขอบคุณที่ใช้บริการนะคะ 🙏",
+          "quoteToken": "FAKE-quote-10",
+          "quotedMessageId": "586900000000000106"
+        },
+        "sendId": "Uc5000000000000000000000000000001_1793844910000_04821937",
+        "bizId": "00000000-0000-4000-8000-0000000000a1"
+      },
+      "lastSentAt": 1793844910000,
+      "userLastReadAt": 1793844910000,
+      "userLastReadMessageId": "586900000000000060"
+    }
+  }
+}

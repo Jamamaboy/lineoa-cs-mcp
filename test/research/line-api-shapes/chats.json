@@ -1,0 +1,254 @@
+{
+  "_meta": {
+    "endpoint": "GET /api/v2/bots/{botId}/chats",
+    "host": "https://chat.line.biz",
+    "requestHeaders": {
+      "Accept": "application/json, text/plain, */*",
+      "x-oa-chat-client-version": "20240513144702",
+      "Cookie": "__Host-chat-ses=FAKE-SESSION; chat-device-group=FAKE-DEVICE; XSRF-TOKEN=FAKE-XSRF"
+    },
+    "query": {
+      "folderType": "ALL",
+      "tagIds": "",
+      "autoTagIds": "",
+      "limit": 25,
+      "prioritizePinnedChat": "true",
+      "next": "(omit on first page)"
+    },
+    "sources": [
+      "linebiz src/types/chats.ts:4-58",
+      "linebiz src/resources/chats.ts:34-55",
+      "linebiz test/fixtures/chats.ts:8-100",
+      "omnichat-bridge extension/line-oa-realtime.js:~296-306 (query), 6 (limit 25)",
+      "LINELib ChatService.py:~620-660 (query; limit 1-25)",
+      "line-chat-history-downloader scripts/downloader.js:76",
+      "line-friend-export 03-get-chats.ts (profile.name, nickname, iconHash, next)"
+    ],
+    "uncertain": [
+      "folderType values other than ALL (e.g. UNREAD / FOLLOW_UP / DONE?) are not in any repo; HAR needed for list_chats filter=unread|ongoing",
+      "sort order of the list (assumed lastTalkedAt desc, pinned first when prioritizePinnedChat=true)",
+      "`profile.nickname` seen only in line-friend-export / propertyos contacts",
+      "`lastActivityExpiresAt` meaning (ms timestamp)"
+    ],
+    "conflicts": [
+      "prioritizePinnedChat: linebiz default true, omnichat sends false (line-oa-realtime.js:~304)",
+      "LINELib implements no `next` paging for chats; linebiz/omnichat/line-friend-export use `next`"
+    ],
+    "notes": [
+      "`done` = resolved (PLAN A3 'ongoing' = done:false). `read:false` = unread.",
+      "Group chat ids start with C, rooms with R, 1:1 chats are the user's U id."
+    ]
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "list": [
+        {
+          "chatId": "Uc5000000000000000000000000000002",
+          "updatedAt": 1793854800000,
+          "tagIds": [
+            "fakerefund000000000000000c"
+          ],
+          "autoTagIds": [],
+          "read": false,
+          "done": false,
+          "followedUp": false,
+          "spam": false,
+          "muteAtPc": false,
+          "muteAtApp": false,
+          "profile": {
+            "userId": "Uc5000000000000000000000000000002",
+            "name": "นก 🌸",
+            "friend": true,
+            "lastActivityExpiresAt": 1794448800000,
+            "iconHash": "FAKE-user-iconhash"
+          },
+          "lastReadAt": 1793851200000,
+          "lastReceivedAt": 1793854800000,
+          "lastTalkedAt": 1793854800000,
+          "lastReadMessageId": "586900000000000050",
+          "chatType": "USER",
+          "status": "active",
+          "latestEvent": {
+            "type": "message",
+            "timestamp": 1793854800000,
+            "source": {
+              "chatId": "Uc5000000000000000000000000000002",
+              "userId": "Uc5000000000000000000000000000002"
+            },
+            "message": {
+              "id": "586900000000000301",
+              "type": "text",
+              "text": "ขอคืนเงินออเดอร์ #1250 ได้ไหมคะ ของมาไม่ครบค่ะ"
+            }
+          }
+        },
+        {
+          "chatId": "Ca1100000000000000000000000000001",
+          "updatedAt": 1793851200000,
+          "tagIds": [],
+          "autoTagIds": [],
+          "read": false,
+          "done": false,
+          "followedUp": false,
+          "spam": false,
+          "muteAtPc": false,
+          "muteAtApp": false,
+          "profile": {
+            "groupId": "Ca1100000000000000000000000000001",
+            "count": 6,
+            "name": "ทีมตัวแทนขาย",
+            "iconHash": "FAKE-group-iconhash"
+          },
+          "lastReadAt": 1793847600000,
+          "lastReceivedAt": 1793851200000,
+          "lastTalkedAt": 1793851200000,
+          "lastReadMessageId": "586900000000000050",
+          "chatType": "GROUP",
+          "status": "active",
+          "readMentioned": true,
+          "latestEvent": {
+            "type": "message",
+            "timestamp": 1793851200000,
+            "source": {
+              "chatId": "Ca1100000000000000000000000000001",
+              "userId": "Uc5000000000000000000000000000004"
+            },
+            "message": {
+              "id": "586900000000000201",
+              "type": "text",
+              "text": "@Demo Shop รบกวนเช็กยอดขายเมื่อวานให้หน่อยครับ",
+              "mention": {
+                "mentionees": [
+                  {
+                    "index": 0,
+                    "length": 18,
+                    "type": "self"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "chatId": "Uc5000000000000000000000000000001",
+          "updatedAt": 1793844910000,
+          "tagIds": [
+            "fakevip000000000000000000a"
+          ],
+          "autoTagIds": [],
+          "read": true,
+          "done": false,
+          "followedUp": false,
+          "spam": false,
+          "muteAtPc": false,
+          "muteAtApp": false,
+          "profile": {
+            "userId": "Uc5000000000000000000000000000001",
+            "name": "สมชาย ใจดี",
+            "friend": true,
+            "lastActivityExpiresAt": 1794448800000,
+            "iconHash": "FAKE-user-iconhash"
+          },
+          "lastReadAt": 1793844480000,
+          "lastReceivedAt": 1793844480000,
+          "lastTalkedAt": 1793844910000,
+          "lastReadMessageId": "586900000000000050",
+          "chatType": "USER",
+          "status": "active",
+          "assignedBizId": "00000000-0000-4000-8000-0000000000a1",
+          "latestEvent": {
+            "type": "messageSent",
+            "timestamp": 1793844910000,
+            "source": {
+              "chatId": "Uc5000000000000000000000000000001",
+              "userId": "Uc5000000000000000000000000000001"
+            },
+            "message": {
+              "id": "586900000000000115",
+              "type": "text",
+              "text": "ได้รับสลิปแล้วค่ะ ยอด 1,250 บาท ตรวจสอบเรียบร้อย ขอบคุณที่ใช้บริการนะคะ 🙏",
+              "quoteToken": "FAKE-quote-10",
+              "quotedMessageId": "586900000000000106"
+            },
+            "sendId": "Uc5000000000000000000000000000001_1793844910000_04821937",
+            "bizId": "00000000-0000-4000-8000-0000000000a1"
+          },
+          "lastSentAt": 1793844910000,
+          "userLastReadAt": 1793844910000,
+          "userLastReadMessageId": "586900000000000060"
+        },
+        {
+          "chatId": "Uc5000000000000000000000000000003",
+          "updatedAt": 1793757600000,
+          "tagIds": [],
+          "autoTagIds": [],
+          "read": true,
+          "done": true,
+          "followedUp": false,
+          "spam": false,
+          "muteAtPc": false,
+          "muteAtApp": false,
+          "profile": {
+            "userId": "Uc5000000000000000000000000000003",
+            "name": "Mint Chanakarn",
+            "friend": true,
+            "lastActivityExpiresAt": 1794448800000,
+            "iconHash": "FAKE-user-iconhash"
+          },
+          "lastReadAt": 1793757300000,
+          "lastReceivedAt": 1793757300000,
+          "lastTalkedAt": 1793757600000,
+          "lastReadMessageId": "586900000000000050",
+          "chatType": "USER",
+          "status": "active",
+          "assignedBizId": "00000000-0000-4000-8000-0000000000a2",
+          "latestEvent": {
+            "type": "messageSent",
+            "timestamp": 1793757600000,
+            "source": {
+              "chatId": "Uc5000000000000000000000000000003",
+              "userId": "Uc5000000000000000000000000000003"
+            },
+            "message": {
+              "id": "586900000000000090",
+              "type": "sticker",
+              "packageId": "11537",
+              "stickerId": "52002735",
+              "stickerResourceType": "ANIMATION"
+            },
+            "sendId": "Uc5000000000000000000000000000003_1793757600000_04821937",
+            "bizId": "00000000-0000-4000-8000-0000000000a2"
+          },
+          "lastSentAt": 1793757600000
+        },
+        {
+          "chatId": "Uc5000000000000000000000000000005",
+          "updatedAt": 1791252000000,
+          "tagIds": [],
+          "autoTagIds": [],
+          "read": true,
+          "done": false,
+          "followedUp": false,
+          "spam": false,
+          "muteAtPc": false,
+          "muteAtApp": false,
+          "profile": {
+            "userId": "Uc5000000000000000000000000000005",
+            "name": "พิม (ลูกค้าเก่า)",
+            "friend": false,
+            "lastActivityExpiresAt": 1794448800000,
+            "iconHash": "FAKE-user-iconhash"
+          },
+          "lastReadAt": 1791252000000,
+          "lastReceivedAt": 1791252000000,
+          "lastTalkedAt": 1791252000000,
+          "lastReadMessageId": "586900000000000050",
+          "chatType": "USER",
+          "status": "blocked"
+        }
+      ],
+      "next": "FAKE-next-cursor-chats-2"
+    }
+  }
+}

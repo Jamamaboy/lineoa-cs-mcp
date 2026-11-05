@@ -1,0 +1,76 @@
+{
+  "_meta": {
+    "endpoint": "GET /api/v1/bots",
+    "host": "https://chat.line.biz",
+    "requestHeaders": {
+      "Accept": "application/json, text/plain, */*",
+      "x-oa-chat-client-version": "20240513144702",
+      "Cookie": "__Host-chat-ses=FAKE-SESSION; chat-device-group=FAKE-DEVICE; XSRF-TOKEN=FAKE-XSRF"
+    },
+    "query": {
+      "noFilter": "true",
+      "limit": 1000,
+      "next": "(optional cursor)"
+    },
+    "sources": [
+      "linebiz src/types/bots.ts:2-20",
+      "linebiz src/resources/bots.ts:26-37",
+      "linebiz test/fixtures/bots.ts:4-24",
+      "LINELib ChatService.py:720-740, AuthService.py:46,322",
+      "omnichat-bridge extension/line-oa-realtime.js:196",
+      "propertyos-line-importer src/oam-api.js:293-295"
+    ],
+    "uncertain": [
+      "`userName` top-level only seen in LINELib (AuthService.py:322 + its test); linebiz does not type it",
+      "`next` cursor: linebiz reads it (src/resources/bots.ts:37); LINELib/omnichat never page (limit=1000)",
+      "userPermissionType values other than ADMIN (OPERATOR assumed)",
+      "responseMode=BOT accounts reject manual chat APIs with 403 (LINELib docs/messages-and-media.md:20)"
+    ]
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "userName": "ปุ้ย ฝ่ายบริการลูกค้า",
+      "list": [
+        {
+          "botId": "Ub0700000000000000000000000000001",
+          "basicSearchId": "@demo-shop",
+          "name": "Demo Shop",
+          "iconUrl": "https://profile.line-scdn.net/FAKE-bot-icon",
+          "iconHash": "FAKE-bot-iconhash",
+          "region": "TH",
+          "brandType": "GENERAL",
+          "userPermissionType": "ADMIN",
+          "responseMode": "CHAT",
+          "disabledCrm": false,
+          "unreadCount": 2,
+          "plan": {
+            "code": "free",
+            "planType": "FREE"
+          },
+          "offline": false,
+          "chatGrade": "GRADE_A"
+        },
+        {
+          "botId": "Ub0700000000000000000000000000002",
+          "basicSearchId": "@test-shop2",
+          "name": "ร้านทดสอบ 2",
+          "iconUrl": "https://profile.line-scdn.net/FAKE-bot-icon",
+          "iconHash": "FAKE-bot-iconhash",
+          "region": "TH",
+          "brandType": "GENERAL",
+          "userPermissionType": "OPERATOR",
+          "responseMode": "CHAT",
+          "disabledCrm": false,
+          "unreadCount": 0,
+          "plan": {
+            "code": "free",
+            "planType": "FREE"
+          },
+          "offline": false,
+          "chatGrade": "GRADE_A"
+        }
+      ]
+    }
+  }
+}

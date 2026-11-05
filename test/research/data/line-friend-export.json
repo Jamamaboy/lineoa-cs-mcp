@@ -1,0 +1,133 @@
+{
+  "slug": "line-friend-export",
+  "name": "tatsuyasusukida/line-friend-export-v2",
+  "category": "line-internal-api",
+  "url": "https://github.com/tatsuyasusukida/line-friend-export-v2",
+  "one_liner_th": "สคริปต์ TS เล่น cookie ซ้ำกับ /api/v2/chats เพื่อ export รายชื่อเพื่อน LINE OA",
+  "language": "TypeScript",
+  "license": "MIT",
+  "github": {
+    "stars": 0,
+    "forks": 2,
+    "open_issues": 0,
+    "last_push": "2023-08-14",
+    "created": "2023-08-13",
+    "fetched_at": "2026-11-05"
+  },
+  "users_claim": null,
+  "auth": {
+    "method_th": "ไม่มี login: ผู้ใช้คัดลอกสตริง Cookie ทั้งชุดจากเบราว์เซอร์ใส่ .env (LINE_CHAT_COOKIE) แล้วส่งเป็น header Cookie ใน GET https://chat.line.biz/api/v2/bots/{id}/chats; ไม่มี CSRF (อ่านอย่างเดียว) และไม่มีการจัดการหมดอายุ แค่พิมพ์ body แล้ว exit(1) เมื่อ status != 200. ส่วน Messaging API ใช้ Bearer channel access token",
+    "storage_th": "ไฟล์ .env (gitignored) และผลลัพธ์เป็น data-*.json ในเครื่อง",
+    "borrow_th": "ลอกได้แค่แนวคิดว่า cookie replay ก็พอสำหรับ GET. ควรเลี่ยง: ไม่ตรวจหมดอายุ ไม่ redact, ไม่มี retry"
+  },
+  "attachments": {
+    "how_th": "ไม่มีไฟล์แนบของแชต: ดาวน์โหลดรูปโปรไฟล์จาก profile.line-scdn.net/{iconHash} แล้วคำนวณ sha256 (base64) เพื่อ join ชื่อใน chats กับ userId จาก Messaging API",
+    "borrow_th": "เทคนิค hash รูปโปรไฟล์เพื่อจับคู่ identity น่าสนใจ แต่ไม่เกี่ยวกับการจัดการไฟล์แนบ"
+  },
+  "core_features": [
+    {
+      "name": "Follower IDs",
+      "detail_th": "GET api.line.me/v2/bot/followers/ids (token)"
+    },
+    {
+      "name": "Profiles",
+      "detail_th": "GET api.line.me/v2/bot/profile/{userId}"
+    },
+    {
+      "name": "Chats list",
+      "detail_th": "cookie replay ไป /api/v2/bots/{id}/chats?folderType=ALL&limit=25 วน next"
+    },
+    {
+      "name": "Icon hashing",
+      "detail_th": "sha256 ของรูปจาก profile.line-scdn.net"
+    },
+    {
+      "name": "Join",
+      "detail_th": "จับคู่ userId กับชื่อในแชตด้วย hash รูป"
+    }
+  ],
+  "flow": [
+    {
+      "actor": "user",
+      "label": "ใส่ cookie ใน .env"
+    },
+    {
+      "actor": "tool",
+      "label": "01 follower IDs (token)"
+    },
+    {
+      "actor": "service",
+      "label": "03 GET /api/v2/chats"
+    },
+    {
+      "actor": "service",
+      "label": "ดาวน์โหลดรูปโปรไฟล์"
+    },
+    {
+      "actor": "tool",
+      "label": "04/05 sha256 hash"
+    },
+    {
+      "actor": "storage",
+      "label": "06 join -> data-06.json"
+    }
+  ],
+  "highlights_th": [
+    "ตัวอย่างน้อยที่สุดของ cookie replay ที่ใช้ได้จริง",
+    "มีบทความ Zenn ประกอบ (ญี่ปุ่น)",
+    "เทคนิค hash รูปเพื่อ join identity"
+  ],
+  "weaknesses_th": [
+    "bug: ออกลูปก่อนต่อหน้าสุดท้ายเมื่อไม่มี next ทำให้ข้อมูลหน้าสุดท้ายหาย",
+    "ไม่มี test ไม่ดูแลต่อตั้งแต่ 2023-08",
+    "ไม่มี expiry/CSRF/redact"
+  ],
+  "tools_or_endpoints": [
+    "GET https://chat.line.biz/api/v2/bots/{LINE_CHAT_ID}/chats?folderType=ALL&limit=25&next=...",
+    "header Cookie: $LINE_CHAT_COOKIE",
+    "GET https://api.line.me/v2/bot/followers/ids",
+    "GET https://api.line.me/v2/bot/profile/{userId}",
+    "GET https://profile.line-scdn.net/{iconHash}",
+    "env: LINE_CHANNEL_ACCESS_TOKEN, LINE_CHAT_ID, LINE_CHAT_COOKIE"
+  ],
+  "trial": {
+    "status": "partial",
+    "summary_th": "ติดตั้ง (--ignore-scripts) และ tsc typecheck ทั้ง 6 สคริปต์ผ่าน. ไม่ได้รันสคริปต์เพราะ URL ฝังตายไปยัง LINE จริง. พบ scrap Zenn ที่เกี่ยวข้องและถ่ายภาพหน้าจอ แต่หา URL บทความไม่เจอ",
+    "log": "trials/line-friend-export.md"
+  },
+  "screenshots": [
+    {
+      "file": "shots/line-friend-export-1.png",
+      "caption_th": "หน้า GitHub ของ line-friend-export-v2",
+      "kind": "github-page"
+    },
+    {
+      "file": "shots/line-friend-export-2.png",
+      "caption_th": "ผล typecheck ที่รันจริง",
+      "kind": "real-run"
+    },
+    {
+      "file": "shots/line-friend-export-3.png",
+      "caption_th": "Zenn scrap ของผู้เขียน (ลิงก์ repo และบทความ)",
+      "kind": "docs"
+    }
+  ],
+  "scores": {
+    "relevance": 2,
+    "auth": 2,
+    "attachments": 1,
+    "maturity": 1,
+    "tryability": 2,
+    "reasons_th": {
+      "relevance": "ใช้ endpoint เดียวกันแต่เป็นสคริปต์ export ครั้งเดียว",
+      "auth": "แค่ replay cookie ไม่มี expiry/CSRF",
+      "attachments": "ไม่แตะไฟล์แนบของแชต",
+      "maturity": "0 ดาว ทิ้งตั้งแต่ 2023 ไม่มี test และมี bug หน้าสุดท้าย",
+      "tryability": "typecheck ผ่านแต่รันจริงไม่ได้"
+    }
+  },
+  "sources": [
+    "https://github.com/tatsuyasusukida/line-friend-export-v2",
+    "https://zenn.dev/tatsuyasusukida/scraps/ab9bf2326b4fce"
+  ]
+}

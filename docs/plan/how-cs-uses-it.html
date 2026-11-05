@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><title>CS เปิดใช้ยังไง + เทคนิคอยู่ตรงไหน</title>
+<style>
+:root{
+  --bg:var(--background,#fff);--fg:var(--foreground,#18181b);--mu:var(--muted-foreground,#71717a);
+  --bd:var(--border,#e4e4e7);--sf:var(--muted,#f4f4f5);--cd:var(--card,var(--background,#fff));
+  --ac:var(--accent,#f4f4f5);--acf:var(--accent-foreground,#18181b);
+  --c1:var(--chart-1,#2563eb);--c2:var(--chart-2,#16a34a);--c3:var(--chart-3,#d97706);--c4:var(--chart-4,#9333ea);--c5:var(--chart-5,#e11d48);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.65 system-ui,-apple-system,"Noto Sans Thai","Sarabun",sans-serif;padding:18px 18px 26px}
+h1{font-size:20px;margin:0 0 4px}h2{font-size:16px;margin:28px 0 8px}h3{font-size:14px;margin:0 0 6px}
+p{margin:0 0 8px}.mu{color:var(--mu)}.sm{font-size:12.5px}
+code{font:12px ui-monospace,Menlo,monospace;background:var(--sf);padding:1px 5px;border-radius:4px}
+.card{background:var(--cd);border:1px solid var(--bd);border-radius:12px;padding:12px 14px;margin:8px 0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:760px){.grid2,.grid3{grid-template-columns:1fr}}
+.pill{display:inline-block;font-size:11.5px;font-weight:600;padding:1px 8px;border-radius:99px;border:1px solid var(--bd);white-space:nowrap}
+.p1{color:var(--c1);border-color:var(--c1)}.p2{color:var(--c2);border-color:var(--c2)}.p3{color:var(--c3);border-color:var(--c3)}.p5{color:var(--c5);border-color:var(--c5)}.pm{color:var(--mu)}
+table{border-collapse:collapse;width:100%}th{text-align:left;font-size:12px;color:var(--mu);font-weight:600;padding:4px 8px;border-bottom:1px solid var(--bd)}
+td{padding:7px 8px;border-bottom:1px solid var(--bd);vertical-align:top;font-size:13px}tr:last-child td{border-bottom:0}
+ul{margin:4px 0;padding-left:20px}li{margin:2px 0}
+.note{border-left:3px solid var(--c1);padding:8px 12px;background:var(--sf);border-radius:0 8px 8px 0;margin:8px 0;font-size:13px}
+.note.ok{border-color:var(--c2)}.note.warn{border-color:var(--c3)}
+.scroll{overflow-x:auto}.scroll table{min-width:700px}.scroll svg{min-width:680px}
+svg{width:100%;height:auto;display:block}
+svg text{fill:var(--fg);font:12.5px system-ui,-apple-system,"Noto Sans Thai",sans-serif}
+svg .s{fill:var(--mu);font-size:11.5px}svg .b{font-weight:650}
+svg .box{fill:var(--cd);stroke:var(--bd);stroke-width:1.3}svg .hl{stroke:var(--c1);stroke-width:1.8}
+svg .zone{fill:var(--sf);stroke:none}
+svg .ln{stroke:var(--mu);stroke-width:1.3;fill:none;marker-end:url(#a)}#a path{fill:var(--mu)}
+.step{display:flex;gap:10px;align-items:flex-start}
+.num{flex:none;width:24px;height:24px;border-radius:50%;background:var(--c1);color:#fff;font-weight:700;font-size:12.5px;display:grid;place-items:center;margin-top:2px}
+.term{background:#111827;color:#e5e7eb;border-radius:10px;padding:10px 12px;font:12px/1.55 ui-monospace,Menlo,monospace;white-space:pre-wrap;margin:6px 0}
+.term .g{color:#86efac}.term .d{color:#9ca3af}.term .k{color:#93c5fd}
+/* mock app window */
+.win{border:1px solid var(--bd);border-radius:12px;overflow:hidden;background:var(--cd);margin:6px 0}
+.win .bar{display:flex;gap:6px;align-items:center;padding:7px 10px;border-bottom:1px solid var(--bd);background:var(--sf);font-size:12px}
+.win .bar i{width:9px;height:9px;border-radius:50%;background:var(--bd);display:inline-block}
+.win .in{padding:10px 12px;font-size:13px}
+.input{border:1px solid var(--bd);border-radius:10px;padding:8px 10px;color:var(--mu);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.chip{font-size:11.5px;border:1px solid var(--c1);color:var(--c1);border-radius:6px;padding:1px 7px;white-space:nowrap}
+.dlg{border:1px solid var(--bd);border-radius:10px;padding:10px 12px;margin:8px 0;box-shadow:0 4px 14px rgba(0,0,0,.08)}
+.btns{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.btn{font-size:12px;border:1px solid var(--bd);border-radius:7px;padding:3px 10px}
+.btn.pri{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+</style></head><body>
+
+<h1>CS เปิดใช้งานยังไง และเทคนิคในตารางอยู่ตรงไหนของระบบ</h1>
+<p class="mu sm">อ้างอิง <code>docs/PLAN.md</code> §1, §6, §7 · ตัวอย่างหน้าจอเป็นภาพจำลอง</p>
+
+<div class="note"><b>สรุปสั้น:</b> ตารางเทคนิคที่แปะมาคือ<b>เบื้องหลัง</b>ที่ทำงานอยู่ข้างใน server ซึ่ง CS ไม่เห็นเลย
+ส่วนสิ่งที่ CS เห็นมีแค่ <b>แอป Claude (หรือ AI client ตัวอื่น) ที่มี "ปลั๊กอิน LINE OA" เพิ่มเข้ามา</b>
+ใช่ เราเสนอได้เลยว่า "เราสร้าง tool ชุดหนึ่ง (MCP server) แล้วโชว์ว่า AI ใช้มันดูแลแชทได้จริง" เพราะนั่นคือสิ่งที่โจทย์ขอพอดี</div>
+
+<h2>1. ภาพรวม: CS เห็นอะไร และเทคนิคอยู่ตรงไหน</h2>
+<div class="scroll"><svg viewBox="0 0 900 250" role="img" aria-label="front and back">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z"/></marker></defs>
+<rect class="zone" x="6" y="6" width="290" height="238" rx="12"/>
+<text x="20" y="28" class="b">สิ่งที่ CS เห็น</text>
+<rect class="box" x="20" y="44" width="262" height="86" rx="10"/>
+<text x="34" y="68" class="b">แอป Claude Desktop</text>
+<text x="34" y="90" class="s">พิมพ์คุยภาษาคน</text>
+<text x="34" y="110" class="s">AI สรุป ร่างคำตอบ แล้วขออนุญาตก่อนส่ง</text>
+<rect class="box" x="20" y="146" width="262" height="80" rx="10"/>
+<text x="34" y="170" class="b">Terminal (ครั้งเดียวต่อกะ)</text>
+<text x="34" y="192" class="s">npm run login → browser เด้งขึ้นมา</text>
+<text x="34" y="212" class="s">CS login LINE ด้วยตัวเอง</text>
+<rect class="zone" x="318" y="6" width="576" height="238" rx="12"/>
+<text x="332" y="28" class="b">เบื้องหลัง (CS ไม่เห็น) = เทคนิคในตาราง</text>
+<rect class="box hl" x="332" y="44" width="180" height="182" rx="10"/>
+<text x="346" y="68" class="b">MCP server ของเรา</text>
+<text x="346" y="92" class="s">tool 6 ตัว</text>
+<text x="346" y="112" class="s">ถือ Browser Session</text>
+<text x="346" y="132" class="s">เรียก API ภายในที่ได้จาก</text>
+<text x="346" y="150" class="s">Network Inspection</text>
+<text x="346" y="174" class="s">File Handling:</text>
+<text x="346" y="192" class="s">โหลด/ย่อรูป ส่งไฟล์</text>
+<rect class="box" x="560" y="44" width="150" height="80" rx="10"/>
+<text x="574" y="68" class="b">chat.line.biz</text>
+<text x="574" y="90" class="s">หน้าเว็บ OA Manager</text>
+<text x="574" y="108" class="s">(หรือ mock ตอนเดโม)</text>
+<rect class="box" x="560" y="146" width="150" height="74" rx="10"/>
+<text x="574" y="170" class="b">Playwright</text>
+<text x="574" y="190" class="s">เปิด browser ให้ login</text>
+<text x="574" y="208" class="s">แล้วเก็บ cookie</text>
+<rect class="box" x="736" y="44" width="146" height="182" rx="10"/>
+<text x="750" y="68" class="b">ไฟล์ในเครื่อง CS</text>
+<text x="750" y="92" class="s">session.json (600)</text>
+<text x="750" y="112" class="s">SQLite สำหรับค้นหา</text>
+<text x="750" y="132" class="s">cache รูป/ไฟล์</text>
+<text x="750" y="152" class="s">outbox สำหรับส่งไฟล์</text>
+<text x="750" y="172" class="s">audit log</text>
+<path class="ln" d="M282 87 H328"/><path class="ln" d="M282 200 H304 V236 H635 V224"/>
+<path class="ln" d="M512 84 H556"/><path class="ln" d="M512 135 H732"/><path class="ln" d="M710 183 H732"/>
+</svg></div>
+
+<h2>2. ตารางเทคนิค: ใช้ทำอะไรในระบบของเรา</h2>
+<div class="scroll"><table>
+<tr><th>เทคนิค</th><th>ในงานของเราใช้ตรงไหน</th><th>เป็นทางหลักไหม</th><th>CS เห็นไหม</th></tr>
+<tr><td><b>Playwright</b></td><td>เปิด browser จริงให้ CS login เอง (รวม 2FA / captcha) แล้วเก็บ cookie · ถ้า endpoint ไหนเรียกตรงไม่ได้ ค่อยใช้คลิกหน้าเว็บแทนเป็นทางสำรอง</td><td><span class="pill p2">ใช้ตอน login</span></td><td>เห็นแค่ browser เด้งขึ้นมาตอน login</td></tr>
+<tr><td><b>Browser Session</b></td><td>ใช้ cookie ของ CS ที่ login ไว้ เก็บใน <code>session.json</code> สิทธิ์ 600 · ไม่เก็บรหัสผ่าน · ตรวจว่าเป็นบัญชีที่ตั้งไว้ · หมดอายุแล้วบอก <code>AUTH_EXPIRED</code></td><td><span class="pill p2">หลัก</span></td><td>ไม่เห็น</td></tr>
+<tr><td><b>Network Inspection</b></td><td>ศึกษาว่าหน้าเว็บเรียก API อะไร (HAR + repo ที่รีเซิร์จ) แล้ว server เรียก API เดียวกันตรง ๆ เร็วกว่าและพังยากกว่าการคลิกหน้าเว็บ</td><td><span class="pill p2">หลัก</span></td><td>ไม่เห็น</td></tr>
+<tr><td><b>DOM Inspection</b></td><td>อ่านข้อมูลจากหน้าเว็บ ใช้เป็นทางสำรองเท่านั้น เพราะถ้าหน้าเว็บเปลี่ยน class / layout ก็พังทันที</td><td><span class="pill pm">สำรอง</span></td><td>ไม่เห็น</td></tr>
+<tr><td><b>File Handling</b></td><td><code>get_attachment</code>: รูปย่อแล้วส่งให้ AI เห็น ไฟล์ใหญ่บันทึกลงเครื่องแล้วคืน path · ส่งไฟล์ได้เฉพาะจากโฟลเดอร์ outbox · ตรวจชนิดและขนาดไฟล์</td><td><span class="pill p2">หลัก</span></td><td>เห็นรูปในแชทกับ AI</td></tr>
+</table></div>
+<div class="note warn sm">เราเลือก "login ด้วย browser + เรียก API ตรง" แทน "ให้ Playwright คลิกหน้าเว็บทุกครั้ง" เหตุผลนี้เขียนไว้ใน PLAN §6 แล้ว และจะใส่ใน README เป็น trade-off ซึ่งเป็นคำถามที่ grader น่าจะถาม</div>
+
+<h2>3. CS เปิดใช้ยังไง: ติดตั้งครั้งเดียว 3 ขั้น</h2>
+<div class="card"><div class="step"><div class="num">1</div><div style="flex:1">
+<h3>ติดตั้ง server (IT หรือ CS ทำครั้งเดียว)</h3>
+<div class="term"><span class="g">$</span> git clone …/lineoa-cs-mcp && cd lineoa-cs-mcp
+<span class="g">$</span> npm install && npm run build</div></div></div></div>
+
+<div class="card"><div class="step"><div class="num">2</div><div style="flex:1">
+<h3>Login LINE (ทำต้นกะ ถ้า session หมดอายุ)</h3>
+<div class="term"><span class="g">$</span> npm run login
+<span class="d">Opening browser… sign in to LINE Business ID</span>
+✓ Logged in as มิ้นท์ · OA: Support
+✓ Session saved (chmod 600)</div>
+<p class="sm mu">browser จริงเด้งขึ้นมา CS กรอกเองทุกอย่าง server ไม่เคยเห็นรหัสผ่าน</p></div></div></div>
+
+<div class="card"><div class="step"><div class="num">3</div><div style="flex:1">
+<h3>บอกแอป Claude ว่ามี server นี้ (ครั้งเดียว)</h3>
+<div class="grid2">
+<div><p class="sm"><b>Claude Desktop:</b> Settings → Developer → Edit Config แล้ววาง</p>
+<div class="term">{ <span class="k">"mcpServers"</span>: {
+  <span class="k">"lineoa-cs"</span>: {
+    "command": "node",
+    "args": ["…/dist/server.js"],
+    "env": { "LINEOA_ALLOW_SEND": "true" }
+} } }</div></div>
+<div><p class="sm"><b>Claude Code</b> (สำหรับ grader / dev) คำสั่งเดียว</p>
+<div class="term"><span class="g">$</span> claude mcp add lineoa-cs -- node dist/server.js</div>
+<p class="sm mu">ถ้ามีเวลา: แพ็กเป็น Desktop Extension ให้ CS ดับเบิลคลิกติดตั้งได้เลย ไม่ต้องแก้ JSON</p></div>
+</div></div></div></div>
+
+<h2>4. ใช้ทุกวัน: เปิดแอป Claude แล้วคุยได้เลย</h2>
+<div class="win"><div class="bar"><i></i><i></i><i></i><b style="margin-left:6px">Claude</b></div>
+<div class="in">
+<p class="mu sm">เปิดแอปตามปกติ ปุ่ม tool ตรงช่องพิมพ์จะมี <b>lineoa-cs</b> เพิ่มขึ้นมา</p>
+<div class="input"><span>เช้านี้มีแชทไหนรอตอบบ้าง สรุปให้หน่อย</span><span class="chip">🔌 lineoa-cs · 6 tools</span></div>
+<p style="margin-top:10px">Claude เรียก <code>list_chats</code> → <code>read_chat</code> → <code>get_attachment</code> แล้วสรุปให้ พร้อมร่างคำตอบ</p>
+<div class="dlg"><b>Claude ต้องการใช้ <code>send_message</code> จาก lineoa-cs</b>
+<p class="sm mu" style="margin:4px 0 0">ส่งถึง: Somchai K. · "สวัสดีครับคุณ Somchai ขอบคุณที่แจ้งนะครับ…"</p>
+<div class="btns"><span class="btn pri">อนุญาตครั้งนี้</span><span class="btn">อนุญาตเสมอ</span><span class="btn">ไม่อนุญาต</span></div></div>
+<p class="sm mu">แอป Claude ถามก่อนเรียก tool อยู่แล้ว CS จึงกดยืนยันก่อนส่งทุกครั้ง ส่วนฝั่ง server เราก็ปิดการส่งได้ และบันทึก log ทุกครั้งที่ส่ง</p>
+</div></div>
+
+<h2>5. ใช้ได้ 2 แบบ ด้วย server ตัวเดียวกัน</h2>
+<div class="grid2">
+<div class="card"><h3><span class="pill p1">แบบ A</span> CS คุยกับ AI เอง</h3>
+<ul class="sm"><li>เปิด Claude Desktop แบบในข้อ 4</li><li>AI ช่วยสรุป ค้นหา ร่างคำตอบ CS เป็นคนกดส่ง</li><li>เหมาะกับตอนเดโมให้ grader ดู</li></ul></div>
+<div class="card"><h3><span class="pill p3">แบบ B</span> agent อัตโนมัติของธุรกิจเอง</h3>
+<ul class="sm"><li>โจทย์พูดถึง "our automation agent" คือโปรแกรมที่รันเองตามรอบ เช่นทุก 15 นาที</li><li>ใช้ tool ชุดเดียวกัน เช่น ดึงแชทใหม่ แท็กเคส สรุปลงโน้ต</li><li>ค่าเริ่มต้นปิดการส่ง (<code>LINEOA_ALLOW_SEND=false</code>) ให้คนตรวจก่อน</li></ul></div>
+</div>
+<div class="note ok"><b>สิ่งที่จะโชว์ grader:</b> README ที่ทำตาม 3 ขั้นได้ · mock server ที่รันได้โดยไม่ต้องมีบัญชี LINE · วิดีโอหรือ GIF สั้น ๆ ของแบบ A ที่ทำครบ 5 อย่าง · แผนภาพนี้ใน README อธิบายว่าเทคนิคแต่ละตัวอยู่ตรงไหน</div>
+
+</body></html>

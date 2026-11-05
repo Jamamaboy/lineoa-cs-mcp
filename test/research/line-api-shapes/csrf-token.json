@@ -1,0 +1,32 @@
+{
+  "_meta": {
+    "endpoint": "GET /api/v1/csrfToken",
+    "host": "https://chat.line.biz",
+    "requestHeaders": {
+      "Accept": "application/json, text/plain, */*",
+      "x-oa-chat-client-version": "20240513144702",
+      "Cookie": "__Host-chat-ses=FAKE-SESSION; chat-device-group=FAKE-DEVICE; XSRF-TOKEN=FAKE-XSRF"
+    },
+    "sources": [
+      "linebiz src/core/http.ts:272-305",
+      "linebiz test/unit/http-csrf.test.ts:17-18",
+      "linebiz README.md:184",
+      "LINELib AuthService.py:293-300, ChatService.py:153-154,569-581"
+    ],
+    "conflicts": [
+      "LINELib reads only `token` and sends header `x-xsrf-token`, also mirroring it into cookie XSRF-TOKEN on chat.line.biz (its own code, AuthService.py:299-300). linebiz uses `headerName` from the body.",
+      "omnichat-bridge and propertyos send NO CSRF header at all (they run inside the page/extension with cookies), so whether GETs need it is unclear; linebiz only adds it on writes."
+    ],
+    "notes": [
+      "On 403 for a write: refetch token once and retry (linebiz README.md:184)."
+    ]
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "headerName": "X-XSRF-TOKEN",
+      "parameterName": "_csrf",
+      "token": "FAKE-xsrf-token-1b2c3d4e"
+    }
+  }
+}

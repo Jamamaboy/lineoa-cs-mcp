@@ -1,0 +1,110 @@
+{
+  "_meta": {
+    "endpoint": "GET /api/v3/bots/{botId}/chats/{chatId}/messages?backward=FAKE-backward-cursor-page2",
+    "host": "https://chat.line.biz",
+    "requestHeaders": {
+      "Accept": "application/json, text/plain, */*",
+      "x-oa-chat-client-version": "20240513144702",
+      "Cookie": "__Host-chat-ses=FAKE-SESSION; chat-device-group=FAKE-DEVICE; XSRF-TOKEN=FAKE-XSRF"
+    },
+    "query": {
+      "backward": "FAKE-backward-cursor-page2"
+    },
+    "sources": [
+      "linebiz src/types/messages.ts:33-319 (every event + message variant)",
+      "linebiz src/resources/messages.ts:40-50 (query `backward`, response `backward`)",
+      "linebiz test/fixtures/messages.ts:8-102",
+      "omnichat-bridge extension/line-oa-realtime.js:308-315 (limit<=100 + backward), :466-525 (paging loop)",
+      "line-chat-history-downloader scripts/downloader.js:92-108 (backward only), :118 (messageSent = OA side)",
+      "LINELib ChatService.py:552-559 (limit + before/after), sse.py:42-100 (message fields)"
+    ],
+    "notes": [
+      "Last page: no `backward` field (linebiz treats null/''/absent as end, src/core/pagination.ts:41)",
+      "Contains an expired image (id 586900000000000104) to test ATTACHMENT_EXPIRED",
+      "Contains a greeting sent as flex: type text + originalType 'flex', no bizId",
+      "Contains a `follow` event (system event, not a message)"
+    ]
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "list": [
+        {
+          "type": "message",
+          "timestamp": 1793671860000,
+          "source": {
+            "chatId": "Uc5000000000000000000000000000001",
+            "userId": "Uc5000000000000000000000000000001"
+          },
+          "message": {
+            "id": "586900000000000104",
+            "type": "image",
+            "quoteToken": "FAKE-quote-4",
+            "contentProvider": {
+              "type": "line",
+              "contentHash": "fakehash-old-photo",
+              "expired": true,
+              "expiredAt": 1793758260000
+            },
+            "contentHash": "fakehash-old-photo",
+            "expired": true,
+            "expiredAt": 1793758260000
+          }
+        },
+        {
+          "type": "messageSent",
+          "timestamp": 1793671800000,
+          "source": {
+            "chatId": "Uc5000000000000000000000000000001",
+            "userId": "Uc5000000000000000000000000000001"
+          },
+          "message": {
+            "id": "586900000000000103",
+            "type": "text",
+            "text": "ได้เลยค่ะ ยอดรวม 1,250 บาท โอนเข้าบัญชีแล้วส่งสลิปมาได้เลยนะคะ",
+            "quoteToken": "FAKE-quote-3"
+          },
+          "sendId": "Uc5000000000000000000000000000001_1793671800000_00412345",
+          "bizId": "00000000-0000-4000-8000-0000000000a1"
+        },
+        {
+          "type": "message",
+          "timestamp": 1793671620000,
+          "source": {
+            "chatId": "Uc5000000000000000000000000000001",
+            "userId": "Uc5000000000000000000000000000001"
+          },
+          "message": {
+            "id": "586900000000000102",
+            "type": "text",
+            "text": "สวัสดีครับ สนใจสั่งเคสมือถือ 2 ชิ้นครับ",
+            "quoteToken": "FAKE-quote-2"
+          }
+        },
+        {
+          "type": "messageSent",
+          "timestamp": 1793671320000,
+          "source": {
+            "chatId": "Uc5000000000000000000000000000001",
+            "userId": "Uc5000000000000000000000000000001"
+          },
+          "message": {
+            "id": "586900000000000101",
+            "type": "text",
+            "text": "ขอบคุณที่เพิ่มเพื่อน Demo Shop ค่ะ 🙏 พิมพ์สอบถามได้เลยนะคะ",
+            "originalType": "flex",
+            "quoteToken": "FAKE-quote-1"
+          }
+        },
+        {
+          "type": "follow",
+          "timestamp": 1793671200000,
+          "source": {
+            "chatId": "Uc5000000000000000000000000000001",
+            "userId": "Uc5000000000000000000000000000001"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,128 @@
+{
+  "slug": "freshchat",
+  "name": "Freshworks Freshchat",
+  "category": "inbox-saas",
+  "url": "https://www.freshworks.com/live-chat-software/",
+  "one_liner_th": "Inbox แชตหลายช่องทางของ Freshworks; มีช่อง LINE Messenger แบบเนทีฟ",
+  "language": null,
+  "license": null,
+  "github": null,
+  "users_claim": null,
+  "auth": {
+    "method_th": "API: Bearer token (API key สร้างที่ Admin > CONFIGURE > API Tokens) ใน header Authorization; token หมดอายุแล้วได้ 401 ต้องขอใหม่; base URL https://<account>.freshchat.com/v2/. คนใช้ล็อกอิน Freshchat inbox ตาม role (มี endpoint Roles/Agents/Groups). ช่อง LINE ผูกโดย admin ใส่ Channel ID+Secret แล้ววาง message URL ของ Freshchat เป็น webhook ใน LINE Messaging API",
+    "storage_th": "API key เก็บฝั่งลูกค้า (ไม่ระบุในเอกสาร); LINE Channel secret เก็บฝั่ง Freshchat",
+    "borrow_th": "ใช้อ้างอิงได้น้อย: bearer key ระดับบัญชีไม่ใช่การทำงานแทนคน CS รายคน. ข้อดีคือ rate limit ที่บอกผ่าน header X-RateLimit-* และ 401 → ขอ token ใหม่"
+  },
+  "attachments": {
+    "how_th": "POST /v2/files/upload: 1 ไฟล์ต่อ request สูงสุด 25 MB (PDF, รูป, วิดีโอ, ข้อความ) ได้ file_hash ไปแนบใน conversation และ file_security_status (AV_PENDING / SAFE_FILE); มี POST /v2/images/upload แยก (รายละเอียดไม่ได้อ่าน). ส่งข้อความด้วย POST /v2/conversations/{id}/messages โดย message_parts มี text/image/video/file. ช่อง LINE: รูปและวิดีโอรับ-ส่งได้, ไฟล์รับอย่างเดียว, เสียงรับได้ ส่งออกเฉพาะจากแอป LINE, ไม่รองรับสติกเกอร์/อิโมจิ/กลุ่ม",
+    "borrow_th": "ควรเลียนแบบ: สถานะสแกนไวรัสของไฟล์ (file_security_status) และแยกขั้นอัปโหลด→ใช้ hash. ข้อควรรู้: LINE รับไฟล์ได้แต่ส่งไฟล์ออกไม่ได้ ซึ่งสะท้อนข้อจำกัดของ LINE API"
+  },
+  "core_features": [
+    {
+      "name": "LINE Messenger channel",
+      "detail_th": "Admin > Channels > Line Messenger; ได้สูงสุด 5 channel ID; map เป็น Topic+Group; ต้องแผน Growth ขึ้นไป (Free ไม่ได้)"
+    },
+    {
+      "name": "Conversation model",
+      "detail_th": "สถานะ new/assigned/resolved/reopened; message มี actor_type user/agent/bot/system และ message_type normal/private/system"
+    },
+    {
+      "name": "Message parts",
+      "detail_th": "message_parts (text/image/video/file/url) และ reply_parts (quick reply, carousel)"
+    },
+    {
+      "name": "File upload API",
+      "detail_th": "25 MB ต่อไฟล์, file_hash, file_security_status"
+    },
+    {
+      "name": "REST API v2",
+      "detail_th": "Bearer token, 429 + header rate limit, list messages 20 ต่อหน้า (สูงสุด 50)"
+    },
+    {
+      "name": "Agents/Groups/Roles",
+      "detail_th": "endpoint จัดการ agent, group, role และ topic (channels)"
+    },
+    {
+      "name": "MCP",
+      "detail_th": "ไม่พบ MCP ทางการ; มีเพียง fero8/freshchat_mcp (0 ดาว)"
+    }
+  ],
+  "flow": [
+    {
+      "actor": "user",
+      "label": "admin ใส่ LINE Channel ID/secret"
+    },
+    {
+      "actor": "service",
+      "label": "Freshchat ออก message URL"
+    },
+    {
+      "actor": "user",
+      "label": "ตั้ง webhook ใน LINE"
+    },
+    {
+      "actor": "service",
+      "label": "แชต LINE เข้า Topic/Group"
+    },
+    {
+      "actor": "agent",
+      "label": "agent ตอบใน inbox"
+    },
+    {
+      "actor": "tool",
+      "label": "API POST …/messages"
+    }
+  ],
+  "highlights_th": [
+    "ช่อง LINE ระบุชนิดข้อความชัด: รูป/วิดีโอสองทาง, ไฟล์รับอย่างเดียว",
+    "upload API มีสถานะสแกนไฟล์ (AV_PENDING/SAFE_FILE) และ limit 25 MB",
+    "โมเดล conversation/message ชัด แยก private note ได้"
+  ],
+  "weaknesses_th": [
+    "LINE ผูกผ่าน Messaging API webhook และต้องตั้ง Response mode เป็น Bot จึงใช้ chat.line.biz พร้อมกันไม่ได้",
+    "ไม่รองรับสติกเกอร์/อิโมจิ/กลุ่ม และส่งไฟล์ออกทาง LINE ไม่ได้",
+    "ไม่ได้ลองใช้จริงและไม่พบ MCP ทางการ (ยืนยันเฉพาะจากการค้นหา)"
+  ],
+  "tools_or_endpoints": [
+    "POST /v2/files/upload",
+    "POST /v2/images/upload",
+    "POST /v2/conversations/{conversation_id}/messages",
+    "GET /v2/channels"
+  ],
+  "trial": {
+    "status": "not-run",
+    "summary_th": "เป็นผลิตภัณฑ์ SaaS ปิด ไม่สมัคร/ไม่ล็อกอิน จึงอ่านเอกสารสาธารณะเท่านั้น (API reference อ่านได้ 100,000 ตัวอักษรแรกจาก 260,177; ส่วน Images upload ไม่ได้อ่าน). ค้น GitHub พบ MCP แค่ fero8/freshchat_mcp (0 ดาว) ไม่ได้ลอง",
+    "log": "trials/freshchat.md"
+  },
+  "screenshots": [
+    {
+      "file": "shots/freshchat-1.png",
+      "caption_th": "หน้าซัพพอร์ต Freshworks: LINE Integration",
+      "kind": "docs"
+    },
+    {
+      "file": "shots/freshchat-2.png",
+      "caption_th": "Freshchat Developer API reference",
+      "kind": "docs"
+    }
+  ],
+  "scores": {
+    "relevance": 3,
+    "auth": 2,
+    "attachments": 3,
+    "maturity": 5,
+    "tryability": 1,
+    "reasons_th": {
+      "relevance": "inbox ที่รับ LINE ได้ แต่ผ่าน Messaging API webhook ต่างจากแนวของเรา และไม่มี MCP ทางการ",
+      "auth": "bearer key ระดับบัญชี ไม่มีแนวสวมสิทธิ์รายคนให้เลียนแบบ",
+      "attachments": "มี limit 25 MB และสถานะสแกนไฟล์ แต่ LINE ส่งไฟล์ออกไม่ได้",
+      "maturity": "ผลิตภัณฑ์ใหญ่ เอกสารสาธารณะครบ",
+      "tryability": "ไม่ได้ลองอะไรเลย (SaaS ปิด)"
+    }
+  },
+  "sources": [
+    "https://crmsupport.freshworks.com/support/solutions/articles/50000004428-line-integration",
+    "https://developers.freshchat.com/api/",
+    "https://github.com/fero8/freshchat_mcp"
+  ]
+}

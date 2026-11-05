@@ -1,0 +1,114 @@
+{
+  "slug": "respondio",
+  "name": "respond.io",
+  "category": "inbox-saas",
+  "url": "https://respond.io/help/line/line-overview",
+  "one_liner_th": "inbox สนทนาหลายช่องทางสำหรับธุรกิจ มีช่อง LINE",
+  "language": null,
+  "license": "proprietary (SaaS)",
+  "github": null,
+  "users_claim": null,
+  "auth": {
+    "method_th": "เชื่อม LINE OA ผ่าน Messaging API ตาม Quick Start (บทความ overview ไม่อธิบาย webhook)",
+    "storage_th": "ไม่เปิดเผย",
+    "borrow_th": "ไม่มีอะไรให้ลอก"
+  },
+  "attachments": {
+    "how_th": "รูป ≤1MB ส่งพร้อมพรีวิว, 1-10MB แปลงเป็นลิงก์; เสียง/วิดีโอ ≤200MB; รับ sticker ได้แต่ส่งไม่ได้; contact card และ Flex ไม่รองรับ แสดงเป็น Unsupported Message/Custom Payload; ไฟล์ที่ไม่รองรับหรือใหญ่เกินกลายเป็นลิงก์ URL",
+    "borrow_th": "ลอกแนว fallback: ชนิดที่ไม่รองรับแสดงเป็นข้อความบอกชนิด + ลิงก์ แทนการทิ้ง; รูปใหญ่ส่งเป็นลิงก์"
+  },
+  "core_features": [
+    {
+      "name": "Image rule",
+      "detail_th": "≤1MB พร้อมพรีวิว, 1-10MB เป็นลิงก์"
+    },
+    {
+      "name": "Media limit",
+      "detail_th": "audio/video 200MB"
+    },
+    {
+      "name": "Unsupported",
+      "detail_th": "Contact card, Flex -> fallback label + JSON"
+    },
+    {
+      "name": "Sticker",
+      "detail_th": "รับได้ ส่งไม่ได้"
+    },
+    {
+      "name": "No window",
+      "detail_th": "ไม่มี messaging window ตราบที่ยังเป็นเพื่อน"
+    },
+    {
+      "name": "Welcome event",
+      "detail_th": "แสดงเมื่อ unblock"
+    }
+  ],
+  "flow": [
+    {
+      "actor": "service",
+      "label": "ลูกค้าทัก LINE OA"
+    },
+    {
+      "actor": "service",
+      "label": "เข้า respond.io inbox"
+    },
+    {
+      "actor": "agent",
+      "label": "agent อ่านบทสนทนา"
+    },
+    {
+      "actor": "agent",
+      "label": "ตอบข้อความ/รูป"
+    },
+    {
+      "actor": "service",
+      "label": "รูป >1MB ส่งเป็นลิงก์"
+    }
+  ],
+  "highlights_th": [
+    "มี fallback ชัดเจนสำหรับชนิดข้อความที่ไม่รองรับ",
+    "ระบุ limit รูป/เสียง/วิดีโอครบ",
+    "เอกสารอัปเดตล่าสุด (ก.ย. 2026)"
+  ],
+  "weaknesses_th": [
+    "ไม่พบ history import ในบทความ",
+    "SaaS ปิด ไม่มีบัญชีให้ลอง",
+    "ไม่มี user count สาธารณะที่ยืนยันได้"
+  ],
+  "tools_or_endpoints": [],
+  "trial": {
+    "status": "not-run",
+    "summary_th": "ไม่มีบัญชี อ่านเอกสาร LINE Overview และถ่ายภาพ ไม่พบข้อมูล history import",
+    "log": "trials/respondio.md"
+  },
+  "screenshots": [
+    {
+      "file": "shots/respondio-1.png",
+      "caption_th": "เอกสาร LINE Overview ของ respond.io",
+      "kind": "docs"
+    },
+    {
+      "file": "shots/respondio-2.png",
+      "caption_th": "LINE Overview แบบเต็มหน้า (ตาราง limit รูป/เสียง/วิดีโอ)",
+      "kind": "docs"
+    }
+  ],
+  "scores": {
+    "relevance": 4,
+    "auth": 1,
+    "attachments": 4,
+    "maturity": 4,
+    "tryability": 1,
+    "reasons_th": {
+      "relevance": "inbox สำหรับตอบลูกค้า LINE ตรงกับงานของเรา",
+      "auth": "ไม่มีข้อมูล auth",
+      "attachments": "กฎรูปพรีวิว/ลิงก์ และ fallback ประเภทที่ไม่รองรับ ลอกได้",
+      "maturity": "ผลิตภัณฑ์ใหญ่ ระดมทุน Series B",
+      "tryability": "ไม่มีบัญชี ไม่ได้ลอง"
+    }
+  },
+  "sources": [
+    "https://respond.io/help/line/line-overview",
+    "https://help.respond.io/line/line-overview"
+  ]
+}

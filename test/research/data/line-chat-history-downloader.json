@@ -1,0 +1,137 @@
+{
+  "slug": "line-chat-history-downloader",
+  "name": "xiaoxigua-1/line-bot-chat-history-downloader",
+  "category": "line-browser-ext",
+  "url": "https://github.com/xiaoxigua-1/line-bot-chat-history-downloader",
+  "one_liner_th": "ส่วนขยาย Chrome ดาวน์โหลดประวัติแชต LINE OA พร้อมรูป/ไฟล์ เป็น data.zip",
+  "language": "JavaScript",
+  "license": "MIT",
+  "github": {
+    "stars": 0,
+    "forks": 1,
+    "open_issues": 0,
+    "last_push": "2025-02-26",
+    "created": "2024-08-17",
+    "fetched_at": "2026-11-05"
+  },
+  "users_claim": null,
+  "auth": {
+    "method_th": "content script ฝังบน https://chat.line.biz/* เรียก fetch จากเพจเองจึงใช้คุกกี้เซสชันที่ล็อกอินอยู่ ไม่ได้ขอ host_permissions; ดึง botId จาก location.pathname; ขอ chat-content.line.biz ด้วย credentials:include; ไม่มีการจัดการหมดอายุ",
+    "storage_th": "ไม่เก็บอะไร ผลสร้างเป็น blob ZIP ในหน้าแล้ว download",
+    "borrow_th": "ใช้เป็นตัวอย่าง minimal ว่า same-origin fetch จากแท็บที่ล็อกอินพอสำหรับ endpoint ภายใน; ไม่ควรเลียนแบบ permission เกินจำเป็น (tabs, nativeMessaging)"
+  },
+  "attachments": {
+    "how_th": "อ่านประวัติจาก /v3 messages แล้ว: image/video/audio/file ดาวน์โหลดจาก https://chat-content.line.biz/bot/{botId}/{contentHash} ด้วย credentials:include เป็น blob; สติกเกอร์จาก stickershop.line-scdn.net (สาธารณะ); flex จาก /api/v1/bots/{bot}/messages/{chat}/flexJson; จัดเป็นโฟลเดอร์ media/ stickers/ flex-messages/ ใน ZIP ส่งไฟล์ไม่ได้",
+    "borrow_th": "คัดลอกวิธีดึงสื่อด้วย contentHash + chat-content.line.biz ด้วยคุกกี้เซสชัน (พิสูจน์ว่า URL นี้ใช้ได้); ระวังบั๊ก: นามสกุลไฟล์ file/flex เป็น undefined, ไม่มี limit/backoff, โหลดทั้งหมดลงหน่วยความจำ"
+  },
+  "core_features": [
+    {
+      "name": "List all chats",
+      "detail_th": "แบ่งหน้าด้วย next ผ่าน /api/v2 chats"
+    },
+    {
+      "name": "Read history",
+      "detail_th": "แบ่งหน้าด้วย backward ผ่าน /api/v3 messages"
+    },
+    {
+      "name": "Time filter",
+      "detail_th": "กรองด้วย minTime/maxTime จาก popup"
+    },
+    {
+      "name": "Media download",
+      "detail_th": "ดึงรูป/วิดีโอ/เสียง/ไฟล์ด้วย contentHash"
+    },
+    {
+      "name": "Sticker + flex export",
+      "detail_th": "ดึงสติกเกอร์และ flex JSON"
+    },
+    {
+      "name": "ZIP export",
+      "detail_th": "JSZip แล้วบันทึกเป็น data.zip"
+    }
+  ],
+  "flow": [
+    {
+      "actor": "user",
+      "label": "เปิด chat.line.biz กด Download"
+    },
+    {
+      "actor": "browser",
+      "label": "popup -> content script"
+    },
+    {
+      "actor": "service",
+      "label": "GET /v2 chats (next)"
+    },
+    {
+      "actor": "service",
+      "label": "GET /v3 messages (backward)"
+    },
+    {
+      "actor": "service",
+      "label": "GET chat-content/{hash}"
+    },
+    {
+      "actor": "storage",
+      "label": "JSZip -> data.zip"
+    }
+  ],
+  "highlights_th": [
+    "ตัวอย่างที่ชัดที่สุดของการดึงไฟล์แนบ: chat-content.line.biz/bot/{bot}/{contentHash} ใช้คุกกี้",
+    "โค้ดสั้น 239 บรรทัด อ่านง่าย",
+    "ไม่ต้อง build"
+  ],
+  "weaknesses_th": [
+    "อ่านอย่างเดียว ไม่ส่งข้อความ",
+    "ไม่มีเทสต์ ไม่มี rate limit/retry นามสกุลไฟล์ผิด",
+    "ไม่มีดาว repo ไม่อัปเดตตั้งแต่ก.พ. 2025 และขอ permission เกิน"
+  ],
+  "tools_or_endpoints": [
+    "GET /api/v2/bots/{botId}/chats?folderType=ALL&limit=25&next",
+    "GET /api/v3/bots/{botId}/chats/{chatId}/messages?backward",
+    "GET /api/v1/bots/{botId}/messages/{chatId}/flexJson?timestamp&messageId",
+    "GET https://chat-content.line.biz/bot/{botId}/{contentHash}",
+    "GET https://stickershop.line-scdn.net/stickershop/v1/sticker/{id}/ANDROID/{sticker.png|sticker_animation.png}"
+  ],
+  "trial": {
+    "status": "partial",
+    "summary_th": "รันกับ LINE ไม่ได้ จึงทำ static trial: node --check ผ่าน (ไม่มี build) สกัด manifest และรายการ fetch/endpoint พร้อมแคปผล",
+    "log": "trials/line-chat-history-downloader.md"
+  },
+  "screenshots": [
+    {
+      "file": "shots/line-chat-history-downloader-1.png",
+      "caption_th": "manifest.json และรายการ fetch() ทั้งหมดใน downloader.js",
+      "kind": "real-run"
+    },
+    {
+      "file": "shots/line-chat-history-downloader-2.png",
+      "caption_th": "ขั้นตอนการดึงประวัติ/สื่อและข้อควรระวัง",
+      "kind": "real-run"
+    },
+    {
+      "file": "shots/line-chat-history-downloader-3.png",
+      "caption_th": "หน้า GitHub ของ repo",
+      "kind": "github-page"
+    }
+  ],
+  "scores": {
+    "relevance": 3,
+    "auth": 3,
+    "attachments": 4,
+    "maturity": 1,
+    "tryability": 2,
+    "reasons_th": {
+      "relevance": "อ่านประวัติ+สื่อจาก chat.line.biz แต่ไม่ส่ง",
+      "auth": "same-origin fetch ใช้คุกกี้ได้ แต่ไม่มีการจัดการ session และขอสิทธิ์เกิน",
+      "attachments": "แสดงวิธีดึงสื่อผ่าน contentHash + chat-content.line.biz ที่ใช้ได้จริง แต่ไม่มี limit/MIME ที่ถูกต้อง",
+      "maturity": "0 ดาว ไม่มีเทสต์ ไม่อัปเดตตั้งแต่ก.พ. 2025",
+      "tryability": "ตรวจ syntax เท่านั้น รันกับ LINE ไม่ได้"
+    }
+  },
+  "sources": [
+    "https://github.com/xiaoxigua-1/line-bot-chat-history-downloader",
+    "https://github.com/xiaoxigua-1/line-bot-chat-history-downloader/blob/main/scripts/downloader.js",
+    "https://github.com/xiaoxigua-1/line-bot-chat-history-downloader/blob/main/manifest.json"
+  ]
+}
