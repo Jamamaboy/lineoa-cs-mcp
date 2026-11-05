@@ -102,3 +102,9 @@
 - Why: The user wants the MCP to find chats that went silent without an answer.
 - Commits: fix(domain): give non-message events a preview; feat(tools): list_chats filter needs_reply…
 - For other lanes: none.
+
+## 2026-11-06 03:39 ICT · search_messages
+- What: Node built-in SQLite store (no native modules; substring LIKE works for Thai), incremental sync of recent chats (caps: LINEOA_SYNC_MAX_CHATS=50, LINEOA_SYNC_MAX_MESSAGES=200), tool search_messages with chat/sender/date filters, before/after context and webUrl; mock mode uses an in-memory index. Live check (GET only, temp index deleted after): 10 chats synced in ~5 s, Thai and English queries hit, second sync updated 0 chats. FTS5 is not compiled into Node 22's SQLite, so LIKE is used.
+- Why: Required action 3 (search across chats); no search endpoint exists on chat.line.biz.
+- Commits: feat(index): add a local message store…; feat(index): sync recent chats…; feat(tools): add search_messages…
+- For other lanes: none.
