@@ -63,6 +63,7 @@ function clampLimit(raw: string | undefined, fallback: number): number {
 export function createMockApp(opts: MockOptions = {}) {
   const seed = opts.seed ?? loadSeed();
   const sessions = new Set<string>(opts.devSession ? [opts.devSession] : []);
+  const csrf = new Map<string, string>(); // session token -> CSRF token
   const app = new Hono();
 
   // --- login (stands in for LINE Business ID; the CS person types anything) ---
@@ -144,6 +145,35 @@ a{color:#0b6} .row{background:#fff;border-radius:10px;padding:10px 12px;margin:6
   });
 
   app.get("/api/v1/me", (c) => c.json(seed.me));
+  app.get("/api/v1/csrfToken", (c) => {
+    const token = randomBytes(12).toString("hex");
+    csrf.set(getCookie(c, SESSION_COOKIE) ?? "", token);
+    return c.json({ headerName: "X-XSRF-TOKEN", parameterName: "_csrf", token });
+  });
+
+  // Sending: needs the CSRF token from /csrfToken, like the real console. The message shows up in
+  // history as a `messageSent` event carrying the same sendId.
+  app.post("/api/v1/bots/:botId/chats/:chatId/messages/send", async (c) => {
+    if (c.req.header("X-XSRF-TOKEN") !== csrf.get(getCookie(c, SESSION_COOKIE) ?? "")) return c.json({}, 403);
+    const { botId, chatId } = c.req.param();
+    const chat = seed.chats.get(botId)?.find((x) => x.chatId === chatId);
+    const events = seed.events.get(chatId);
+    const body = (await c.req.json()) as { type?: string; text?: string; sendId?: string };
+    if (!chat || !events) return c.json({ code: "not_found" }, 404);
+    if (body.type !== "textV2" || !body.text || !body.sendId) return c.json({ code: "bad_request" }, 400);
+    const ev = {
+      type: "messageSent",
+      timestamp: Date.now(),
+      source: { chatId, userId: chatId },
+      message: { id: String(Date.now()) + randomBytes(2).readUInt16BE(), type: "text", text: body.text },
+      sendId: body.sendId,
+      bizId: seed.me.bizId,
+    };
+    events.unshift(ev);
+    chat.latestEvent = ev;
+    chat.lastTalkedAt = ev.timestamp;
+    return c.json({});
+  });
   app.get("/api/v1/bots", (c) => c.json({ userName: seed.me.name, list: seed.bots }));
 
   app.get("/api/v2/bots/:botId/chats", (c) => {
