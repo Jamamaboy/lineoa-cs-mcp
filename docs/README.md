@@ -5,6 +5,8 @@ The task itself is in `docs/ASSIGNMENT.md`. It stays local and untracked.
 
 ## Start here
 
+0. [`../README.md`](../README.md) (English, for reviewers) and [`USAGE.th.md`](USAGE.th.md) (Thai user guide): what it does and how to use it. [`../CONTRIBUTING.md`](../CONTRIBUTING.md) explains how to build on it.
+
 1. [`plan/plan-summary.html`](plan/plan-summary.html) is a 5-minute Thai summary: the end result, use cases, tools, folder layout and file counts.
 2. [`PLAN.md`](PLAN.md) is the spec and the source of truth (v3).
 3. [`PLAN.html`](PLAN.html) is the same plan in Thai, with diagrams. Open it in a browser.
