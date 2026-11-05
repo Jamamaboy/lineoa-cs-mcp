@@ -6,26 +6,28 @@ the spec is in `docs/PLAN.md` (Thai copies: `docs/PLAN_thai.md`, `docs/PLAN.html
 
 Reply to the user in **Thai**. Code, commit messages and docs that graders read are in English.
 
-## Lanes: three branches, three worktrees, three sessions
+## Lanes: three branches, one session
 
 Work happens in three parallel **lanes**. Your lane is your current branch (`git branch --show-current`).
 `feat/*` branches belong to the `dev` lane.
 
 | Lane | Branch | Worktree | You may write | Your docs folder |
 |---|---|---|---|---|
-| plan | `plan` | `<repo>` | `docs/PLAN*.{md,html}`, `docs/plan/**`, `CLAUDE.md`, `AGENTS.md` | `docs/plan/` |
-| dev | `dev`, `feat/*` | `<repo>-dev` | `src/`, `mock-server/`, `tests/`, package/config files, `.claude/`, `README.md`, `docs/dev/**` | `docs/dev/` |
-| research | `research` | `<repo>-research` | `test/research/**`, `docs/research/**` | `docs/research/` |
+| plan | `plan` | `<repo>` (main checkout) | `docs/PLAN*.{md,html}`, `docs/README.md`, `docs/plan/**`, `CLAUDE.md`, `AGENTS.md` | `docs/plan/` |
+| dev | `dev`, `feat/*` | `~/.lineoa-lanes/dev` (created on demand) | `src/`, `mock-server/`, `tests/`, package/config files, `.claude/`, `README.md`, `docs/dev/**` | `docs/dev/` |
+| research | `research` | `~/.lineoa-lanes/research` (created on demand) | `test/research/**`, `docs/research/**` | `docs/research/` |
 
-- **Write only inside your own lane's paths.** Never edit another lane's folder, and never write into another
-  worktree. Because of this, merging lanes never conflicts.
+- **A commit touches only one lane's paths.** Because of this, merging lanes never conflicts.
+- The dev and research worktrees live outside `~/orca` so they don't show up as Orca workspaces. Create one with
+  `git worktree add ~/.lineoa-lanes/<lane> <branch>` if it's missing. All commits live on the branches, so a
+  missing worktree folder loses nothing that was committed.
 - Need something from another lane (a change to the plan, data, a decision)? Add it under "Requests" in **your own**
   `STATUS.md`. The other lane picks it up at its next session start.
 - Only the plan lane edits `CLAUDE.md` / `AGENTS.md` and the shared spec (`docs/PLAN*`). Other lanes ask through Requests.
 
 ### Single-session mode (current, from 2026-11-06)
-The user drives all three lanes from **one session** (started in the plan worktree). The branches, worktrees and
-folders above stay as they are, so the history still shows each lane. In this mode:
+The user drives all three lanes from **one session** (the main checkout). The branches and folders above stay as
+they are, so the history still shows each lane. In this mode:
 - The one session may write in all three worktrees. It uses absolute paths and works inside the worktree that
   owns the file. Each change is committed on that lane's branch (code on `feat/*` in the dev worktree, then merged
   `--no-ff` into `dev`).
@@ -39,11 +41,9 @@ folders above stay as they are, so the history still shows each lane. In this mo
 
 **At session start**, before doing anything else:
 1. Read your own `docs/<lane>/STATUS.md` and the last ~10 entries of `docs/<lane>/LOG.md`.
-2. Read the **live** STATUS of the other two lanes **from their worktrees**, not from the copy merged into your
-   branch, which can be stale:
-   - `<repo>/docs/plan/STATUS.md`
-   - `<repo>-dev/docs/dev/STATUS.md`
-   - `<repo>-research/docs/research/STATUS.md`
+2. Read the **live** STATUS of the other two lanes from their branches, not from the copy merged into your branch,
+   which can be stale: `git show dev:docs/dev/STATUS.md` and `git show research:docs/research/STATUS.md`.
+   The doc map is `docs/README.md`.
 3. Act on any Request addressed to your lane. Read `docs/plan/DECISIONS.md` when you need the reason behind a rule.
 
 **After every unit of work, in the same commit as the work:**
