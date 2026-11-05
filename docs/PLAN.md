@@ -1,6 +1,6 @@
 # PLAN: LINE OA CS MCP server
 
-Status: draft v1, 2026-11-05. Deadline: **Fri 6 Nov 2026, 23:59 ICT**, about 1.5 working days from now.
+Status: draft v2 (research round 2 applied), 2026-11-05. Deadline: **Fri 6 Nov 2026, 23:59 ICT**, about 1.5 working days from now.
 Source of truth for the task: [`docs/ASSIGNMENT.md`](ASSIGNMENT.md).
 Thai translation: [`docs/PLAN_thai.md`](PLAN_thai.md) · Thai version with diagrams: [`docs/PLAN.html`](PLAN.html).
 
@@ -50,11 +50,11 @@ What we're graded on, and where this plan covers it:
 | Layer | Choice | Why |
 |---|---|---|
 | Language/runtime | **TypeScript on Node 22 LTS** | The official MCP SDK is TS-first, Playwright is native to it, and one language covers the server, the mock and the tests. Strict types document the data model. |
-| MCP | `@modelcontextprotocol/sdk` + `zod` | Official SDK. Zod schemas become the tool input schemas and also validate the data. Tools carry `readOnlyHint` / `openWorldHint` annotations. |
+| MCP | `@modelcontextprotocol/sdk` + `zod`, **major version pinned** | Official SDK. Pinned because whatsapp-mcp broke when `mcp` 2.x dropped `fastmcp` (research round 2). Zod schemas become the tool input schemas and also validate the data. Tools carry `readOnlyHint` / `openWorldHint` annotations. |
 | Transport | stdio (default) | Works with Claude Code, Claude Desktop and MCP Inspector without any network auth. Streamable HTTP is in "with more time". |
-| Mock LINE OA | **Hono** + `@hono/node-server` | A small, fast HTTP server. It copies the **real internal API paths and field names** of chat.line.biz (section 6a): the `__Host-chat-ses` cookie, `X-XSRF-TOKEN`, `next`/`backward` cursors, and `chat-content`-style URLs that need the cookie plus a tiny HTML console, so a human can watch what the agent sends. |
+| Mock LINE OA | **Hono** + `@hono/node-server` | A small, fast HTTP server. It copies the **real internal API paths and field names** of chat.line.biz (section 6a): the `__Host-chat-ses` cookie, `X-XSRF-TOKEN`, `next`/`backward` cursors, and `chat-content`-style URLs that need the cookie plus a tiny HTML console, so a human can watch what the agent sends. It **binds to `127.0.0.1` only**: whatsapp-mcp's bridge exposes an unauthenticated REST API on every interface, and that's a mistake to avoid. |
 | Real-console access | `fetch` (undici) with the captured session cookies; **Playwright** only for login and endpoint discovery | Replaying HTTP calls is fast and deterministic. Driving the browser for every action is slow and brittle, so we keep it as a fallback only. |
-| Local index (search fallback, attachment cache) | `better-sqlite3`, FTS5 with the **`trigram` tokenizer** | Thai has no word boundaries. `unicode61` would treat a whole Thai sentence as one token, while `trigram` handles substring search in any script. Needed for search, because no message-search endpoint is known (A4). It is filled by syncing `list_chats` + history (polling; the SSE stream is in "with more time"). |
+| Local index (search fallback, attachment cache) | `better-sqlite3`, FTS5 with the **`trigram` tokenizer** | Thai has no word boundaries. `unicode61` would treat a whole Thai sentence as one token, while `trigram` handles substring search in any script. Needed for search, because no message-search endpoint is known (A4). It is filled by syncing `list_chats` + history (polling; the SSE stream is in "with more time"). The first fill of a chat uses `GET /download/{botId}/{chatId}/messages.csv` (found in propertyos-line-importer): one request instead of paging. |
 | Images | `sharp` | Shrinks images before they go back to the LLM as image content: smaller, cheaper and within block limits. |
 | Tests | **vitest** + the SDK's `InMemoryTransport` | Full end-to-end runs: a real MCP client calls the real server, which hits the mock server. No network and no LINE account needed. |
 | Lint/format | **Biome** | One fast tool, little config. |
@@ -119,6 +119,9 @@ CLAUDE.md  AGENTS.md  README.md
 - `AttachmentRef { id, kind, mime?, sizeBytes?, fileName?, width?, height?, expiresAt? }`. Metadata only, never bytes.
 - `UserProfile { id, displayName, pictureUrl, statusMessage?, language?, followedAt?, tags[], note?, chatId }`
 - Cursors are opaque (base64 JSON) so that each backend can use its own pagination.
+- From Chatwoot: `AttachmentRef.kind` uses Chatwoot's `file_type` names (`image | audio | video | file | location | fallback`).
+  A message can be `system`/activity (assignment, notes) as well as chat text. Message types the agent can't use become
+  explicit placeholders, never dropped (respond.io and SleekFlow do the same).
 
 ---
 
@@ -129,13 +132,13 @@ CLAUDE.md  AGENTS.md  README.md
 | `list_chats` | `filter?: ongoing\|unread\|all` (default `ongoing`), `limit≤50`, `cursor?`, `botId?` | `chats[]`, `nextCursor?` | read-only |
 | `read_chat` | `chatId`, `limit≤100`, `before?` cursor | `messages[]` oldest→newest, `prevCursor?`, `user` summary | read-only. Attachments come back as refs. Customer text is labelled as untrusted content. |
 | `search_messages` | `query`, `chatId?`, `from?`, `since?`, `until?`, `limit≤50`, `cursor?` | `hits[] {chatId, messageId, snippet, sentAt, senderName, contextBefore[], contextAfter[]}`, `indexedAt` | read-only. Works with Thai substrings. |
-| `send_message` | `chatId`, `text?`, `attachmentPaths?[]` (must be inside the outbox dir), `dryRun?` | `{messageId, sentAt}` or a preview when `dryRun` is set | the only tool that writes. `destructiveHint`. Only registered when `LINEOA_ALLOW_SEND=true`. Checked against the optional chat allowlist. Audit-logged. Rejects empty sends and unknown chats. |
-| `get_user_profile` | `userId` or `chatId` | `UserProfile` | read-only |
+| `send_message` | `chatId`, `text?`, `attachmentPaths?[]` (must be inside the outbox dir), `dryRun?` | `{messageId, sentAt}` or a preview when `dryRun` is set | the only tool that writes. `destructiveHint`. Only registered when `LINEOA_ALLOW_SEND=true`. Checked against the optional chat allowlist. Audit-logged. Rejects empty sends and unknown chats. **Idempotent:** every call carries a `sendId`. If the result is uncertain (timeout or network error), the server never resends automatically; it looks the `sendId` up in the chat history and returns `SEND_UNCERTAIN` if it isn't there (pattern from omnichat-bridge). |
+| `get_user_profile` | `userId` or `chatId` | `UserProfile` (+ `notes`, `tags`, assignee from `owners`) | read-only |
 | `get_attachment` | `chatId`, `messageId`, `attachmentId?`, `mode?: inline\|save` | image → MCP `image` content (downscaled) + local path; other files → saved path + metadata (+ text preview for txt/csv) | read-only |
 | (extra) `auth_status` | none | logged-in staff, reachable OAs, session age | lets the agent check auth before a long run |
 
 Errors are typed and actionable: `AUTH_EXPIRED` ("ask the CS person to run `npm run login`"), `NOT_FOUND`,
-`RATE_LIMITED` (with `retryAfter`), `ATTACHMENT_TOO_LARGE`, `ATTACHMENT_EXPIRED`, `PATH_NOT_ALLOWED`.
+`RATE_LIMITED` (with `retryAfter`), `ATTACHMENT_TOO_LARGE`, `ATTACHMENT_EXPIRED`, `PATH_NOT_ALLOWED`, `SEND_UNCERTAIN`.
 
 ---
 
@@ -158,6 +161,9 @@ Errors are typed and actionable: `AUTH_EXPIRED` ("ask the CS person to run `npm 
    401 with `not_login` → `AUTH_EXPIRED`. A 403 → refresh the CSRF token once, then `FORBIDDEN` (role). linebiz notes that
    sessions **usually last less than a day** and are not renewed automatically, so the README tells the CS person to
    log in once per shift. We keep any `Set-Cookie` the server rotates. **No silent auto re-login**: the agent is told to ask the human.
+   Cookies are only ever attached to an allowlist of hosts (`chat.line.biz`, `chat-content.line.biz`), and secret headers are
+   redacted in every log line (both from linebiz). A **lock file** next to `session.json` stops two server processes
+   from using the same session (from telegram-mcp and LINELib). Login is never prompted over stdio.
 5. **Scoping**: only the bot ids in config are reachable, even if the staff member has access to more. The staff
    member's own role (Admin / Operator / chat-only) still applies on LINE's side.
 6. **The mock implements the same flow**: a login form, an httpOnly session cookie, a CSRF header, session expiry and
@@ -207,7 +213,8 @@ Principle: **metadata in the chat, bytes only on request, and always size-capped
 Reading:
 - `read_chat` returns `AttachmentRef`s only, which keeps the agent's context small. A chat full of photos stays cheap.
 - `get_attachment` downloads from `chat-content.line.biz/bot/{botId}/{contentHash}` with the session cookie (not a signed URL) and streams to
-  `~/.cache/lineoa-mcp/attachments/<sha256>`. Cap: 20 MB by default.
+  `~/.cache/lineoa-mcp/attachments/<sha256>`. Each download goes to a temp file and is renamed into place only when
+  it is complete, so a partial file is never visible (atomic, from telegram-mcp). Download cap: 32 MiB by default.
 - **MIME from magic bytes**, not from the extension or what the server says. File names are cleaned (path traversal,
   control characters).
 - **Images** (payment slips, product photos): resized to at most 1568 px on the long edge. If the result is under
@@ -223,7 +230,9 @@ Reading:
 Sending:
 - `send_message.attachmentPaths` must resolve **inside an allowlisted outbox directory** (`~/lineoa-outbox` by
   default). This stops a prompt-injected agent from sending `~/.ssh/id_rsa` to a customer.
-- Type and size limits are checked before upload. The flow is `uploadFile` → `contentMessageToken` → `bulkSendFiles`.
+- Type and size limits are checked before upload: images up to 20 MiB, video and files up to 32 MiB (omnichat-bridge's limits,
+  to confirm in the HAR). Uploads send the **real MIME type**: LINELib always sends `application/octet-stream`, which
+  we don't copy. There is an extension allowlist per tool. The flow is `uploadFile` → `contentMessageToken` → `bulkSendFiles`.
 
 Safety: customer messages and file contents are untrusted input. Tool output labels them as such, and the README
 covers prompt injection.
@@ -307,6 +316,22 @@ Changes to this plan that came from the research (already applied above):
 2. **Expected-identity guard**: `LINEOA_EXPECTED_ACCOUNT`. The server refuses to start if `/api/v1/me` doesn't match it.
 3. `search_messages` returns `contextBefore` / `contextAfter` messages around each hit.
 4. IDs are prefixed in tool output (`chat_…`, `user_…`, `msg_…`, `att_…`) so the model can't mix them up.
+
+---
+
+### Research round 2: hands-on comparison (branch `research`)
+
+17 projects were installed or tried by 5 parallel Sonnet agents. Each was given a weighted score, and they are
+compared on one page: `test/research/index.html` (branch `research`). The top scores were telegram-mcp 81,
+slack-mcp-server 74, LINELib 71, Chatwoot 66 and omnichat-bridge 66. omnichat-bridge is the closest to our task (a Thai
+extension that reads, sends and attaches files through chat.line.biz internals, with 995 tests). The changes above that
+cite a project name came from this round.
+
+What none of them do, and where this project differs:
+- an MCP server for LINE OA acting as the CS person
+- a mock backend with contract tests
+- Thai search
+- a sandboxed outbox for sending files
 
 ---
 

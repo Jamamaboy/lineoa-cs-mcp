@@ -159,7 +159,7 @@ figure.d figcaption{font-size:12.5px;color:var(--ink-3);margin-top:8px;padding:0
 
 <header class="masthead">
   <h1>แผนงาน: MCP server สำหรับงาน CS บน LINE OA</h1>
-  <p class="sub">ฉบับภาษาไทยพร้อม diagram ของ <code>docs/PLAN.md</code> (ถ้าเนื้อหาไม่ตรงกัน ให้ถือ PLAN.md เป็นหลัก) · draft v1 วันที่ 2026-11-05 · โจทย์อยู่ที่ <code>docs/ASSIGNMENT.md</code></p>
+  <p class="sub">ฉบับภาษาไทยพร้อม diagram ของ <code>docs/PLAN.md</code> (ถ้าเนื้อหาไม่ตรงกัน ให้ถือ PLAN.md เป็นหลัก) · draft v2 (ใส่ผลงานวิจัยรอบ 2 แล้ว) วันที่ 2026-11-05 · โจทย์อยู่ที่ <code>docs/ASSIGNMENT.md</code></p>
   <div class="bar">
     <div class="stat"><b>กำหนดส่ง</b><span>ศ. 6 พ.ย. 2026 เวลา 23:59 (เวลาไทย)</span></div>
     <div class="stat"><b>Tool บังคับ</b><span>5 ตัว + <code>get_attachment</code> + <code>auth_status</code></span></div>
@@ -246,9 +246,9 @@ figure.d figcaption{font-size:12.5px;color:var(--ink-3);margin-top:8px;padding:0
   <thead><tr><th>ส่วน</th><th>เลือก</th><th>เหตุผล</th></tr></thead>
   <tbody>
     <tr><td>ภาษา / runtime</td><td><b>TypeScript บน Node 22 LTS</b></td><td>MCP SDK ตัวทางการเขียนด้วย TS เป็นหลัก Playwright ก็เป็น TS อยู่แล้ว ภาษาเดียวใช้ได้ทั้ง server, mock และ test type แบบ strict ทำหน้าที่เป็นเอกสารของ data model</td></tr>
-    <tr><td>MCP</td><td><code>@modelcontextprotocol/sdk</code> + <code>zod</code></td><td>zod schema ใช้เป็น input schema และใช้ตรวจข้อมูลไปพร้อมกัน tool มี annotation <code>readOnlyHint</code> / <code>destructiveHint</code></td></tr>
+    <tr><td>MCP</td><td><code>@modelcontextprotocol/sdk</code> + <code>zod</code> <span class="pill warn">pin major</span></td><td>pin major version เพราะ whatsapp-mcp ติดตั้งไม่ขึ้นเมื่อ <code>mcp</code> 2.x ออก · zod schema ใช้เป็น input schema และใช้ตรวจข้อมูลไปพร้อมกัน tool มี annotation <code>readOnlyHint</code> / <code>destructiveHint</code></td></tr>
     <tr><td>Transport</td><td>stdio</td><td>ใช้กับ Claude Code / Desktop / MCP Inspector ได้ทันที ส่วน Streamable HTTP อยู่ในหมวด "ถ้ามีเวลาเพิ่ม"</td></tr>
-    <tr><td>Mock LINE OA</td><td><b>Hono</b></td><td>เลียนแบบ path และ field จริงของ chat.line.biz (cookie <code>__Host-chat-ses</code>, <code>X-XSRF-TOKEN</code>, cursor, URL ไฟล์ที่ต้องมี cookie) และมีหน้า console เล็ก ๆ ให้คนดู</td></tr>
+    <tr><td>Mock LINE OA</td><td><b>Hono</b></td><td>เลียนแบบ path และ field จริงของ chat.line.biz (cookie <code>__Host-chat-ses</code>, <code>X-XSRF-TOKEN</code>, cursor, URL ไฟล์ที่ต้องมี cookie) และมีหน้า console เล็ก ๆ ให้คนดู · <b>bind แค่ <code>127.0.0.1</code></b></td></tr>
     <tr><td>เข้าถึง console จริง</td><td><code>fetch</code> + cookie · <b>Playwright</b> ใช้แค่ login และสำรวจ endpoint</td><td>ยิง HTTP ซ้ำเร็วและผลแน่นอน ถ้าคุม browser ทุก action จะช้าและพังง่าย</td></tr>
     <tr><td>Index ในเครื่อง</td><td><code>better-sqlite3</code> · FTS5 <b>trigram</b></td><td>ภาษาไทยไม่มีขอบเขตคำ <code>unicode61</code> จะมองทั้งประโยคเป็น token เดียว ส่วน trigram ค้นบางส่วนของคำได้ทุกภาษา</td></tr>
     <tr><td>รูปภาพ</td><td><code>sharp</code></td><td>ย่อรูปก่อนส่งให้ LLM: เล็กลง ประหยัดขึ้น ไม่เกินขนาดที่ block รับได้</td></tr>
@@ -451,14 +451,14 @@ CLAUDE.md  AGENTS.md  README.md</code></pre></div>
     <tr><td><code>list_chats</code></td><td><code>filter?: ongoing|unread|all</code>, <code>limit≤50</code>, <code>cursor?</code>, <code>botId?</code></td><td><code>chats[]</code>, <code>nextCursor?</code></td><td><span class="pill ok">read-only</span></td></tr>
     <tr><td><code>read_chat</code></td><td><code>chatId</code>, <code>limit≤100</code>, <code>before?</code></td><td><code>messages[]</code> เก่าไปใหม่, <code>prevCursor?</code>, <code>user</code></td><td><span class="pill ok">read-only</span> ไฟล์แนบเป็นแค่ ref · ไม่ mark read</td></tr>
     <tr><td><code>search_messages</code></td><td><code>query</code>, <code>chatId?</code>, <code>from?</code>, <code>since?</code>, <code>until?</code>, <code>limit≤50</code>, <code>cursor?</code></td><td><code>hits[]</code> + <code>contextBefore/After</code>, <code>indexedAt</code></td><td><span class="pill ok">read-only</span> ค้นภาษาไทยได้</td></tr>
-    <tr><td><code>send_message</code></td><td><code>chatId</code>, <code>text?</code>, <code>attachmentPaths?[]</code>, <code>dryRun?</code></td><td><code>{messageId, sentAt}</code> หรือ preview</td><td><span class="pill warn">เขียนข้อมูล</span> เปิดด้วย <code>LINEOA_ALLOW_SEND</code> · allowlist · audit log</td></tr>
-    <tr><td><code>get_user_profile</code></td><td><code>userId</code> หรือ <code>chatId</code></td><td><code>UserProfile</code></td><td><span class="pill ok">read-only</span></td></tr>
+    <tr><td><code>send_message</code></td><td><code>chatId</code>, <code>text?</code>, <code>attachmentPaths?[]</code>, <code>dryRun?</code></td><td><code>{messageId, sentAt}</code> หรือ preview</td><td><span class="pill warn">เขียนข้อมูล</span> เปิดด้วย <code>LINEOA_ALLOW_SEND</code> · allowlist · audit log · <b>idempotent ด้วย <code>sendId</code></b> ไม่ส่งซ้ำเอง</td></tr>
+    <tr><td><code>get_user_profile</code></td><td><code>userId</code> หรือ <code>chatId</code></td><td><code>UserProfile</code> + notes / tags / ผู้รับผิดชอบ</td><td><span class="pill ok">read-only</span></td></tr>
     <tr><td><code>get_attachment</code></td><td><code>chatId</code>, <code>messageId</code>, <code>attachmentId?</code>, <code>mode?: inline|save</code></td><td>รูป → <code>image</code> content · ไฟล์อื่น → path + ข้อมูลไฟล์</td><td><span class="pill ok">read-only</span></td></tr>
     <tr><td><code>auth_status</code></td><td>ไม่มี</td><td>พนักงาน, OA ที่เข้าได้, อายุ session</td><td><span class="pill ok">read-only</span> ให้ agent เช็กก่อนเริ่มงานยาว</td></tr>
   </tbody>
 </table>
 </div></div>
-<p style="font-size:13.5px">error มีชนิดชัดเจนและบอกวิธีแก้: <code>AUTH_EXPIRED</code> · <code>FORBIDDEN</code> · <code>NOT_FOUND</code> · <code>RATE_LIMITED</code> (+<code>retryAfter</code>) · <code>ATTACHMENT_TOO_LARGE</code> · <code>ATTACHMENT_EXPIRED</code> · <code>PATH_NOT_ALLOWED</code></p>
+<p style="font-size:13.5px">error มีชนิดชัดเจนและบอกวิธีแก้: <code>AUTH_EXPIRED</code> · <code>FORBIDDEN</code> · <code>NOT_FOUND</code> · <code>RATE_LIMITED</code> (+<code>retryAfter</code>) · <code>ATTACHMENT_TOO_LARGE</code> · <code>ATTACHMENT_EXPIRED</code> · <code>PATH_NOT_ALLOWED</code> · <code>SEND_UNCERTAIN</code></p>
 
 <!-- ================================================================== -->
 <h2 id="auth">6. Authentication: server ทำงานแทนพนักงาน CS ได้อย่างไร</h2>
@@ -527,7 +527,7 @@ CLAUDE.md  AGENTS.md  README.md</code></pre></div>
   <li><b><code>npm run login</code></b> เปิด Chromium จริงขึ้นมา พนักงาน login เองด้วย LINE Business ID / อีเมล / QR และ 2FA หรือ captcha ถ้ามี เราจึงไม่ต้องรับมือ captcha และไม่ต้องเก็บรหัสผ่าน</li>
   <li>เก็บ cookie <code>__Host-chat-ses</code>, <code>chat-device-group</code>, <code>XSRF-TOKEN</code> (chat.line.biz) และ <code>session</code> (account.line.biz) ตรวจด้วย <code>GET /api/v1/me</code> และดึงรายการ OA จาก <code>GET /api/v1/bots</code></li>
   <li><b>SessionStore</b> เขียนลง <code>~/.config/lineoa-mcp/session.json</code> สิทธิ์ <code>0600</code> อยู่นอก repo และอยู่ใน gitignore ค่าลับไม่ถูกพิมพ์ลง log หรือผลลัพธ์ของ tool</li>
-  <li><b>WebClient</b> แนบ cookie, refresh CSRF และจำกัด rate · 401 <code>not_login</code> → <code>AUTH_EXPIRED</code> · 403 → refresh CSRF หนึ่งครั้ง ถ้ายังไม่ได้ → <code>FORBIDDEN</code> · ถ้า server ส่ง <code>Set-Cookie</code> ใหม่มา เก็บค่าใหม่ไว้ใช้</li>
+  <li><b>WebClient</b> แนบ cookie, refresh CSRF และจำกัด rate · 401 <code>not_login</code> → <code>AUTH_EXPIRED</code> · 403 → refresh CSRF หนึ่งครั้ง ถ้ายังไม่ได้ → <code>FORBIDDEN</code> · ถ้า server ส่ง <code>Set-Cookie</code> ใหม่มา เก็บค่าใหม่ไว้ใช้ · แนบ cookie เฉพาะ host ใน allowlist และ redact header ลับใน log (linebiz) · มี lock file กันไม่ให้ server สองตัวใช้ session เดียวกัน (telegram-mcp, LINELib)</li>
   <li><b>จำกัดขอบเขต:</b> เข้าได้แค่ bot id ใน config · role ของพนักงาน (Admin / Operator / chat-only) ยังมีผลฝั่ง LINE · <b>identity guard:</b> ไม่ยอมเริ่มทำงานถ้า <code>me</code> ไม่ตรงกับ <code>LINEOA_EXPECTED_ACCOUNT</code></li>
 </ol>
 </div></div>
@@ -579,10 +579,10 @@ CLAUDE.md  AGENTS.md  README.md</code></pre></div>
       <div class="branch"><span>หมดอายุ</span><span class="step bad">ATTACHMENT_EXPIRED</span></div>
       <div class="arrow">↓</div>
       <div class="step new">โหลด chat-content.line.biz + cookie</div>
-      <div class="branch"><span>&gt; 20 MB</span><span class="step bad">ATTACHMENT_TOO_LARGE</span></div>
+      <div class="branch"><span>&gt; 32 MiB</span><span class="step bad">ATTACHMENT_TOO_LARGE</span></div>
       <div class="arrow">↓</div>
       <div class="step new">ตรวจ MIME จาก magic bytes · clean ชื่อไฟล์</div><div class="arrow">↓</div>
-      <div class="step">cache: ~/.cache/lineoa-mcp/attachments/&lt;sha256&gt;</div>
+      <div class="step new">เขียนลง temp → rename (atomic) → cache/&lt;sha256&gt;</div>
       <div class="branch"><span>รูป &lt; 1 MB</span><span class="step okk">ย่อ 1568 px → MCP image content</span></div>
       <div class="branch"><span>รูป ≥ 1 MB</span><span class="step">resource_link + path</span></div>
       <div class="branch"><span>ไฟล์อื่น</span><span class="step">path + ข้อมูลไฟล์ (+ preview txt/csv)</span></div>
@@ -598,11 +598,13 @@ CLAUDE.md  AGENTS.md  README.md</code></pre></div>
       <div class="step new">path ต้องอยู่ใน ~/lineoa-outbox</div>
       <div class="branch"><span>อยู่นอก outbox</span><span class="step bad">PATH_NOT_ALLOWED</span></div>
       <div class="arrow">↓</div>
-      <div class="step">ตรวจชนิดและขนาดไฟล์</div>
+      <div class="step">ตรวจ MIME จริง · รูป ≤ 20 MiB · ไฟล์ ≤ 32 MiB</div>
       <div class="branch"><span>dryRun</span><span class="step">ส่ง preview กลับ ไม่ส่งจริง</span></div>
       <div class="arrow">↓</div>
       <div class="step">uploadFile → contentMessageToken</div><div class="arrow">↓</div>
-      <div class="step">bulkSendFiles / messages/send</div><div class="arrow">↓</div>
+      <div class="step new">bulkSendFiles / messages/send (มี sendId)</div>
+      <div class="branch"><span>ไม่แน่ใจ</span><span class="step bad">หา sendId ในประวัติ → SEND_UNCERTAIN (ไม่ส่งซ้ำ)</span></div>
+      <div class="arrow">↓</div>
       <div class="step okk">audit.jsonl (ใคร · เมื่อไร · แชทไหน)</div>
     </div>
   </div>
@@ -616,7 +618,7 @@ CLAUDE.md  AGENTS.md  README.md</code></pre></div>
     <div class="colhead">sync (เติมข้อมูลลง index)</div>
     <div class="flow">
       <div class="step">list_chats: หาแชทที่เปลี่ยนตั้งแต่ sync ครั้งก่อน</div><div class="arrow">↓</div>
-      <div class="step">ดึง history ของแชทนั้น (cursor backward)</div><div class="arrow">↓</div>
+      <div class="step new">ครั้งแรก: messages.csv ทั้งห้อง · ครั้งต่อไป: history (cursor)</div><div class="arrow">↓</div>
       <div class="step new">upsert ลง SQLite FTS5 (tokenizer trigram)</div><div class="arrow">↓</div>
       <div class="step">บันทึก indexedAt</div>
     </div>
@@ -797,6 +799,21 @@ CLAUDE.md  AGENTS.md  README.md</code></pre></div>
     <tr><td>ระบบรวมแชท (ต่างประเทศ)</td><td>Chatwoot · respond.io · Front</td><td>data model · เกณฑ์ 1 MB inline/link · ID ที่มี prefix</td></tr>
     <tr><td>ระบบรวมแชท (ไทย)</td><td>SleekFlow · Zaapi · Zwiz.ai · Page365 · Jib OS / OHO</td><td>placeholder ของข้อความที่ไม่รองรับ · สลิปเป็นเคสหลัก · ร่างก่อนส่ง · บันทึกว่าพนักงานคนไหนตอบ</td></tr>
     <tr><td>ไม่ตรงกับโจทย์</td><td><a href="https://github.com/line/line-bot-mcp-server">line-bot-mcp-server</a></td><td>ทำงานในนาม bot อ่านประวัติแชทไม่ได้ (ไว้อธิบายใน README ว่าทำไมไม่ใช้)</td></tr>
+  </tbody>
+</table>
+</div></div>
+
+<div class="card"><div class="card-h"><h3>งานวิจัยรอบ 2: ลองติดตั้งและเทียบกันจริง 17 ตัว</h3><span class="pill acc">branch research</span></div><div class="card-b scroll">
+<p style="font-size:13.5px">agent Sonnet 5 ตัวทำงานขนานกัน ติดตั้งหรือลองใช้แต่ละตัว ถ่ายภาพ ทำ diagram และให้คะแนน ดูหน้าเต็มได้ที่ <code>test/research/index.html</code> ใน branch <code>research</code> · คะแนนสูงสุด: telegram-mcp 81, slack-mcp-server 74, LINELib 71, Chatwoot 66, omnichat-bridge 66 (omnichat-bridge ตรงโจทย์ที่สุด)</p>
+<table>
+  <thead><tr><th>เรื่อง</th><th>สิ่งที่เปลี่ยนในแผนนี้</th><th>ได้มาจาก</th></tr></thead>
+  <tbody>
+    <tr><td>ส่งซ้ำ</td><td><code>sendId</code> ทุกครั้ง ถ้าไม่แน่ใจว่าส่งสำเร็จ หาในประวัติก่อน ไม่ส่งซ้ำเอง → <code>SEND_UNCERTAIN</code></td><td>omnichat-bridge</td></tr>
+    <tr><td>ไฟล์</td><td>รูป ≤ 20 MiB · ไฟล์ ≤ 32 MiB · ส่ง MIME จริง · ดาวน์โหลดแบบ atomic · allowlist นามสกุลไฟล์</td><td>omnichat-bridge, telegram-mcp, LINELib (ตัวอย่างที่ไม่ควรทำ)</td></tr>
+    <tr><td>Cookie / session</td><td>allowlist ของ host · redact header ลับ · lock file · ไม่ขอ login ผ่าน stdio</td><td>linebiz, telegram-mcp</td></tr>
+    <tr><td>Search / profile</td><td>ใช้ <code>messages.csv</code> เติม index ครั้งแรก · profile ดึง notes / tags / owners มาด้วย</td><td>propertyos-line-importer</td></tr>
+    <tr><td>Domain model</td><td><code>kind</code> ตาม <code>file_type</code> ของ Chatwoot · มีข้อความชนิด system/activity · placeholder ของชนิดที่ไม่รองรับ</td><td>Chatwoot, respond.io, SleekFlow</td></tr>
+    <tr><td>ความปลอดภัย</td><td>mock bind แค่ <code>127.0.0.1</code> · pin major version ของ MCP SDK</td><td>whatsapp-mcp (ตัวอย่างที่ไม่ควรทำ)</td></tr>
   </tbody>
 </table>
 </div></div>

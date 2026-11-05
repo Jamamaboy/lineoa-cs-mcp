@@ -3,7 +3,7 @@
 ไฟล์นี้เป็นฉบับแปลของ [`docs/PLAN.md`](PLAN.md) ไว้อ่านเอง ถ้าเนื้อหาสองไฟล์ไม่ตรงกัน ให้ถือ `PLAN.md` เป็นหลัก
 ฉบับที่มี diagram อยู่ที่ [`docs/PLAN.html`](PLAN.html)
 
-สถานะ: draft v1 วันที่ 2026-11-05 กำหนดส่ง **ศุกร์ 6 พ.ย. 2026 เวลา 23:59 (เวลาไทย)** เหลือเวลาทำงานประมาณวันครึ่ง
+สถานะ: draft v2 (ใส่ผลงานวิจัยรอบ 2 แล้ว) วันที่ 2026-11-05 กำหนดส่ง **ศุกร์ 6 พ.ย. 2026 เวลา 23:59 (เวลาไทย)** เหลือเวลาทำงานประมาณวันครึ่ง
 โจทย์ตัวจริงอยู่ที่ [`docs/ASSIGNMENT.md`](ASSIGNMENT.md)
 
 ---
@@ -52,11 +52,11 @@ MCP server ที่ให้ automation agent เข้าไปทำงาน
 | ส่วน | เลือก | เหตุผล |
 |---|---|---|
 | ภาษา / runtime | **TypeScript บน Node 22 LTS** | MCP SDK ตัวทางการเขียนด้วย TS เป็นหลัก Playwright ก็เป็น TS อยู่แล้ว ภาษาเดียวใช้ได้ทั้ง server, mock และ test และ type แบบ strict ทำหน้าที่เป็นเอกสารของ data model ไปในตัว |
-| MCP | `@modelcontextprotocol/sdk` + `zod` | SDK ตัวทางการ zod schema ใช้เป็น input schema ของ tool และใช้ตรวจข้อมูลไปพร้อมกัน tool มี annotation `readOnlyHint` / `openWorldHint` |
+| MCP | `@modelcontextprotocol/sdk` + `zod` (**pin major version**) | SDK ตัวทางการ ต้อง pin เพราะ whatsapp-mcp ติดตั้งไม่ขึ้นเมื่อ `mcp` 2.x ตัด `fastmcp` ออก zod schema ใช้เป็น input schema ของ tool และใช้ตรวจข้อมูลไปพร้อมกัน tool มี annotation `readOnlyHint` / `openWorldHint` |
 | Transport | stdio (ค่าเริ่มต้น) | ใช้กับ Claude Code, Claude Desktop และ MCP Inspector ได้ทันที ไม่ต้องทำ auth ทาง network Streamable HTTP อยู่ในหมวด "ถ้ามีเวลาเพิ่ม" |
-| Mock LINE OA | **Hono** + `@hono/node-server` | HTTP server ขนาดเล็กและเร็ว เลียนแบบ **path และชื่อ field จริงของ internal API** ของ chat.line.biz (หัวข้อ 6a) คือ cookie `__Host-chat-ses`, header `X-XSRF-TOKEN`, cursor `next`/`backward` และ URL ไฟล์แบบ `chat-content` ที่ต้องมี cookie ถึงจะโหลดได้ มีหน้า console HTML เล็ก ๆ ด้วย คนจะได้เห็นว่า agent ส่งอะไรไป |
+| Mock LINE OA | **Hono** + `@hono/node-server` | HTTP server ขนาดเล็กและเร็ว เลียนแบบ **path และชื่อ field จริงของ internal API** ของ chat.line.biz (หัวข้อ 6a) คือ cookie `__Host-chat-ses`, header `X-XSRF-TOKEN`, cursor `next`/`backward` และ URL ไฟล์แบบ `chat-content` ที่ต้องมี cookie ถึงจะโหลดได้ มีหน้า console HTML เล็ก ๆ ด้วย คนจะได้เห็นว่า agent ส่งอะไรไป **bind แค่ `127.0.0.1`** (bridge ของ whatsapp-mcp เปิด REST ให้ทุก interface โดยไม่มี auth ซึ่งเป็นตัวอย่างที่ไม่ควรทำ) |
 | การเข้าถึง console จริง | `fetch` (undici) แนบ session cookie ที่เก็บไว้ ใช้ **Playwright** แค่ตอน login และตอนสำรวจ endpoint | ยิง HTTP ซ้ำแบบเดียวกับที่ browser ยิงนั้นเร็วและผลแน่นอน ถ้าคุม browser ทุก action จะช้าและพังง่าย จึงเก็บไว้เป็นทางสำรองเท่านั้น |
-| Index ในเครื่อง (search และ cache ไฟล์แนบ) | `better-sqlite3` ใช้ FTS5 กับ **`trigram` tokenizer** | ภาษาไทยไม่มีขอบเขตคำ `unicode61` จะมองทั้งประโยคไทยเป็น token เดียว ส่วน `trigram` ค้นบางส่วนของคำได้ทุกภาษา จำเป็นต้องมีเพราะไม่รู้จัก endpoint ค้นข้อความเลย (A4) ข้อมูลใน index ได้จากการ sync `list_chats` กับประวัติแชท (ใช้ polling ส่วน SSE stream อยู่ในหมวด "ถ้ามีเวลาเพิ่ม") |
+| Index ในเครื่อง (search และ cache ไฟล์แนบ) | `better-sqlite3` ใช้ FTS5 กับ **`trigram` tokenizer** | ภาษาไทยไม่มีขอบเขตคำ `unicode61` จะมองทั้งประโยคไทยเป็น token เดียว ส่วน `trigram` ค้นบางส่วนของคำได้ทุกภาษา จำเป็นต้องมีเพราะไม่รู้จัก endpoint ค้นข้อความเลย (A4) ข้อมูลใน index ได้จากการ sync `list_chats` กับประวัติแชท (ใช้ polling ส่วน SSE stream อยู่ในหมวด "ถ้ามีเวลาเพิ่ม") ครั้งแรกของแต่ละแชทใช้ `GET /download/{botId}/{chatId}/messages.csv` ดึงทั้งห้องรวดเดียว (เจอใน propertyos-line-importer) |
 | รูปภาพ | `sharp` | ย่อรูปก่อนส่งกลับให้ LLM เป็น image content ทำให้ไฟล์เล็กลง ประหยัดขึ้น และไม่เกินขนาดที่ block รับได้ |
 | Test | **vitest** + `InMemoryTransport` ของ SDK | test แบบ end-to-end ครบเส้น คือ MCP client ตัวจริงเรียก server ตัวจริง ซึ่งไปเรียก mock server ต่อ ไม่ต้องใช้ network และไม่ต้องมีบัญชี LINE |
 | Lint / format | **Biome** | เครื่องมือเดียว เร็ว config น้อย |
@@ -122,6 +122,9 @@ CLAUDE.md  AGENTS.md  README.md
 - `AttachmentRef { id, kind, mime?, sizeBytes?, fileName?, width?, height?, expiresAt? }` เก็บแค่ข้อมูลของไฟล์ ไม่เก็บตัวไฟล์
 - `UserProfile { id, displayName, pictureUrl, statusMessage?, language?, followedAt?, tags[], note?, chatId }`
 - Cursor เป็นแบบ opaque (base64 JSON) แต่ละ backend จะใช้วิธีแบ่งหน้าของตัวเองได้
+- จาก Chatwoot: `AttachmentRef.kind` ใช้ชื่อตาม `file_type` (`image | audio | video | file | location | fallback`)
+  ข้อความมีชนิด `system`/activity (เช่น assign, note) นอกจากข้อความแชทปกติ
+  ข้อความชนิดที่ agent ใช้ไม่ได้ให้ส่งเป็น placeholder ไม่ทิ้งเงียบ ๆ (respond.io กับ SleekFlow ก็ทำแบบนี้)
 
 ---
 
@@ -132,8 +135,8 @@ CLAUDE.md  AGENTS.md  README.md
 | `list_chats` | `filter?: ongoing\|unread\|all` (ค่าเริ่มต้น `ongoing`), `limit≤50`, `cursor?`, `botId?` | `chats[]`, `nextCursor?` | อ่านอย่างเดียว |
 | `read_chat` | `chatId`, `limit≤100`, cursor `before?` | `messages[]` เรียงเก่าไปใหม่, `prevCursor?`, สรุปข้อมูล `user` | อ่านอย่างเดียว ไฟล์แนบส่งกลับเป็นแค่ ref ข้อความของลูกค้าติดป้ายว่าเป็นเนื้อหาที่ไม่น่าเชื่อถือ |
 | `search_messages` | `query`, `chatId?`, `from?`, `since?`, `until?`, `limit≤50`, `cursor?` | `hits[] {chatId, messageId, snippet, sentAt, senderName, contextBefore[], contextAfter[]}`, `indexedAt` | อ่านอย่างเดียว ค้นบางส่วนของคำภาษาไทยได้ |
-| `send_message` | `chatId`, `text?`, `attachmentPaths?[]` (ต้องอยู่ในโฟลเดอร์ outbox), `dryRun?` | `{messageId, sentAt}` หรือ preview ถ้าตั้ง `dryRun` | tool เดียวที่เขียนข้อมูล ติด `destructiveHint` จะลงทะเบียน tool นี้เฉพาะเมื่อ `LINEOA_ALLOW_SEND=true` ตรวจกับ allowlist ของแชท (ถ้าตั้งไว้) บันทึกลง audit log ไม่รับข้อความว่างและแชทที่ไม่มีอยู่จริง |
-| `get_user_profile` | `userId` หรือ `chatId` | `UserProfile` | อ่านอย่างเดียว |
+| `send_message` | `chatId`, `text?`, `attachmentPaths?[]` (ต้องอยู่ในโฟลเดอร์ outbox), `dryRun?` | `{messageId, sentAt}` หรือ preview ถ้าตั้ง `dryRun` | tool เดียวที่เขียนข้อมูล ติด `destructiveHint` จะลงทะเบียน tool นี้เฉพาะเมื่อ `LINEOA_ALLOW_SEND=true` ตรวจกับ allowlist ของแชท (ถ้าตั้งไว้) บันทึกลง audit log ไม่รับข้อความว่างและแชทที่ไม่มีอยู่จริง **ส่งซ้ำไม่ได้ (idempotent):** ทุกครั้งมี `sendId` ถ้าไม่แน่ใจว่าส่งสำเร็จ (timeout หรือ network error) จะไม่ส่งซ้ำเอง แต่หา `sendId` ในประวัติแชทก่อน ถ้าไม่เจอให้ตอบ `SEND_UNCERTAIN` (แนวจาก omnichat-bridge) |
+| `get_user_profile` | `userId` หรือ `chatId` | `UserProfile` (+ `notes`, `tags`, ผู้รับผิดชอบจาก `owners`) | อ่านอย่างเดียว |
 | `get_attachment` | `chatId`, `messageId`, `attachmentId?`, `mode?: inline\|save` | รูป → MCP `image` content (ย่อแล้ว) + path ในเครื่อง ไฟล์อื่น → path ที่บันทึกไว้ + ข้อมูลไฟล์ (+ preview ข้อความถ้าเป็น txt/csv) | อ่านอย่างเดียว |
 | (เสริม) `auth_status` | ไม่มี | พนักงานที่ login อยู่, OA ที่เข้าได้, อายุของ session | ให้ agent เช็ก auth ก่อนเริ่มงานยาว ๆ |
 
@@ -144,6 +147,7 @@ error มีชนิดชัดเจน และบอกวิธีแก�
 - `ATTACHMENT_TOO_LARGE`
 - `ATTACHMENT_EXPIRED`
 - `PATH_NOT_ALLOWED`
+- `SEND_UNCERTAIN`
 
 ---
 
@@ -168,6 +172,8 @@ error มีชนิดชัดเจน และบอกวิธีแก�
    - linebiz บอกว่า session **มักอยู่ได้ไม่ถึงวัน** และไม่ต่ออายุให้เอง README จึงจะบอกพนักงานให้ login ใหม่ทุกกะ
    - ถ้า server ส่ง `Set-Cookie` ใหม่มา เราเก็บค่าใหม่ไว้ใช้
    - **ไม่ login ใหม่ให้เองเงียบ ๆ** แต่จะบอก agent ให้ไปขอคน
+   - แนบ cookie เฉพาะ host ใน allowlist (`chat.line.biz`, `chat-content.line.biz`) และ redact header ลับในทุกบรรทัดของ log (จาก linebiz)
+   - มี **lock file** ข้าง `session.json` กันไม่ให้ server สองตัวใช้ session เดียวกัน (จาก telegram-mcp และ LINELib) และไม่ขอ login ผ่าน stdio
 5. **จำกัดขอบเขต:** เข้าได้แค่ bot id ที่ตั้งไว้ใน config แม้พนักงานจะมีสิทธิ์เข้า OA อื่นด้วยก็ตาม
    role ของพนักงานเอง (Admin / Operator / chat-only) ก็ยังมีผลฝั่ง LINE ตามปกติ
 6. **Mock ทำ flow เดียวกันทั้งหมด:** หน้า login, session cookie แบบ httpOnly, CSRF header, session หมดอายุ และ URL ไฟล์แนบที่ต้อง auth
@@ -219,7 +225,8 @@ error มีชนิดชัดเจน และบอกวิธีแก�
 ตอนอ่าน:
 - `read_chat` ส่งกลับแค่ `AttachmentRef` context ของ agent จึงเล็ก แชทที่มีรูปเต็มไปหมดก็ยังไม่เปลือง
 - `get_attachment` ดาวน์โหลดจาก `chat-content.line.biz/bot/{botId}/{contentHash}` ด้วย session cookie (ไม่ใช่ URL ที่เซ็นไว้)
-  แล้ว stream ลง `~/.cache/lineoa-mcp/attachments/<sha256>` จำกัดขนาดไว้ที่ 20 MB เป็นค่าเริ่มต้น
+  แล้ว stream ลง `~/.cache/lineoa-mcp/attachments/<sha256>` โดยเขียนลงไฟล์ temp ก่อน แล้วค่อย rename เมื่อโหลดครบ
+  ไฟล์ที่โหลดไม่ครบจะไม่โผล่ออกมาให้เห็น (atomic, จาก telegram-mcp) จำกัดขนาดดาวน์โหลดที่ 32 MiB เป็นค่าเริ่มต้น
 - **ตรวจ MIME จาก magic bytes** ไม่เชื่อนามสกุลไฟล์หรือสิ่งที่ server บอก ชื่อไฟล์ถูก clean ก่อนใช้ (กัน path traversal และ control character)
 - **รูปภาพ** (สลิปโอนเงิน รูปสินค้า) ย่อให้ด้านยาวไม่เกิน 1568 px
   - ถ้าย่อแล้วเล็กกว่าประมาณ 1 MB ส่งกลับเป็น MCP `image` content ให้ vision model อ่านได้เลย (เกณฑ์นี้เอามาจาก respond.io)
@@ -234,7 +241,9 @@ error มีชนิดชัดเจน และบอกวิธีแก�
 ตอนส่ง:
 - `send_message.attachmentPaths` ต้องชี้ไปที่ไฟล์**ในโฟลเดอร์ outbox ที่อยู่ใน allowlist** (ค่าเริ่มต้น `~/lineoa-outbox`)
   กันไม่ให้ agent ที่โดน prompt injection ส่ง `~/.ssh/id_rsa` ไปให้ลูกค้า
-- ตรวจชนิดและขนาดไฟล์ก่อนอัปโหลด ลำดับคือ `uploadFile` → `contentMessageToken` → `bulkSendFiles`
+- ตรวจชนิดและขนาดไฟล์ก่อนอัปโหลด: รูปไม่เกิน 20 MiB วิดีโอและไฟล์ไม่เกิน 32 MiB (ตัวเลขของ omnichat-bridge ต้องยืนยันจาก HAR)
+  ส่ง **MIME จริง** ตอนอัปโหลด (LINELib ส่ง `application/octet-stream` ทุกไฟล์ เราไม่ทำตาม) และมี allowlist นามสกุลไฟล์ต่อ tool
+  ลำดับคือ `uploadFile` → `contentMessageToken` → `bulkSendFiles`
 
 ความปลอดภัย: ข้อความและไฟล์จากลูกค้าเป็น input ที่ไม่น่าเชื่อถือ ผลลัพธ์ของ tool จะติดป้ายบอกไว้ และ README มีส่วนอธิบายเรื่อง prompt injection
 
@@ -322,6 +331,23 @@ Acme เป็นผลิตภัณฑ์ด้านการชำระเ
 2. **Identity guard:** `LINEOA_EXPECTED_ACCOUNT` server ไม่ยอมเริ่มทำงานถ้า `/api/v1/me` ไม่ตรงกับค่านี้
 3. `search_messages` ส่งข้อความรอบ ๆ ผลที่เจอกลับมาด้วย (`contextBefore` / `contextAfter`)
 4. ID ในผลลัพธ์ของ tool มี prefix (`chat_…`, `user_…`, `msg_…`, `att_…`) model จะได้ไม่สับสนระหว่าง id แต่ละชนิด
+
+---
+
+### งานวิจัยรอบ 2: ลองติดตั้งและเทียบกันจริง (branch `research`)
+
+agent Sonnet 5 ตัวทำงานขนานกัน ติดตั้งหรือลองใช้ 17 โปรเจกต์ ให้คะแนนแบบถ่วงน้ำหนัก และสรุปไว้ในหน้าเดียว:
+`test/research/index.html` (branch `research`)
+
+คะแนนสูงสุด: telegram-mcp 81, slack-mcp-server 74, LINELib 71, Chatwoot 66, omnichat-bridge 66
+ตัวที่ตรงโจทย์ที่สุดคือ omnichat-bridge เป็น extension ของบริษัทไทย ที่อ่าน ส่ง และแนบไฟล์ผ่าน endpoint ภายในของ chat.line.biz และมี test 995 ข้อ
+ข้อที่แก้ด้านบนและมีชื่อโปรเจกต์กำกับไว้ ได้มาจากรอบนี้
+
+สิ่งที่ยังไม่มีใครทำ (จุดที่งานของเราต่างออกไป):
+- MCP server สำหรับ LINE OA ในนามพนักงาน CS
+- mock backend + contract test
+- search ภาษาไทย
+- outbox ที่จำกัดโฟลเดอร์ตอนส่งไฟล์
 
 ---
 
