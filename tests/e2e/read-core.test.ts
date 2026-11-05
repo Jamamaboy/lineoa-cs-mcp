@@ -37,6 +37,12 @@ describe("MCP read core against the mock", () => {
     expect(next.json.chats.length).toBeGreaterThan(0);
   });
 
+  it("list_chats needs_reply keeps only chats where the customer spoke last", async () => {
+    const r = await stack.call("list_chats", { filter: "needs_reply", limit: 50 });
+    expect(r.json.chats.length).toBeGreaterThan(0);
+    for (const c of r.json.chats) expect(c.lastMessage.from).toBe("customer");
+  });
+
   it("read_chat returns messages oldest to newest with attachment metadata and older pages", async () => {
     const list = await stack.call("list_chats", { filter: "all", limit: 50 });
     const somchai = list.json.chats.find((c: { name: string }) => c.name === "สมชาย ใจดี");
