@@ -1,7 +1,8 @@
 # plan status
-Last updated: 2026-11-06 01:55 ICT · branch plan
+Last updated: 2026-11-06 02:30 ICT · branch plan
 
 ## Now
+- `docs/plan/plan-summary.html`: Thai one-page summary (end result, use cases, tools, folder tree + file counts).
 - Docs cleaned up: `docs/README.md` maps every document; the run plan is `docs/plan/run-plan.{md,html}`; the
   how-CS-uses-it page is `docs/plan/how-cs-uses-it.html`. The dev/research worktree folders in `~/orca` were removed
   (outside this session); all their commits are safe on the branches. New worktrees go to `~/.lineoa-lanes/`.
