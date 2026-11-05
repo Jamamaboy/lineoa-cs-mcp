@@ -1,50 +1,53 @@
 /**
- * `npm run login`: the CS person logs in to LINE OA Manager in a real Chrome window, by themselves
- * (email, QR, 2FA, captcha). We never see or store the password. Once chat.line.biz answers
- * /api/v1/me, only the *.line.biz cookies are saved to the session file.
+ * Login: the CS person logs in to LINE OA Manager in a real browser window, by themselves (email,
+ * QR, 2FA, captcha). We never see or store the password. Once chat.line.biz answers /api/v1/me,
+ * only the *.line.biz cookies are saved to the session file.
  */
-import { chromium } from "playwright-core";
+import { type BrowserName, openBrowser } from "./browsers.js";
 import { sessionPath, writeSession } from "./session-file.js";
 
-const CONSOLE = process.env.LINEOA_BASE_URL ?? "https://chat.line.biz";
-const TIMEOUT_MS = 5 * 60_000;
-
-const browser = await chromium.launch({ channel: "chrome", headless: false });
-const context = await browser.newContext();
-const page = await context.newPage();
-await page.goto(CONSOLE);
-console.log("A Chrome window is open. Log in to LINE OA Manager there (this window waits up to 5 minutes).");
-
-// Poll the same endpoint the server uses; the browser's own cookies make the request.
-type Me = { name?: string };
-type Bots = { list?: { botId: string; name: string }[] };
-let me: Me | undefined;
-const deadline = Date.now() + TIMEOUT_MS;
-while (!me && Date.now() < deadline) {
-  await new Promise((r) => setTimeout(r, 2000));
-  const res = await context.request
-    .get(`${CONSOLE}/api/v1/me`, { failOnStatusCode: false })
-    .catch(() => undefined);
-  if (res?.ok() && (res.headers()["content-type"] ?? "").includes("json")) me = (await res.json()) as Me;
-}
-if (!me) {
-  console.error("Login not finished in 5 minutes. Run `npm run login` again.");
-  await browser.close();
-  process.exit(1);
+export interface LoginResult {
+  staffName: string;
+  oas: { botId: string; name: string }[];
+  sessionFile: string;
+  browser: BrowserName;
 }
 
-const bots = (await (
-  await context.request.get(`${CONSOLE}/api/v1/bots?noFilter=true&limit=1000`)
-).json()) as Bots;
-const state = await context.storageState();
-const lineOnly = {
-  cookies: state.cookies.filter((c) => c.domain.replace(/^\./, "").endsWith("line.biz")),
-  origins: [],
-};
-const path = sessionPath();
-writeSession(path, lineOnly);
-await browser.close();
+export async function login(opts: { console?: string; browser?: BrowserName; timeoutMs?: number } = {}) {
+  const base = opts.console ?? "https://chat.line.biz";
+  const { browser, name } = await openBrowser(opts.browser);
+  try {
+    const context = await browser.newContext();
+    await (await context.newPage()).goto(base);
 
-console.log(`\n✓ Logged in as ${me.name ?? "(unknown)"}`);
-for (const b of bots.list ?? []) console.log(`  OA: ${b.name}  (${b.botId})`);
-console.log(`✓ Session saved to ${path} (only you can read it). Never commit this file.`);
+    // Poll the same endpoint the server uses; the browser's own cookies make the request.
+    let me: { name?: string } | undefined;
+    const deadline = Date.now() + (opts.timeoutMs ?? 5 * 60_000);
+    while (!me && Date.now() < deadline) {
+      await new Promise((r) => setTimeout(r, 2000));
+      const res = await context.request
+        .get(`${base}/api/v1/me`, { failOnStatusCode: false })
+        .catch(() => undefined);
+      if (res?.ok() && (res.headers()["content-type"] ?? "").includes("json")) me = await res.json();
+    }
+    if (!me) throw new Error("Login was not finished in time. Run the login again.");
+
+    const bots = (await (
+      await context.request.get(`${base}/api/v1/bots?noFilter=true&limit=1000`)
+    ).json()) as {
+      list?: { botId: string; name: string }[];
+    };
+    const state = await context.storageState();
+    const cookies = state.cookies.filter((c) => c.domain.replace(/^\./, "").endsWith("line.biz"));
+    const sessionFile = sessionPath();
+    writeSession(sessionFile, { cookies, origins: [] });
+    return {
+      staffName: me.name ?? "(unknown)",
+      oas: (bots.list ?? []).map((b) => ({ botId: b.botId, name: b.name })),
+      sessionFile,
+      browser: name,
+    } satisfies LoginResult;
+  } finally {
+    await browser.close();
+  }
+}
