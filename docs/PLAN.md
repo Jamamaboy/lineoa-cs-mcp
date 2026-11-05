@@ -147,8 +147,9 @@ Errors are typed and actionable: `AUTH_EXPIRED` ("ask the CS person to run `npm 
    captcha and bot-detection trouble, and means we never store credentials.
 2. When chat.line.biz has loaded, the CLI captures the **session cookies** (Playwright `storageState`:
    `__Host-chat-ses`, `chat-device-group` and `XSRF-TOKEN` on chat.line.biz, plus `session` on account.line.biz)
-   and checks the session with `GET /api/v1/me`. The server also refuses to start if `me` doesn't match
-   `LINEOA_EXPECTED_ACCOUNT` (the identity guard, borrowed from telegram-mcp), and lists the OAs (bot ids) and role this staff member can reach.
+   and checks the session with `GET /api/v1/me`. It lists the OAs (bot ids) and role this staff member can reach
+   (`GET /api/v1/bots`). The server refuses to start if `me` doesn't match `LINEOA_EXPECTED_ACCOUNT` (the identity
+   guard, borrowed from telegram-mcp).
 3. **SessionStore** writes the session to `~/.config/lineoa-mcp/session.json` with mode `0600`. The file lives
    outside the repo and is gitignored. Secrets never go to logs or tool output. With more time: the macOS Keychain or
    libsecret.
@@ -165,7 +166,7 @@ Alternatives we considered (README "trade-offs"):
 
 | Option | Verdict |
 |---|---|
-| Store email/password and log in headless automatically (`POST account.line.biz/api/login/email` + email code, the way LINELib does it) | Rejected: reCAPTCHA shows up, and we'd hold a password, 2FA and captcha break it, and it is the riskiest for bot detection and ToS. |
+| Store email/password and log in headless automatically (`POST account.line.biz/api/login/email` + email code, the way LINELib does it) | Rejected: we'd have to hold a password, reCAPTCHA and the email code break it, and it is the riskiest option for bot detection and ToS. |
 | Pasting the cookie by hand from DevTools | Kept as a documented fallback (`npm run login -- --import-cookie`). |
 | Driving the browser UI for every action | Rejected as the main path (slow, brittle selectors). Possible fallback for a single endpoint. |
 | Official Messaging API | Rejected: wrong purpose. It can't read existing chat history or search, and turning on webhooks changes how the OA behaves. |
@@ -209,8 +210,8 @@ Reading:
 - **MIME from magic bytes**, not from the extension or what the server says. File names are cleaned (path traversal,
   control characters).
 - **Images** (payment slips, product photos): resized to at most 1568 px on the long edge. If the result is under
-  about 1 MB it is returned inline as MCP `image` content (the threshold is respond.io's); otherwise it is saved and
-  returned as a `resource_link`, so a vision model can read them, plus the local path.
+  about 1 MB it is returned inline as MCP `image` content so a vision model can read it (the threshold is
+  respond.io's); otherwise it is saved and returned as a `resource_link`. The local path is returned in both cases.
 - **Other files** (PDF, docx, xlsx, zip): saved locally. The tool returns the path + metadata (+ a text preview for
   plain text and CSV). Exploring PDF text extraction is in "with more time".
 - Video, audio, sticker and location messages come back as typed placeholders with metadata. Video and audio are
@@ -273,7 +274,7 @@ Acme is a payments product, so the main CS cases are likely slips, refunds and o
 
 | id | Flow | Tools | Decision needed |
 |---|---|---|---|
-| F1 | Morning triage: "summarize unread chats" | `list_chats(unread)` → `read_chat` ×N | Is marking chats as read on open acceptable? |
+| F1 | Morning triage: "summarize unread chats" | `list_chats(unread)` → `read_chat` ×N | `read_chat` never marks read (A7). Should the agent mark a chat read once it has handled it? |
 | F2 | Reply to a customer | `read_chat` → `get_user_profile` → draft → `send_message` | Confirm before every send (`dryRun` first), or auto-send? |
 | F3 | Customer sends a payment slip image | `read_chat` → `get_attachment(inline)` → check amount/ref → reply | Inline images by default, or only on request? |
 | F4 | "Find everyone asking about order #1234 / คืนเงิน" | `search_messages` → `read_chat` | Is search scoped to one OA or to all? |
