@@ -1,11 +1,16 @@
 # plan status
-Last updated: 2026-11-06 01:40 ICT · branch plan
+Last updated: 2026-11-06 01:55 ICT · branch plan
 
 ## Now
+- Docs cleaned up: `docs/README.md` maps every document; the run plan is `docs/plan/run-plan.{md,html}`; the
+  how-CS-uses-it page is `docs/plan/how-cs-uses-it.html`. The dev/research worktree folders in `~/orca` were removed
+  (outside this session); all their commits are safe on the branches. New worktrees go to `~/.lineoa-lanes/`.
+- Research lane (this session): a web search for more similar references is running; it becomes
+  `docs/research/refs-comparison.html` + `docs/research/README.md` on the `research` branch.
 - **Single-session mode:** the user runs every lane from this one session (CLAUDE.md). No separate dev/research
   sessions are needed; Requests below are now this session's own to-do list.
 - PLAN v3 is written (`docs/PLAN.md`) and merged into `dev` and `research`. **Dev is unpaused.**
-- Run plan (stages, no clock times): `docs/plan/2026-11-06-tonight.md` (Thai diagram `.html`).
+- Run plan (stages, no clock times): `docs/plan/run-plan.md` (Thai diagram `.html`).
 - PLAN v3 is also in full Thai with diagrams: `docs/PLAN.html` (Thai text: `docs/PLAN_thai.md`).
 
 ## Next
@@ -16,7 +21,7 @@ Last updated: 2026-11-06 01:40 ICT · branch plan
 - none
 
 ## Requests
-- → dev: **Unpaused. Start now.** Follow the dev column (`docs/plan/2026-11-06-tonight.md`): scaffold → mock from
+- → dev: **Unpaused. Start now.** Follow the dev column (`docs/plan/run-plan.md`): scaffold → mock from
   `test/research/line-api-shapes` fixtures (Support-like seed: rich menu texts, bot template, flex card, screenshot,
   PDF; 2 OAs with one shared person) ‖ auth → 6 core tools + `webUrl` + send gating → e2e tests. Case layer (§5b) is
   stage 6, after the checkpoint.
