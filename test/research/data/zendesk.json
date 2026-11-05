@@ -1,0 +1,142 @@
+{
+  "slug": "zendesk",
+  "name": "Zendesk (Agent Workspace / Messaging)",
+  "category": "inbox-saas",
+  "url": "https://www.zendesk.com/",
+  "one_liner_th": "Inbox ซัพพอร์ตแบบ SaaS; LINE เป็น social messaging channel ใน Agent Workspace",
+  "language": null,
+  "license": null,
+  "github": null,
+  "users_claim": null,
+  "auth": {
+    "method_th": "คนใช้ล็อกอิน Agent Workspace ตาม role (admin / agent / custom role ใน Enterprise). API ใช้ Authorization: Bearer access_token (OAuth) และ API token แบบ email/token ซึ่งกำลังเลิกใช้ (ปิดใช้ token ที่ไม่ได้ใช้ตั้งแต่ 2026-07-28, สร้างใหม่ไม่ได้หลัง 2026-10-27, ใช้ไม่ได้ทั้งหมด 2027-04-30 ตามโค้ดของ reminia/zendesk-mcp-server). การเพิ่มช่อง LINE ต้องเป็น admin ใส่ Channel ID + Channel secret แล้วคัดลอก Webhook URL ไปตั้งใน LINE (ใช้ Messaging API webhook ไม่ใช่ chat.line.biz)",
+    "storage_th": "ฝั่งแพลตฟอร์ม: server-side. MCP community (reminia) เก็บ OAuth token ใน tokens.json ($XDG_CONFIG_HOME/zendesk-mcp/) โหมดไฟล์ 0600 เขียนแบบ temp+chmod",
+    "borrow_th": "ควรเลียนแบบ: OAuth public client + PKCE ให้แต่ละคนอนุมัติด้วยตัวเอง การกระทำจึงอยู่ใต้สิทธิ์ role จริงของคนนั้น (reminia README) และเก็บ token ไฟล์ 0600. ควรหลีกเลี่ยง: API token ที่ให้สิทธิ์เต็มของผู้ใช้"
+  },
+  "attachments": {
+    "how_th": "อัปโหลดด้วย POST /api/v2/uploads?filename=… ได้ token อายุ 60 นาที แล้วแนบกับ comment ผ่าน Tickets API เท่านั้น; ก่อนแนบ ไฟล์เปิดได้โดยผู้ใช้ที่ล็อกอินทุกคนที่มี content_url หลังแนบจึงจำกัดตามสิทธิ์ของ ticket. content_url อาจชี้ไปโฮสต์ภายนอก จึงห้ามส่ง credential ไปด้วย. มี malware_scan_result และ admin toggle malware_access_override. redact แบบถาวร (แทนด้วย redacted.txt) ผ่าน PUT …/attachments/{id}/redact ใช้ได้เฉพาะ admin/agent ที่ได้สิทธิ์ และทำกับ ticket ที่ปิดแล้วไม่ได้. ข้อความ messaging จำกัด 50 MB ต่อไฟล์ (หน้าซัพพอร์ต Zendesk); หน้า API ไม่ระบุขนาดสูงสุด. MCP ชุมชน (reminia) ดึงเฉพาะรูป: allowlist jpeg/png/gif/webp, ตรวจ magic bytes, cap 10 MB แบบ stream แล้วคืน base64",
+    "borrow_th": "ควรเลียนแบบ: allowlist MIME + magic bytes + cap ขนาดระหว่าง stream (reminia), ไม่ส่ง Authorization ตามไปยัง CDN ภายนอก, แยกอ่านรายการแนบกับดาวน์โหลดตาม URL. ควรหลีกเลี่ยง: คืน base64 ใหญ่ ๆ ตรงเข้า context"
+  },
+  "core_features": [
+    {
+      "name": "Ticket + conversation model",
+      "detail_th": "ticket มี comments (public/private) และ attachments; messaging/social เป็นบทสนทนาใน Agent Workspace"
+    },
+    {
+      "name": "LINE channel",
+      "detail_th": "admin เพิ่ม LINE ที่ Admin Center > Channels > Messaging; ใช้ Channel ID/secret + webhook ของ Messaging API; plan Suite ทุกระดับ หรือ Support+Social Messaging add-on"
+    },
+    {
+      "name": "Roles & permissions",
+      "detail_th": "admin, agent, custom role (Enterprise) ควบคุมการ redact และการเข้าถึง"
+    },
+    {
+      "name": "Attachment security",
+      "detail_th": "malware scan, redaction ถาวร, upload token 60 นาที"
+    },
+    {
+      "name": "Official MCP",
+      "detail_th": "ค้นเว็บไม่พบ MCP ทางการ; มีตัวชุมชน reminia/zendesk-mcp-server (125 ดาว, Apache-2.0)"
+    },
+    {
+      "name": "reminia MCP tools",
+      "detail_th": "get_ticket, create_ticket, get_tickets, get_ticket_comments, create_ticket_comment, get_ticket_attachment, update_ticket + prompts"
+    },
+    {
+      "name": "Public API",
+      "detail_th": "REST /api/v2 (tickets, uploads, attachments)"
+    }
+  ],
+  "flow": [
+    {
+      "actor": "user",
+      "label": "admin ใส่ LINE Channel ID/secret"
+    },
+    {
+      "actor": "service",
+      "label": "Zendesk ออก webhook URL"
+    },
+    {
+      "actor": "user",
+      "label": "ตั้ง webhook ใน LINE (Bot mode)"
+    },
+    {
+      "actor": "service",
+      "label": "ข้อความ LINE เข้า Agent Workspace"
+    },
+    {
+      "actor": "agent",
+      "label": "ตอบ/แนบไฟล์ผ่าน workspace หรือ API"
+    },
+    {
+      "actor": "tool",
+      "label": "MCP get_ticket_comments + attachment"
+    }
+  ],
+  "highlights_th": [
+    "LINE ผูกผ่าน Messaging API webhook (ต้องตั้ง Response mode เป็น Bot) ซึ่งตรงข้ามกับแนวทางของเราที่ห้ามใช้ Messaging API",
+    "ระบบไฟล์แนบเป็นตัวอย่างดี: upload token, malware scan, redaction, สิทธิ์ตาม ticket",
+    "MCP ชุมชน reminia ใช้ OAuth+PKCE ที่ทำงานใต้สิทธิ์ role จริงของผู้ใช้ มีเทสต์ 82 เคสผ่าน"
+  ],
+  "weaknesses_th": [
+    "เป็น SaaS ปิดและต้องมีบัญชีจริง ลองใช้ไม่ได้โดยไม่สมัคร",
+    "LINE ใช้ Messaging API webhook จึงทำให้ chat.line.biz ใช้ตอบไม่ได้ในโหมด Bot; เอกสาร LINE ไม่ระบุชนิดข้อความ/ขนาดไฟล์",
+    "ไม่พบ MCP ทางการจาก Zendesk (จาก search; ไม่ได้ตรวจทุกแหล่ง)"
+  ],
+  "tools_or_endpoints": [
+    "POST /api/v2/uploads",
+    "DELETE /api/v2/uploads/{token}",
+    "GET /api/v2/attachments/{attachment_id}",
+    "PUT /api/v2/tickets/{ticket_id}/comments/{comment_id}/attachments/{attachment_id}/redact",
+    "get_ticket",
+    "create_ticket",
+    "get_tickets",
+    "get_ticket_comments",
+    "create_ticket_comment",
+    "get_ticket_attachment",
+    "update_ticket"
+  ],
+  "trial": {
+    "status": "partial",
+    "summary_th": "ตัวผลิตภัณฑ์ไม่ได้ลอง (ไม่สมัคร/ไม่ล็อกอิน). clone reminia/zendesk-mcp-server (MCP ชุมชนที่ดาวสูงสุด) ลง venv แล้วรัน pytest: 82 ผ่าน, 10 error ใน test_server_oauth_integration (ImportError cannot import name 'types' from mcp.server คือ mcp เวอร์ชันที่ติดตั้งไม่ตรง). ไม่ได้สตาร์ท server จริง ไม่มีการเชื่อมต่อเครือข่ายไป Zendesk. ที่เหลืออ่านเอกสารและโค้ดแบบ static",
+    "log": "trials/zendesk.md"
+  },
+  "screenshots": [
+    {
+      "file": "shots/zendesk-1.png",
+      "caption_th": "ผล pytest ของ reminia/zendesk-mcp-server (82 ผ่าน, 10 error)",
+      "kind": "real-run"
+    },
+    {
+      "file": "shots/zendesk-2.png",
+      "caption_th": "หน้า GitHub reminia/zendesk-mcp-server",
+      "kind": "github-page"
+    },
+    {
+      "file": "shots/zendesk-3.png",
+      "caption_th": "เอกสาร Zendesk: Adding LINE social messaging channels",
+      "kind": "docs"
+    }
+  ],
+  "scores": {
+    "relevance": 3,
+    "auth": 3,
+    "attachments": 4,
+    "maturity": 5,
+    "tryability": 2,
+    "reasons_th": {
+      "relevance": "ซัพพอร์ตแบบ inbox ที่รองรับ LINE แต่ผ่าน Messaging API webhook ต่างจากเราที่ทำงานเป็นคน CS บน chat.line.biz",
+      "auth": "แพลตฟอร์มมี OAuth/role ครบ และ MCP ชุมชนทำ PKCE+token 0600 ได้ดี แต่ไม่ใช่แนวสวมสิทธิ์ session เว็บ",
+      "attachments": "ระบบแนบไฟล์ละเอียด (token, malware scan, redact) และ MCP ชุมชน allowlist+magic bytes+cap 10MB น่าเลียนแบบ",
+      "maturity": "ผลิตภัณฑ์ใหญ่ เอกสารครบ และ MCP ชุมชนยังอัปเดตสิงหาคม 2026 แต่ไม่มี MCP ทางการที่พบ",
+      "tryability": "ไม่ได้ลองตัวผลิตภัณฑ์; รันได้เฉพาะ pytest ของ MCP ชุมชนบางส่วน"
+    }
+  },
+  "sources": [
+    "https://support.zendesk.com/hc/en-us/articles/4408844138394",
+    "https://developer.zendesk.com/api-reference/ticketing/tickets/ticket-attachments/",
+    "https://github.com/reminia/zendesk-mcp-server",
+    "https://support.zendesk.com/hc/en-us/articles/360055902354",
+    "https://github.com/michaelrice/zendesk-mcp"
+  ]
+}

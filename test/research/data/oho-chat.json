@@ -1,0 +1,121 @@
+{
+  "slug": "oho-chat",
+  "name": "Oho Chat (โอ้โหแชท)",
+  "category": "inbox-saas",
+  "url": "https://oho.chat",
+  "one_liner_th": "ระบบจัดการแชทไทย รวม LINE OA/FB/IG/TikTok มี AI ร่างคำตอบและ API",
+  "language": null,
+  "license": "proprietary (SaaS)",
+  "github": null,
+  "users_claim": {
+    "text": "4,255 businesses using the service, 193 million+ messages answered (ตัวเลขที่เว็บอ้าง)",
+    "url": "https://oho.chat"
+  },
+  "auth": {
+    "method_th": "แอดมินล็อกอินบัญชี Oho Chat (สมัครด้วยอีเมลหรือ Facebook ตามวิดีโอสอน) ไม่ต้องใช้บัญชี Facebook ส่วนตัวของแอดมิน; มีการแบ่งหน้าที่/สิทธิ์; วิธีเชื่อม LINE OA ไม่ยืนยัน",
+    "storage_th": "ไม่เปิดเผย",
+    "borrow_th": "แนวคิดแยกบัญชีแอดมินออกจากบัญชีเจ้าของช่องทาง (ใกล้เคียงโจทย์ 'ทำแทน CS')"
+  },
+  "attachments": {
+    "how_th": "มี media library เก็บรูป คลิป ไฟล์บนคลาวด์ให้ทีมใช้ร่วม และบันทึกคำตอบ/รูป/ลิงก์ที่ใช้บ่อย; ไม่พบตัวเลขขีดจำกัด",
+    "borrow_th": "แนวคิดคลัง media ใช้ซ้ำ"
+  },
+  "core_features": [
+    {
+      "name": "Omnichannel inbox",
+      "detail_th": "LINE OA, Messenger, FB comment, IG, TikTok"
+    },
+    {
+      "name": "AI draft reply",
+      "detail_th": "ตารางเปรียบเทียบของ Jib OS ระบุ 'มี AI ร่างคำตอบ' ไม่ยืนยัน flow อนุมัติก่อนส่ง"
+    },
+    {
+      "name": "Anti-Delete",
+      "detail_th": "กันแอดมินลบข้อความแชท (ตามบทความ Jib OS)"
+    },
+    {
+      "name": "Case management",
+      "detail_th": "จัดสถานะ/หมวดหมู่ลูกค้า"
+    },
+    {
+      "name": "Roles & permissions",
+      "detail_th": "แบ่งหน้าที่และสิทธิ์การเข้าถึง"
+    },
+    {
+      "name": "API",
+      "detail_th": "เชื่อม CRM และระบบเดิมได้ (ตามหน้าเว็บ)"
+    },
+    {
+      "name": "Media library",
+      "detail_th": "คลังรูป/คลิป/ไฟล์ร่วมทีม"
+    }
+  ],
+  "flow": [
+    {
+      "actor": "service",
+      "label": "ลูกค้าทักผ่าน LINE OA"
+    },
+    {
+      "actor": "service",
+      "label": "เข้า Oho Chat inbox"
+    },
+    {
+      "actor": "tool",
+      "label": "AI ร่างคำตอบ"
+    },
+    {
+      "actor": "agent",
+      "label": "แอดมินตรวจ/ส่ง"
+    },
+    {
+      "actor": "service",
+      "label": "รายงานประสิทธิภาพ"
+    }
+  ],
+  "highlights_th": [
+    "มี AI ร่างคำตอบ (มนุษย์ยังเป็นคนส่ง ตามชื่อฟีเจอร์ ยังไม่ยืนยัน)",
+    "มีแอป iOS/Android และ API",
+    "ตัวเลขผู้ใช้ 4,255 ธุรกิจตามที่อ้าง"
+  ],
+  "weaknesses_th": [
+    "เว็บไม่อธิบายกลไก AI draft/approval",
+    "ไม่เปิดเผยวิธีเชื่อม LINE OA (webhook หรืออื่น)",
+    "แหล่ง AI draft มาจากบทความคู่แข่ง (Jib OS) ต้องระวังอคติ"
+  ],
+  "tools_or_endpoints": [],
+  "trial": {
+    "status": "not-run",
+    "summary_th": "ไม่มีบัญชี อ่านหน้าเว็บสาธารณะและบทความเปรียบเทียบ; ค้นหาเอกสารเชื่อม LINE และ AI draft approval ไม่พบ",
+    "log": "trials/oho-chat.md"
+  },
+  "screenshots": [
+    {
+      "file": "shots/oho-chat-1.png",
+      "caption_th": "หน้าแรก Oho Chat แสดงช่องทาง LINE/FB/IG/TikTok และแอปมือถือ",
+      "kind": "website"
+    },
+    {
+      "file": "shots/oho-chat-2.png",
+      "caption_th": "บทความเปรียบเทียบของ Jib OS (คู่แข่ง) ที่ระบุ Oho Chat มี AI ร่างคำตอบ",
+      "kind": "website"
+    }
+  ],
+  "scores": {
+    "relevance": 3,
+    "auth": 2,
+    "attachments": 2,
+    "maturity": 4,
+    "tryability": 1,
+    "reasons_th": {
+      "relevance": "inbox LINE OA ไทย มี AI draft ใกล้โจทย์ แต่เป็น Messaging API-based ที่ไม่ยืนยัน",
+      "auth": "รู้แค่ว่ามีบัญชีแอดมินและสิทธิ์",
+      "attachments": "มี media library แต่ไม่มี limit",
+      "maturity": "อ้าง 4,255 ธุรกิจ มีแอป มี API",
+      "tryability": "ไม่มีบัญชี ไม่ได้ลอง"
+    }
+  },
+  "sources": [
+    "https://oho.chat",
+    "https://hdmall.co.th/jib-os/blog/7-line-oa-chat-systems-for-clinics/"
+  ]
+}

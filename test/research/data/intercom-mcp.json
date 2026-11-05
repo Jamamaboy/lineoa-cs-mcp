@@ -1,0 +1,160 @@
+{
+  "slug": "intercom-mcp",
+  "name": "Intercom MCP (remote, official)",
+  "category": "mcp-official",
+  "url": "https://developers.intercom.com/docs/guides/mcp",
+  "one_liner_th": "MCP แบบ remote ของ Intercom อ่านบทสนทนา/ผู้ติดต่อ ผ่าน OAuth หรือ bearer token",
+  "language": null,
+  "license": null,
+  "github": {
+    "stars": 8,
+    "forks": 11,
+    "open_issues": 3,
+    "last_push": "2025-09-22",
+    "created": "2025-09-22",
+    "fetched_at": "2026-11-05"
+  },
+  "users_claim": null,
+  "auth": {
+    "method_th": "OAuth 2.0 authorization code + PKCE (S256) บนเบราว์เซอร์: หน้า consent ของ Intercom แล้วหน้า authorize (หน้า consent หมดอายุ 15 นาที); รองรับ dynamic client registration (/register), refresh_token, scope 'mcp' และ 'operator'. ทางเลือกคือ bearer token (Intercom API token) ใน header Authorization แต่ใช้ Fin Operator tools ไม่ได้. สิทธิ์ที่ต้องมี: อ่านผู้ใช้/บริษัท, อ่านบทสนทนา, เขียนบทสนทนา (internal note), อ่าน/เขียนบทความ. redirect URI นอก localhost ต้องอยู่ใน allowlist. ยืนยันจริงผ่าน .well-known endpoints สาธารณะ",
+    "storage_th": "ฝั่ง client (เช่น mcp-remote) เก็บ token ใน auth cache ของตัวเอง (docs มีขั้นตอนล้าง auth cache); ฝั่ง server ไม่เปิดเผยในเอกสาร",
+    "borrow_th": "ควรเลียนแบบ: OAuth+PKCE ที่ผู้ใช้อนุมัติเองและ refresh token ได้, scope แยกอ่าน/เขียน, tool เขียนมีแค่ add_internal_note (ไม่ส่งข้อความหาลูกค้า). ควรหลีกเลี่ยง: ไม่ใช้กับ LINE OA ได้ตรง ๆ เพราะเราต้องสวมสิทธิ์ session เว็บของคน CS ไม่ใช่ OAuth ของแพลตฟอร์ม"
+  },
+  "attachments": {
+    "how_th": "เอกสารไม่ได้อธิบายว่า tool คืนไฟล์แนบอย่างไร (ไม่มี tool ดาวน์โหลดไฟล์โดยเฉพาะ); get_conversation คืนบทสนทนาทุก part พร้อม metadata ซึ่งน่าจะมีรายการ attachment เป็น URL ตาม Intercom conversation part แต่ไม่ได้ยืนยัน. ไม่มีข้อมูล limit ขนาด/MIME ของ MCP",
+    "borrow_th": "ไม่มีอะไรให้เลียนแบบด้านไฟล์; เป็นตัวอย่างว่าบางเจ้าตัด attachment ออกจากขอบเขต MCP ของ tool อ่านล้วน"
+  },
+  "core_features": [
+    {
+      "name": "Universal search/fetch",
+      "detail_th": "search ด้วย query syntax object_type:conversations|contacts และ fetch รายละเอียดตาม ID (รูปแบบเดียวกับ connector ของ OpenAI)"
+    },
+    {
+      "name": "Conversation tools",
+      "detail_th": "search_conversations (ตาม ID/แหล่ง/ผู้เขียน/สถานะ/ผู้รับผิดชอบ/สถิติเวลา) และ get_conversation คืนทุก part"
+    },
+    {
+      "name": "Contact/Company tools",
+      "detail_th": "search_contacts, get_contact, list_companies, get_company"
+    },
+    {
+      "name": "Help Center articles",
+      "detail_th": "list/search/get/create/update_article"
+    },
+    {
+      "name": "add_internal_note",
+      "detail_th": "เขียนโน้ตภายในเท่านั้น ส่งข้อความหาลูกค้าและเปลี่ยนผู้รับผิดชอบไม่ได้"
+    },
+    {
+      "name": "Fin Operator tools",
+      "detail_th": "5 tool (OAuth เท่านั้น) เช่น send_operator_message, apply_proposals"
+    },
+    {
+      "name": "Pagination",
+      "detail_th": "search สูงสุด 150 ต่อหน้า (ค่าเริ่มต้น 5) ใช้ cursor starting_after"
+    },
+    {
+      "name": "Regional hosting",
+      "detail_th": "US: mcp.intercom.com, EU: mcp.eu.intercom.com; AU ยังไม่รองรับ"
+    }
+  ],
+  "flow": [
+    {
+      "actor": "user",
+      "label": "ต่อ MCP client ไป mcp.intercom.com"
+    },
+    {
+      "actor": "browser",
+      "label": "OAuth consent + authorize"
+    },
+    {
+      "actor": "service",
+      "label": "ออก token (PKCE, refresh)"
+    },
+    {
+      "actor": "agent",
+      "label": "search_conversations"
+    },
+    {
+      "actor": "tool",
+      "label": "get_conversation"
+    },
+    {
+      "actor": "agent",
+      "label": "add_internal_note (ถ้าต้องการ)"
+    }
+  ],
+  "highlights_th": [
+    "ออกแบบ OAuth ครบ (PKCE, dynamic registration, refresh) ตรวจได้จาก .well-known โดยไม่ต้องล็อกอิน",
+    "tool อ่านอย่างเดียวเป็นหลัก มี tool เขียนเดียวที่ปลอดภัย (internal note) แยก scope ชัด",
+    "ชุด search/fetch + tool เฉพาะกลุ่ม ทำให้ agent ค้นบทสนทนาได้เร็ว"
+  ],
+  "weaknesses_th": [
+    "ไม่มีเอกสารเรื่องไฟล์แนบ/รูป และไม่มี tool ส่งข้อความหาลูกค้า",
+    "repo สาธารณะมีแต่ README (ซอร์สปิด) และ README ยังเก่า ระบุ 6 tool ขณะที่เอกสารปัจจุบันระบุ 14",
+    "ต้องมี workspace Intercom จริงและบัญชีจึงจะลองใช้ tool ได้"
+  ],
+  "tools_or_endpoints": [
+    "search",
+    "fetch",
+    "search_conversations",
+    "get_conversation",
+    "search_contacts",
+    "get_contact",
+    "list_companies",
+    "get_company",
+    "list_articles",
+    "search_articles",
+    "get_article",
+    "create_article",
+    "update_article",
+    "add_internal_note",
+    "send_operator_message",
+    "get_operator_response",
+    "get_proposal_details",
+    "apply_proposals",
+    "reject_proposals"
+  ],
+  "trial": {
+    "status": "partial",
+    "summary_th": "ไม่ล็อกอิน/ไม่สมัคร จึงรัน tools/list ไม่ได้ (ต้อง token). อ่านเอกสารแบบ static และ clone repo intercom/intercom-mcp-server (มีแต่ README+โลโก้). ดึง .well-known/oauth-protected-resource และ oauth-authorization-server ที่เป็นสาธารณะด้วย curl GET ได้ metadata จริง (S256, authorization_code+refresh_token, scopes mcp/operator). ไม่ได้ส่ง request ไป endpoint /mcp",
+    "log": "trials/intercom-mcp.md"
+  },
+  "screenshots": [
+    {
+      "file": "shots/intercom-mcp-1.png",
+      "caption_th": "ผล curl .well-known OAuth metadata ของ mcp.intercom.com",
+      "kind": "real-run"
+    },
+    {
+      "file": "shots/intercom-mcp-2.png",
+      "caption_th": "หน้า GitHub intercom/intercom-mcp-server",
+      "kind": "github-page"
+    },
+    {
+      "file": "shots/intercom-mcp-3.png",
+      "caption_th": "เอกสาร MCP ของ Intercom",
+      "kind": "docs"
+    }
+  ],
+  "scores": {
+    "relevance": 3,
+    "auth": 4,
+    "attachments": 1,
+    "maturity": 4,
+    "tryability": 2,
+    "reasons_th": {
+      "relevance": "เป็น MCP ของ inbox support ที่อ่านบทสนทนา/ผู้ติดต่อ แต่เป็น API ทางการ ไม่ใช่การทำงานผ่านเว็บแชต และไม่มี tool ส่งข้อความหาลูกค้า",
+      "auth": "OAuth+PKCE+refresh+scope ชัดเจน ตรวจได้จริงจาก metadata แต่เป็นแบบแพลตฟอร์มทางการที่เราใช้ไม่ได้",
+      "attachments": "เอกสารไม่พูดถึงไฟล์แนบเลย",
+      "maturity": "ผลิตภัณฑ์ทางการ มีเอกสารละเอียดและหลาย region แต่ repo เป็นแค่เอกสาร 8 ดาว และ README ล้าหลัง",
+      "tryability": "ลอง list tools ไม่ได้โดยไม่มี credential; ทำได้แค่ metadata สาธารณะและอ่านเอกสาร"
+    }
+  },
+  "sources": [
+    "https://developers.intercom.com/docs/guides/mcp",
+    "https://github.com/intercom/intercom-mcp-server",
+    "https://mcp.intercom.com/.well-known/oauth-protected-resource",
+    "https://mcp.intercom.com/.well-known/oauth-authorization-server"
+  ]
+}
