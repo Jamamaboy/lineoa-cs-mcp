@@ -6,6 +6,7 @@ import { serve } from "@hono/node-server";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { createMockApp, SESSION_COOKIE } from "../../mock-server/app.js";
+import { AuditLog } from "../../src/audit/audit-log.js";
 import { createLineClient } from "../../src/client/line-client.js";
 import { loadConfig } from "../../src/config.js";
 import { MessageStore } from "../../src/index/store.js";
@@ -28,6 +29,7 @@ export async function startStack(env: Record<string, string> = {}) {
     config,
     client: createLineClient(config),
     store: new MessageStore(":memory:"),
+    audit: new AuditLog(":memory:"),
   });
   const [a, b] = InMemoryTransport.createLinkedPair();
   const client = new Client({ name: "e2e", version: "0" });

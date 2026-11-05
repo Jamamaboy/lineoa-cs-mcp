@@ -16,6 +16,10 @@ export interface Config {
   maxAttachmentBytes: number;
   botAllowlist: string[];
   allowSend: boolean;
+  /** If set, sending is allowed only to these chat ids. */
+  sendChatAllowlist: string[];
+  sendDailyLimit: number;
+  auditFile: string;
   /** Local search index (SQLite file, or ":memory:"). */
   indexFile: string;
   syncLimits: { maxChats: number; maxMessagesPerChat: number };
@@ -60,6 +64,12 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
       .map((s) => s.trim())
       .filter(Boolean),
     allowSend: env.LINEOA_ALLOW_SEND === "true",
+    sendChatAllowlist: (env.LINEOA_SEND_CHAT_ALLOWLIST ?? "")
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean),
+    sendDailyLimit: Number(env.LINEOA_SEND_DAILY_LIMIT ?? 50),
+    auditFile: expandHome(env.LINEOA_AUDIT_FILE ?? "~/.local/share/lineoa-mcp/audit.jsonl"),
     indexFile: expandHome(env.LINEOA_INDEX_FILE ?? "~/.local/share/lineoa-mcp/index.db"),
     syncLimits: {
       maxChats: Number(env.LINEOA_SYNC_MAX_CHATS ?? 50),
