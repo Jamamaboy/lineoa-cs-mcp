@@ -149,13 +149,13 @@ AI app ──stdio──▶ MCP server ── tools ──▶ LineOAClient ─�
 
 ## What it could grow into
 
-These ideas came out of the research and the real Acme Support chats. They are planned, not built:
+These ideas came out of the research and real support-OA chats. They are planned, not built:
 
 - **Case layer.** One chat holds many support cases. Rich-menu buttons open a case; the AI suggests tags (type,
   area, severity) and a CS person confirms; status runs open → waiting → resolved, and only a human resolves.
 - **Records and analytics.** Weekly counts by area and type, first-response time, and chats that went quiet
   after "resolved".
-- **One customer across OAs.** Link a Support reporter to the main Acme OA by a verified email, so CS sees
+- **One customer across OAs.** Link a reporter in the support OA to the same person in the product OA by a verified email, so CS sees
   what the customer did right before reporting. Personal data stays in the server, and the AI only sees masked
   references.
 - **Images as evidence.** Collect slips and screenshots per case, with an expiry so personal data isn't kept
