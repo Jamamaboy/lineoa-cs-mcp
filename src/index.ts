@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import "./quiet.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { AuditLog } from "./audit/audit-log.js";
 import { createLineClient } from "./client/line-client.js";

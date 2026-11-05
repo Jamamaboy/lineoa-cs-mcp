@@ -1,6 +1,7 @@
 import { mkdirSync } from "node:fs";
+import { createRequire } from "node:module";
 import { dirname } from "node:path";
-import { DatabaseSync } from "node:sqlite";
+import type { DatabaseSync } from "node:sqlite";
 import type { Message } from "../domain/types.js";
 
 export interface StoredHit {
@@ -23,7 +24,11 @@ export class MessageStore {
 
   constructor(file: string) {
     if (file !== ":memory:") mkdirSync(dirname(file), { recursive: true, mode: 0o700 });
-    this.db = new DatabaseSync(file);
+    // Loaded on first use (not at import time), so src/quiet.ts can hide its ExperimentalWarning.
+    const { DatabaseSync: Db } = createRequire(import.meta.url)(
+      "node:sqlite",
+    ) as typeof import("node:sqlite");
+    this.db = new Db(file);
     this.db.exec(`
       CREATE TABLE IF NOT EXISTS messages (
         bot_id TEXT NOT NULL, chat_id TEXT NOT NULL, id TEXT NOT NULL,
