@@ -1,7 +1,7 @@
 # PLAN: LINE OA CS MCP server
 
-Status: **v3** (re-scoped around Acme Support case handling), 2026-11-06 01:15 ICT. Deadline: **Fri 6 Nov 2026,
-23:59 ICT**. Tonight's run: [`docs/plan/2026-11-06-tonight.md`](plan/2026-11-06-tonight.md).
+Status: **v3** (re-scoped around Acme Support case handling), 2026-11-06. Deadline: **Fri 6 Nov 2026,
+23:59 ICT**. Run plan: [`docs/plan/2026-11-06-tonight.md`](plan/2026-11-06-tonight.md).
 
 What changed in v3 (the details are in the sections below):
 - The product is framed as a CS assistant for the **Acme Support** OA. The graded core (5 tools + auth +
@@ -11,11 +11,11 @@ What changed in v3 (the details are in the sections below):
 - A **live OA is available, read-only**, plus a new free test OA for sending (§2 A1, A11).
 - Research requests applied to §6a: markAsRead is PUT, the pagination cursor is unconfirmed, and folder filters
   are client-side.
-- §8 is now tonight + Friday. §10 lists the Support flows.
+- §8 is now an ordered list of stages up to the deadline. §10 lists the Support flows.
 
 Source of truth for the task: [`docs/ASSIGNMENT.md`](ASSIGNMENT.md).
 Thai translation: [`docs/PLAN_thai.md`](PLAN_thai.md) · Thai version with diagrams: [`docs/PLAN.html`](PLAN.html).
-The Thai copies have a v3 summary at the top; their body is still v2. This file wins when they differ.
+This file wins when the Thai copies differ.
 
 ---
 
@@ -52,7 +52,7 @@ before `send_message`. The CS person logs in once per shift with `npm run login`
 small console, which shows what the agent did.
 
 What we're graded on, and where this plan covers it:
-- Functionality: all 5 tools must work. Phase 2 does this against a mock, Phase 4 against the real console.
+- Functionality: all 5 tools must work. Stages 2–4 do this against a mock, stage 5 against the real console.
 - Repo organization and code quality: sections 4 and 9.
 - High-level understanding: sections 4, 6 and 7. The README reuses them.
 - Authentication: section 6.
@@ -255,7 +255,7 @@ Alternatives we considered (README "trade-offs"):
 
 This map comes from two open-source clients: [PrakritManStudio/linebiz](https://github.com/PrakritManStudio/linebiz)
 (TypeScript, read-only, well typed) and [Madoa5561/LINELib](https://github.com/Madoa5561/LINELib) (Python, the most
-complete: send, upload and SSE). It is **unverified until our own HAR capture** (Phase 4).
+complete: send, upload and SSE). It is **unverified until our own HAR capture** (live OA read-only + test OA).
 
 | Tool | Endpoint (base `https://chat.line.biz`) |
 |---|---|
@@ -328,43 +328,32 @@ covers prompt injection.
 
 ---
 
-## 8. Phases, timebox and commits
+## 8. Phases, order and commits
 
 Commit after every meaningful step (one concern per commit, conventional prefixes). Never squash.
-Tonight's run, with prompts for each lane: [`docs/plan/2026-11-06-tonight.md`](plan/2026-11-06-tonight.md).
+The run plan with prompts for each lane: [`docs/plan/2026-11-06-tonight.md`](plan/2026-11-06-tonight.md).
+The only fixed time is the deadline, **Fri 6 Nov 2026 23:59 ICT**. Stages run in this order; lanes work in parallel.
 
-| When (Fri 6 Nov, ICT) | Work | Lane |
+| Stage | Work | Lane |
 |---|---|---|
-| 00:45–01:15 | PLAN v3, merged into `dev` and `research`; dev unpaused | plan |
-| 00:45–01:15 | Create the test OA; capture HAR on the live OA (read-only) and on the test OA (with sends) | user |
-| 01:15–01:30 | Phase 1: scaffold TS + Biome + vitest + CI; install the plan kit | dev |
-| 01:30–02:00 | Domain types + `LineOAClient` → mock server from fixtures (Support-like seed, 2 OAs, one shared person) ‖ auth (SessionStore, login CLI against the mock) | dev |
-| 02:00–02:30 | The 6 core tools + `webUrl` + send gating | dev |
-| 01:15–02:30 | HAR → redacted endpoint map, diff vs fixtures | research |
-| 02:30–02:45 | e2e tests (MCP client → server → mock) + fixes from the HAR diff | dev |
-| 02:45–03:00 | Checkpoint: merge to `dev`, CI green, demo on the mock | all |
-| 09:00–12:00 | `WebClient` on the real console (test OA first) + contract tests | dev |
-| 12:00–14:00 | Case layer (§5b) | dev |
-| 14:00–16:00 | README (setup, architecture, auth, attachments, PII, limitations) + demo GIF | dev |
-| 16:00–17:00 | Could: Telegram demo through Claude Code Channels, main-OA usage events | dev |
-| 18:00 | Release `dev` → `main`, tag `v0.1.0`, CHANGELOG | dev |
-| 18:00–22:00 | Optional bonus video (separate public repo), buffer | — |
-| before 23:59 | Push to a public repo and reply to the email | user |
+| 0 | PLAN v3, merged into `dev` and `research`; dev unpaused (done) | plan |
+| 0 | Create the test OA; capture HAR on the live OA (read-only) and on the test OA (with sends) | user |
+| 1 | Scaffold TS + Biome + vitest + CI; install the plan kit | dev |
+| 2 | Domain types + `LineOAClient` → mock server from fixtures (Support-like seed, 2 OAs, one shared person) ‖ auth (SessionStore, login CLI against the mock) | dev |
+| 2 | HAR → redacted endpoint map, diff vs fixtures | research |
+| 3 | The 6 core tools + `webUrl` + send gating | dev |
+| 4 | e2e tests (MCP client → server → mock) + fixes from the HAR diff | dev |
+| ✓ | **Checkpoint:** merge to `dev`, CI green, demo on the mock | all |
+| 5 | `WebClient` on the real console (test OA first) + contract tests | dev |
+| 6 | Case layer (§5b) | dev |
+| 7 | README (setup, architecture, auth, attachments, PII, limitations) + demo GIF | dev |
+| 8 | Could: Telegram demo through Claude Code Channels, main-OA usage events | dev |
+| 9 | Release `dev` → `main`, tag `v0.1.0`, CHANGELOG | dev |
+| 10 | Optional bonus video (separate public repo) | — |
+| — | Push to a public repo and reply to the email before the deadline | user |
 
 Cut order if time runs out: bonus → Telegram → main-OA usage → case layer → WebClient. The mock path must always stay
 green. Whatever is cut is listed in the README with the reason.
-
----|---|---|---|
-| 0 Plan + research | Thu 5 Nov (now) | This plan, research notes | `docs: add plan`, `docs: add research reading list` |
-| 1 Setup | Thu evening | Install plan kit (`~/claude-skill/install.sh`), fill in `.claude/plan-kit-profile.md`, add CLAUDE.md + AGENTS.md (pointer), scaffold TS + Biome + vitest | `chore: install plan kit`, `chore: scaffold ts project` |
-| 2 MVP on mock | Thu night → Fri morning | Domain types + `LineOAClient` (orchestrator) → mock server + seed ‖ tools + MockClient ‖ auth module → e2e tests | `feat(domain)…`, `feat(mock)…`, `feat(tools)…`, `feat(auth)…`, `test(e2e)…` |
-| 3 User-flow alignment | Fri morning | Walk through flows F1–F6 (below), adjust the contracts | `docs: user flows` |
-| 4 Real console adapter | Fri midday | Playwright login, HAR capture → endpoint map → `WebClient` → contract tests (mock in CI, real by hand) | `feat(web-client)…`, `docs: endpoint map` |
-| 5 Attachments hardening + README | Fri afternoon | Image path, outbox allowlist, README sections the assignment asks for | `feat(attachments)…`, `docs: readme` |
-| 6 Bonus video (optional) | Only if Phase 5 is done by Fri 18:00 | 15-second "cute" teaser, built in a **separate public repo** (e.g. Remotion) | in the other repo |
-
-Cut order if time runs out: bonus → Streamable HTTP → PDF text → WebClient. If the WebClient is unfinished, the
-README documents what's missing and the auth design. The mock path must always stay green.
 
 ---
 
@@ -404,14 +393,6 @@ README documents what's missing and the auth design. The mock path must always s
 | F9 | Weekly summary | `case_stats(groupBy=area)` + `list_cases(since)` | The AI client writes the prose from the stored summaries. |
 | F10 | Who is this reporter? | `get_person` → link candidate → CS confirms | Masked email; main-OA usage only after the link (could). |
 | F11 | Take over by hand | any result → open `webUrl` | The human continues in chat.line.biz. |
-
----|---|---|---|
-| F1 | Morning triage: "summarize unread chats" | `list_chats(unread)` → `read_chat` ×N | `read_chat` never marks read (A7). Should the agent mark a chat read once it has handled it? |
-| F2 | Reply to a customer | `read_chat` → `get_user_profile` → draft → `send_message` | Confirm before every send (`dryRun` first), or auto-send? |
-| F3 | Customer sends a payment slip image | `read_chat` → `get_attachment(inline)` → check amount/ref → reply | Inline images by default, or only on request? |
-| F4 | "Find everyone asking about order #1234 / คืนเงิน" | `search_messages` → `read_chat` | Is search scoped to one OA or to all? |
-| F5 | Session expires mid-run | any → `AUTH_EXPIRED` → human runs `npm run login` | Is this acceptable UX? |
-| F6 | Send a receipt PDF | put the file in the outbox → `send_message(attachmentPaths)` | Outbox location |
 
 ---
 
@@ -469,4 +450,4 @@ What none of them do, and where this project differs:
 | No message-search endpoint → the index is only as fresh as the last sync | `search_messages` returns `indexedAt` and syncs the recently changed chats before it searches. |
 | Thai search quality | FTS5 trigram. Queries shorter than 3 characters fall back to `LIKE`. |
 | Prompt injection from customer messages or files | Untrusted-content labels, outbox allowlist, `dryRun` send. |
-| Deadline (23:59 today) | Cut order in §8. The mock path is always shippable. |
+| Deadline (Fri 23:59) | Cut order in §8. The mock path is always shippable. |

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="th"><head><meta charset="utf-8"><title>คืนนี้ 00:45 → 03:00</title>
+<html lang="th"><head><meta charset="utf-8"><title>แผนรอบนี้: จาก PLAN v3 ถึง MVP บน mock</title>
 <style>
 :root{
   --bg:var(--background,#fff);--fg:var(--foreground,#18181b);--mu:var(--muted-foreground,#71717a);
@@ -33,24 +33,24 @@ svg .idle{fill:var(--sf);stroke:var(--bd);stroke-dasharray:4 3}
 svg .ar{stroke:var(--mu);stroke-width:1.3;fill:none;marker-end:url(#a)}#a path{fill:var(--mu)}
 </style></head><body>
 
-<h1>คืนนี้ 00:45 → 03:00: ทำอะไร ใครทำ เสร็จแล้วได้อะไร</h1>
-<p class="mu sm">ศุกร์ 6 พ.ย. 2026 · ฉบับภาษาอังกฤษสำหรับ agent: <code>docs/plan/2026-11-06-tonight.md</code> · ส่งงาน 23:59 คืนนี้</p>
+<h1>แผนรอบนี้: ทำอะไร ใครทำ เสร็จแล้วได้อะไร</h1>
+<p class="mu sm">ศุกร์ 6 พ.ย. 2026 · ฉบับภาษาอังกฤษสำหรับ agent: <code>docs/plan/2026-11-06-tonight.md</code> · ส่งงานศุกร์ 6 พ.ย. 23:59</p>
 
-<div class="note"><b>เป้าหมายตอนตี 3:</b> MCP server ทำงานครบบน mock คือ tool 5 ตัวตามโจทย์ + <code>get_attachment</code> + <code>webUrl</code> และ test ผ่านทั้งหมด
-และได้หลักฐาน endpoint จริงจาก HAR งานที่เหลือทำพรุ่งนี้หลังตื่น</div>
+<div class="note"><b>เป้าหมายรอบนี้:</b> MCP server ทำงานครบบน mock คือ tool 5 ตัวตามโจทย์ + <code>get_attachment</code> + <code>webUrl</code> และ test ผ่านทั้งหมด
+และได้หลักฐาน endpoint จริงจาก HAR งานที่เหลือทำต่อหลัง checkpoint</div>
 
-<h2>1. ไทม์ไลน์ 4 สาย (swimlane)</h2>
+<h2>1. ลำดับงาน 4 สาย (swimlane)</h2>
 <div class="scroll"><svg viewBox="0 0 900 372" role="img" aria-label="timeline">
 <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z"/></marker></defs>
-<!-- x: 00:45=120 → 03:00=880, 15min = 84.4px -->
+<!-- stage columns, no clock times -->
 <g>
-<line class="grid" x1="120" y1="28" x2="120" y2="360"/><text x="104" y="20" class="s">00:45</text>
-<line class="grid" x1="373" y1="28" x2="373" y2="360"/><text x="358" y="20" class="s">01:30</text>
-<line class="grid" x1="542" y1="28" x2="542" y2="360"/><text x="527" y="20" class="s">02:00</text>
-<line class="grid" x1="711" y1="28" x2="711" y2="360"/><text x="696" y="20" class="s">02:30</text>
-<line class="grid" x1="795" y1="28" x2="795" y2="360"/><text x="780" y="20" class="s">02:45</text>
-<line class="grid" x1="880" y1="28" x2="880" y2="360"/><text x="866" y="20" class="s">03:00</text>
-<line class="grid" x1="289" y1="28" x2="289" y2="360"/><text x="274" y="20" class="s">01:15</text>
+<line class="grid" x1="120" y1="28" x2="120" y2="360"/><text x="108" y="20" class="s">ขั้น 0</text>
+<line class="grid" x1="373" y1="28" x2="373" y2="360"/><text x="358" y="20" class="s">ขั้น 2</text>
+<line class="grid" x1="542" y1="28" x2="542" y2="360"/><text x="527" y="20" class="s">ขั้น 3</text>
+<line class="grid" x1="711" y1="28" x2="711" y2="360"/><text x="696" y="20" class="s">ขั้น 4</text>
+<line class="grid" x1="795" y1="28" x2="795" y2="360"/><text x="832" y="20" class="s">✓</text>
+<line class="grid" x1="880" y1="28" x2="880" y2="360"/>
+<line class="grid" x1="289" y1="28" x2="289" y2="360"/><text x="274" y="20" class="s">ขั้น 1</text>
 </g>
 <!-- lanes -->
 <text x="8" y="66" class="lane" style="fill:var(--c1)">plan</text><text x="8" y="82" class="s">session นี้</text>
@@ -59,7 +59,7 @@ svg .ar{stroke:var(--mu);stroke-width:1.3;fill:none;marker-end:url(#a)}#a path{f
 <text x="8" y="306" class="lane" style="fill:var(--c4)">คุณ</text><text x="8" y="322" class="s">มือคน</text>
 <line class="grid" x1="0" y1="110" x2="880" y2="110"/><line class="grid" x1="0" y1="190" x2="880" y2="190"/><line class="grid" x1="0" y1="270" x2="880" y2="270"/>
 <!-- plan -->
-<rect class="t1" x="122" y="44" width="165" height="54" rx="7"/><text x="130" y="64" class="b">PLAN v3 + DECISIONS</text><text x="130" y="81" class="s">merge → dev, research</text><text x="130" y="94" class="s">ปลด pause dev</text>
+<rect class="t1" x="122" y="44" width="165" height="54" rx="7"/><text x="130" y="64" class="b">PLAN v3 ✓ เสร็จแล้ว</text><text x="130" y="81" class="s">merge → dev, research</text><text x="130" y="94" class="s">ปลด pause dev</text>
 <rect class="idle" x="291" y="50" width="502" height="42" rx="7"/><text x="300" y="75" class="s">ตอบคำถาม · review งาน dev · อัปเดต STATUS</text>
 <!-- dev -->
 <rect class="idle" x="122" y="130" width="165" height="42" rx="7"/><text x="130" y="155" class="s">รอ PLAN v3</text>
@@ -84,7 +84,7 @@ svg .ar{stroke:var(--mu);stroke-width:1.3;fill:none;marker-end:url(#a)}#a path{f
 <text x="120" y="366" class="s">ลูกศร = ต้องรออีกสายก่อน: dev รอ PLAN v3 · research รอ HAR จากคุณ · dev แก้ mock ตามผลของ research</text>
 </svg></div>
 
-<h2>2. เสร็จตอนตี 3 = ติ๊กครบ</h2>
+<h2>2. ถึง checkpoint = ติ๊กครบ</h2>
 <div class="card"><ul class="ck">
 <li>PLAN v3 merge เข้า dev และ research แล้ว dev ไม่ pause แล้ว</li>
 <li><code>npm test</code> ผ่าน: e2e ครอบคลุม 5 อย่างของโจทย์ + <code>get_attachment</code> บน mock</li>
@@ -98,10 +98,10 @@ svg .ar{stroke:var(--mu);stroke-width:1.3;fill:none;marker-end:url(#a)}#a path{f
 <div class="note warn"><b>กติกา LiveOA (แชทพนักงานจริง)</b>
 <ul class="sm"><li>อ่านอย่างเดียว ห้ามส่ง ห้ามกด Follow up / Resolve</li><li>อย่าเปิดแชทที่ยังไม่อ่าน เพราะเปิดแล้วนับว่าอ่าน</li><li>HAR เก็บที่ <code>~/lineoa-har/</code> นอก repo ห้าม commit</li><li>server ต่อด้วย <code>LINEOA_ALLOW_SEND=false</code></li></ul></div>
 <div class="note"><b>ถ้าไม่ทัน</b>
-<ul class="sm"><li>ตอน 02:45 หยุดที่ส่วนที่ test ผ่านแล้ว</li><li>ทาง mock ต้องผ่านเสมอ</li><li>ที่เหลือย้ายไปเช้าวันศุกร์</li></ul></div>
+<ul class="sm"><li>ขั้นไหนลากยาว หยุดที่ส่วนที่ test ผ่านแล้ว</li><li>ทาง mock ต้องผ่านเสมอ</li><li>ที่เหลือย้ายไปขั้นถัดไป</li></ul></div>
 </div>
 
-<h2>3. หลังตื่น (ศุกร์) ถึงส่งงาน</h2>
-<div class="scroll"><svg viewBox="0 0 900 70" role="img" aria-label="friday"><rect class="t2" x="12" y="10" width="150" height="48" rx="7"/><text x="20" y="30" class="b">ต่อของจริง</text><text x="20" y="47" class="s">09–12 WebClient</text><rect class="t2" x="167" y="10" width="105" height="48" rx="7"/><text x="175" y="30" class="b">ชั้นเคส</text><text x="175" y="47" class="s">12–14</text><rect class="t1" x="277" y="10" width="115" height="48" rx="7"/><text x="285" y="30" class="b">README + GIF</text><text x="285" y="47" class="s">14–16</text><rect class="idle" x="397" y="10" width="95" height="48" rx="7"/><text x="405" y="30" class="b">Telegram</text><text x="405" y="47" class="s">16–17 ถ้าทัน</text><rect class="t5" x="497" y="10" width="85" height="48" rx="7"/><text x="505" y="30" class="b">v0.1.0</text><text x="505" y="47" class="s">18:00 tag</text><rect class="idle" x="587" y="10" width="170" height="48" rx="7"/><text x="595" y="30" class="b">วิดีโอ bonus</text><text x="595" y="47" class="s">18–22 เผื่อเวลา</text><rect class="t4" x="762" y="10" width="125" height="48" rx="7"/><text x="770" y="30" class="b">push + อีเมล</text><text x="770" y="47" class="s">ก่อน 23:59</text></svg></div>
+<h2>3. หลัง checkpoint ถึงส่งงาน</h2>
+<div class="scroll"><svg viewBox="0 0 900 70" role="img" aria-label="friday"><rect class="t2" x="12" y="10" width="150" height="48" rx="7"/><text x="20" y="30" class="b">ต่อของจริง</text><text x="20" y="47" class="s">ขั้น 5 · WebClient</text><rect class="t2" x="167" y="10" width="105" height="48" rx="7"/><text x="175" y="30" class="b">ชั้นเคส</text><text x="175" y="47" class="s">ขั้น 6</text><rect class="t1" x="277" y="10" width="115" height="48" rx="7"/><text x="285" y="30" class="b">README + GIF</text><text x="285" y="47" class="s">ขั้น 7</text><rect class="idle" x="397" y="10" width="95" height="48" rx="7"/><text x="405" y="30" class="b">Telegram</text><text x="405" y="47" class="s">ขั้น 8 · ถ้าทัน</text><rect class="t5" x="497" y="10" width="85" height="48" rx="7"/><text x="505" y="30" class="b">v0.1.0</text><text x="505" y="47" class="s">ขั้น 9 · tag</text><rect class="idle" x="587" y="10" width="170" height="48" rx="7"/><text x="595" y="30" class="b">วิดีโอ bonus</text><text x="595" y="47" class="s">ขั้น 10 · ถ้าทัน</text><rect class="t4" x="762" y="10" width="125" height="48" rx="7"/><text x="770" y="30" class="b">push + อีเมล</text><text x="770" y="47" class="s">ก่อน 23:59</text></svg></div>
 
 </body></html>
