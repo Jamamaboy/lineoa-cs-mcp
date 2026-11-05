@@ -42,3 +42,14 @@
   window, a rule-based parser, amounts hidden).
 - Commits: this commit (log/status only).
 - For other lanes: none yet. The mock will likely need 2 OAs with one shared person (pending the user's answer to Q10).
+
+## 2026-11-06 00:45 ICT · UX target + research comparison
+- What: recovered the closed plan tab's context (nothing was lost; last commit `de08a56`). Built a Thai artifact for
+  the user: (1) the assignment needs no web UI; the "face" of the work is an AI client (Claude Desktop/Code) calling
+  our tools, shown as a mock Acme Support conversation; (2) the 23 researched projects in 5 purpose groups
+  (A: chat MCPs acting as a person, B: helpdesk MCPs, C: LINE's bot MCP, D: chat.line.biz internal-API tools,
+  E: human inboxes); (3) a 5-action coverage matrix for the AI-usable ones; (4) features to reuse, with priority.
+- Why: the user asked what the assignment expects to look like and how the research applies before PLAN v3.
+- Commits: this commit (status/log only).
+- For other lanes: none yet. PLAN v3 is next; it will add notes/tags from chat.line.biz to get_user_profile and an
+  internal-note idea (from Intercom/Chatwoot) as a "should".

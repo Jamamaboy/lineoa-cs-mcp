@@ -1,5 +1,5 @@
 # plan status
-Last updated: 2026-11-06 00:20 ICT · branch plan
+Last updated: 2026-11-06 00:45 ICT · branch plan
 
 ## Now
 - Re-scoping with the user around the **Acme Support** OA (bug-report OA) instead of a generic CS agent.
@@ -12,6 +12,9 @@ Last updated: 2026-11-06 00:20 ICT · branch plan
   chat-history CSV exists; chat history is kept 6 months on the free plan; PDPA calls for masking, a DPA and retention).
 
 ## Next
+- The user said "โอเคแล้ว" about the 10 questions; read as accepting the proposed defaults (to confirm in chat).
+- A UX + research comparison artifact (Thai) is in the plan chat: the graded UX is an AI-client conversation that
+  calls our tools, not a web page. It maps the 23 researched projects into 5 purpose groups and lists features to reuse.
 - Get the user's answers to 10 questions (artifacts: re-scope + main-OA context): scope must/should/could, the case-opening trigger, the tag taxonomy,
   who may mark a case done, OA linking by email + CS confirmation, local storage.
 - Then rewrite PLAN.md (v3): user flows around Support cases, the new case tools, assumptions A8+ (why link the main
