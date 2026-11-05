@@ -43,3 +43,14 @@
 - Commits: `feat(core): MCP server with auth_status, list_chats and read_chat`.
 - For other lanes: research proposals 3 (redirect = AUTH_EXPIRED), 4 (system events hidden by default), 5 (reads
   never mark read, stated in descriptions) and the ENDPOINT_CHANGED error are already in.
+
+## 2026-11-06 03:35 ICT · One-command try-out
+- What: `mock-server/start.ts` (start on 127.0.0.1, fall back to a free port); `LINEOA_MOCK=1` in `src/index.ts`
+  runs the mock in-process with the dev session; `scripts/try.ts` (`npm run try`) launches the real server over
+  stdio, as Claude does, and prints auth_status, list_chats and read_chat; `.mcp.json` lets Claude Code in this
+  folder offer the server (`lineoa-cs-mock`, pending the user's approval); the mock serves an HTML chat list and
+  chat page so `webUrl` links open something. Checked: `npm run try` output, both pages return 200, a screenshot of
+  the chat page, `claude mcp get lineoa-cs-mock` sees the project server.
+- Why: the user asked where they can test it themselves. Graders get the same one-command path.
+- Commits: `feat(dx): try the server in one command with a built-in mock`.
+- For other lanes: none.
