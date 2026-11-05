@@ -53,3 +53,15 @@
 - Commits: this commit (status/log only).
 - For other lanes: none yet. PLAN v3 is next; it will add notes/tags from chat.line.biz to get_user_profile and an
   internal-note idea (from Intercom/Chatwoot) as a "should".
+
+## 2026-11-06 01:00 ICT · Live OA available; stack recap; extras
+- What: the user showed a live chat.line.biz screen from an OA they run (real people's chats, free plan). Findings:
+  chat deep link is `chat.line.biz/{botId}/chat/{chatId}` with a `U…`-style chatId; the console has Follow up and
+  Resolve (chat status), Tags, Standard replies, Contact list and a search box; history holds bot flex cards.
+  Proposed rules: that OA is read-only (HAR capture only, send disabled, no status buttons, avoid opening unread chats
+  because opening marks them read); a new free test OA is used for send/upload tests. Also agreed in chat: add
+  `webUrl` to chat/profile tool outputs (handoff to the console) as core; a Telegram demo through Claude Code Channels
+  only after the core and README are done.
+- Why: Phase 4 needs real endpoint evidence; real data carries PDPA risk, so reading and writing are split across OAs.
+- Commits: this commit (status/log only).
+- For other lanes: research gets the HAR when the user captures it. Real IDs and HAR files never enter the repo.

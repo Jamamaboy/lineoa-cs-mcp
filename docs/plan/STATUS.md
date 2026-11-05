@@ -1,5 +1,5 @@
 # plan status
-Last updated: 2026-11-06 00:45 ICT · branch plan
+Last updated: 2026-11-06 01:00 ICT · branch plan
 
 ## Now
 - Re-scoping with the user around the **Acme Support** OA (bug-report OA) instead of a generic CS agent.
@@ -12,6 +12,9 @@ Last updated: 2026-11-06 00:45 ICT · branch plan
   chat-history CSV exists; chat history is kept 6 months on the free plan; PDPA calls for masking, a DPA and retention).
 
 ## Next
+- Real-console access: the user has a live OA (an HR app OA, real employee chats). Proposed: use it **read-only**
+  for HAR capture (no send, no Follow up/Resolve, don't open unread chats), and create a free test OA for send/upload.
+  Waiting on the user's OK.
 - The user said "โอเคแล้ว" about the 10 questions; read as accepting the proposed defaults (to confirm in chat).
 - A UX + research comparison artifact (Thai) is in the plan chat: the graded UX is an AI-client conversation that
   calls our tools, not a web page. It maps the 23 researched projects into 5 purpose groups and lists features to reuse.
@@ -25,7 +28,9 @@ Last updated: 2026-11-06 00:45 ICT · branch plan
 
 ## Requests
 - → dev: **PAUSED.** Don't start Phase 1/2 until plan v3 lands. Scope is changing toward Acme Support case handling.
-- → research: none right now. Optional: verify on real data whether a chat.line.biz chatId equals the LINE userId.
+- → research: when the user's HAR file arrives (kept outside the repo), turn it into a redacted endpoint map. A live
+  screenshot already shows the chat URL `chat.line.biz/{botId}/chat/{chatId}` with a `U…` chatId (fits chatId == userId),
+  Follow up / Resolve buttons (chat status), Tags, Standard replies, and bot flex cards in history.
 
 ## Heads-up (affects other lanes)
 - Likely new MCP tools on top of the 5 required ones: list_cases, tag_case, set_case_status, get_person, case_stats.
