@@ -1,7 +1,8 @@
 # dev status
-Last updated: 2026-11-06 03:37 ICT · branch dev
+Last updated: 2026-11-06 03:39 ICT · branch dev
 
 ## Now
+- Done: search_messages
 - Done: needs_reply filter
 - Done: get_user_profile
 - `feat/login`: `npm run login` (Chrome window, the person logs in, only *.line.biz cookies saved 0600);

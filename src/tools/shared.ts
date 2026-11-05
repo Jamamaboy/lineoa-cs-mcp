@@ -2,10 +2,12 @@ import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import type { LineOAClient } from "../client/line-client.js";
 import type { Config } from "../config.js";
 import { LineOAError } from "../domain/errors.js";
+import type { MessageStore } from "../index/store.js";
 
 export interface ToolContext {
   client: LineOAClient;
   config: Config;
+  store: MessageStore;
 }
 
 export function ok(data: unknown): CallToolResult {

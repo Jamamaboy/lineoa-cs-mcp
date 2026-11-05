@@ -3,6 +3,7 @@ import { registerAuthStatus } from "./tools/auth-status.js";
 import { registerGetUserProfile } from "./tools/get-user-profile.js";
 import { registerListChats } from "./tools/list-chats.js";
 import { registerReadChat } from "./tools/read-chat.js";
+import { registerSearchMessages } from "./tools/search-messages.js";
 import type { ToolContext } from "./tools/shared.js";
 
 export const SERVER_NAME = "lineoa-cs";
@@ -14,5 +15,6 @@ export function createServer(ctx: ToolContext): McpServer {
   registerListChats(server, ctx);
   registerReadChat(server, ctx);
   registerGetUserProfile(server, ctx);
+  registerSearchMessages(server, ctx);
   return server;
 }

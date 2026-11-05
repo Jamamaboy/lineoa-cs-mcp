@@ -5,6 +5,7 @@ import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { createMockApp, SESSION_COOKIE } from "../../mock-server/app.js";
 import { createLineClient } from "../../src/client/line-client.js";
 import { loadConfig } from "../../src/config.js";
+import { MessageStore } from "../../src/index/store.js";
 import { createServer } from "../../src/server.js";
 
 /** Starts the mock on a random port and connects a real MCP client to our server over memory. */
@@ -16,9 +17,14 @@ export async function startStack(env: Record<string, string> = {}) {
     LINEOA_BASE_URL: `http://127.0.0.1:${port}`,
     LINEOA_COOKIE: `${SESSION_COOKIE}=e2e`,
     LINEOA_SESSION_FILE: "/nonexistent",
+    LINEOA_INDEX_FILE: ":memory:",
     ...env,
   });
-  const server = createServer({ config, client: createLineClient(config) });
+  const server = createServer({
+    config,
+    client: createLineClient(config),
+    store: new MessageStore(":memory:"),
+  });
   const [a, b] = InMemoryTransport.createLinkedPair();
   const client = new Client({ name: "e2e", version: "0" });
   await Promise.all([server.connect(a), client.connect(b)]);
