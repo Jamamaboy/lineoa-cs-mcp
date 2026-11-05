@@ -1,7 +1,8 @@
 # dev status
-Last updated: 2026-11-06 03:47 ICT · branch dev
+Last updated: 2026-11-06 03:50 ICT · branch dev
 
 ## Now
+- Done: extension points, README and guides
 - Done: CLI, browser choice and one-step setup
 - Done: send_message (off by default)
 - Done: get_attachment
