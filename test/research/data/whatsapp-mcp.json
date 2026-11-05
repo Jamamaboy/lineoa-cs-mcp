@@ -1,0 +1,146 @@
+{
+  "slug": "whatsapp-mcp",
+  "name": "lharries/whatsapp-mcp",
+  "category": "chat-mcp-unofficial",
+  "url": "https://github.com/lharries/whatsapp-mcp",
+  "one_liner_th": "MCP ที่ทำงานเป็นบัญชี WhatsApp ส่วนตัวผ่าน whatsmeow (Go bridge) + Python MCP",
+  "language": "Go + Python",
+  "license": "MIT",
+  "github": {
+    "stars": 6813,
+    "forks": 1479,
+    "open_issues": 269,
+    "last_push": "2025-07-13",
+    "created": "2025-03-29",
+    "fetched_at": "2026-11-05"
+  },
+  "users_claim": null,
+  "auth": {
+    "method_th": "Go bridge ใช้ whatsmeow (WhatsApp Web multi-device API) แสดง QR ใน terminal ให้สแกนด้วยมือถือครั้งเดียว หลังนั้นล็อกอินต่ออัตโนมัติ; ถ้าถูก logout ต้องสแกนใหม่ ส่วน MCP server (Python) ไม่แตะ credential เลย แค่เรียก REST localhost:8080 และอ่าน SQLite",
+    "storage_th": "session ของ whatsmeow อยู่ใน whatsapp-bridge/store/whatsapp.db และข้อความใน store/messages.db (SQLite ไม่เข้ารหัส); REST API ของ bridge listen ที่ :8080 (ทุก interface) โดยไม่มี auth หรือ token",
+    "borrow_th": "ควรเลียนแบบ: แยกกระบวนการที่ถือ session ออกจาก MCP server, ล็อกอินครั้งเดียวด้วย QR แล้วเก็บ session ในไฟล์ local. ควรหลีกเลี่ยง: bind ทุก interface โดยไม่มี auth, เก็บ session แบบ plaintext โดยไม่ chmod, ไม่มี guard ว่าล็อกอินเป็นบัญชีที่ถูกต้อง"
+  },
+  "attachments": {
+    "how_th": "ขาเข้า: bridge เก็บ metadata ของสื่อ (url, media_key, sha256, length) ใน SQLite แต่ยังไม่ดาวน์โหลด; LLM เรียก download_media(message_id, chat_jid) แล้ว bridge ถอดรหัสและเซฟที่ store/<chat_jid>/<filename> ส่งคืนเป็น path ในเครื่อง (ไม่ส่งไบต์ให้ LLM). ขาออก: send_file/send_audio_message รับ media_path ในเครื่อง ตรวจแค่ว่าไฟล์มีอยู่ (audio แปลงเป็น opus .ogg ด้วย ffmpeg)",
+    "borrow_th": "ควรเลียนแบบ: ดาวน์โหลดตามต้องการ (on-demand) ไม่ดึงสื่อทุกข้อความ. ควรหลีกเลี่ยง: ไม่มี limit ขนาด/MIME, ชื่อไฟล์จากผู้ส่งถูกใช้เป็น path โดยไม่เห็นการ sanitize, send_file รับ path ใดก็ได้ในเครื่อง (ไม่มี sandbox), คืนแค่ path ทำให้ LLM ต้องมี filesystem access"
+  },
+  "core_features": [
+    {
+      "name": "QR login bridge",
+      "detail_th": "Go bridge ผูกกับ WhatsApp ผ่าน whatsmeow, สแกน QR ครั้งเดียว"
+    },
+    {
+      "name": "Local SQLite store",
+      "detail_th": "เก็บแชตและข้อความทั้งหมดใน SQLite ค้นหา/อ่านจาก DB ไม่ยิง API"
+    },
+    {
+      "name": "Read & search",
+      "detail_th": "list_chats, list_messages (กรอง after/before/sender/query), get_message_context"
+    },
+    {
+      "name": "Pagination",
+      "detail_th": "limit + page (offset = page*limit) ทุก tool ที่คืนรายการ"
+    },
+    {
+      "name": "Send text/file/audio",
+      "detail_th": "send_message, send_file, send_audio_message ผ่าน REST /api/send"
+    },
+    {
+      "name": "On-demand media download",
+      "detail_th": "download_media ถอดรหัสไฟล์ตอนเรียก คืน path"
+    },
+    {
+      "name": "No send gating",
+      "detail_th": "ไม่มี flag read-only หรือ allowlist; README เตือนเรื่อง lethal trifecta"
+    }
+  ],
+  "flow": [
+    {
+      "actor": "user",
+      "label": "สแกน QR ใน terminal"
+    },
+    {
+      "actor": "service",
+      "label": "whatsmeow sync ข้อความ"
+    },
+    {
+      "actor": "storage",
+      "label": "เก็บใน SQLite"
+    },
+    {
+      "actor": "agent",
+      "label": "เรียก MCP tool"
+    },
+    {
+      "actor": "tool",
+      "label": "Python อ่าน DB / REST :8080"
+    },
+    {
+      "actor": "service",
+      "label": "bridge ส่ง/ดาวน์โหลดสื่อ"
+    }
+  ],
+  "highlights_th": [
+    "ออกแบบ 2 ส่วนชัดเจน: bridge ถือ session, MCP แค่ tool บางๆ — ใกล้กับสถาปัตยกรรมที่เราวางไว้",
+    "เก็บข้อความใน SQLite local ทำให้ search/list เร็วและไม่ต้องยิงระบบจริงซ้ำ",
+    "download_media แบบ on-demand คืน path ในเครื่อง",
+    "ดาว 6.8k เป็นโปรเจกต์ที่ใช้กันแพร่หลายสุดในกลุ่ม"
+  ],
+  "weaknesses_th": [
+    "REST :8080 ไม่มี auth และ bind ทุก interface; session เก็บ plaintext; ไม่มี guard บัญชี",
+    "ไม่มี send safety/limit ขนาดไฟล์/sandbox path; ไม่มี test; push ล่าสุดก.ค. 2025",
+    "pyproject ไม่ pin mcp ทำให้ติดตั้งใหม่ได้ mcp 2.x แล้วพัง (ต้อง pin <2)"
+  ],
+  "tools_or_endpoints": [
+    "search_contacts",
+    "list_messages",
+    "list_chats",
+    "get_chat",
+    "get_direct_chat_by_contact",
+    "get_contact_chats",
+    "get_last_interaction",
+    "get_message_context",
+    "send_message",
+    "send_file",
+    "send_audio_message",
+    "download_media",
+    "POST /api/send (bridge :8080)",
+    "POST /api/download (bridge :8080)"
+  ],
+  "trial": {
+    "status": "partial",
+    "summary_th": "ไม่มี Go จึงไม่ build bridge/ไม่ทำ QR. ติดตั้งฝั่ง Python ด้วย uv venv: ครั้งแรก mcp 2.x ทำให้ import fastmcp พัง จึง pin mcp<2 แล้วรัน inspector --cli tools/list สำเร็จโดยไม่ต้องมี bridge ได้ 12 tools",
+    "log": "trials/whatsapp-mcp.md"
+  },
+  "screenshots": [
+    {
+      "file": "shots/whatsapp-mcp-1.png",
+      "caption_th": "ผล tools/list จริง 12 tools (ไม่มี bridge)",
+      "kind": "real-run"
+    },
+    {
+      "file": "shots/whatsapp-mcp-2.png",
+      "caption_th": "หน้า GitHub ของ repo",
+      "kind": "github-page"
+    }
+  ],
+  "scores": {
+    "relevance": 3,
+    "auth": 3,
+    "attachments": 3,
+    "maturity": 3,
+    "tryability": 3,
+    "reasons_th": {
+      "relevance": "ทำงานเป็นผู้ใช้จริงผ่าน session ไม่เป็นทางการ มี list/read/search/send ตรงรูปแบบ แต่เป็น WhatsApp ส่วนตัวไม่ใช่คอนโซล CS",
+      "auth": "แยก session holder ออกจาก MCP และ QR ครั้งเดียวน่าเอา แต่เก็บ plaintext/REST ไม่มี auth/ไม่มี guard",
+      "attachments": "on-demand download น่าเอา แต่ไม่มี limit/MIME/sandbox และคืนแค่ path",
+      "maturity": "ดังมาก (6.8k) แต่ไม่มี test, push ล่าสุดก.ค. 2025, issue ค้าง 269",
+      "tryability": "รันได้เฉพาะฝั่ง Python (tools/list จริง) bridge Go รันไม่ได้"
+    }
+  },
+  "sources": [
+    "https://github.com/lharries/whatsapp-mcp",
+    "https://github.com/tulir/whatsmeow",
+    "https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/"
+  ]
+}

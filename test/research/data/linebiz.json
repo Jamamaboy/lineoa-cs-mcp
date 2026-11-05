@@ -1,0 +1,144 @@
+{
+  "slug": "linebiz",
+  "name": "PrakritManStudio/linebiz",
+  "category": "line-internal-api",
+  "url": "https://github.com/PrakritManStudio/linebiz",
+  "one_liner_th": "SDK TypeScript ไม่เป็นทางการเรียก API ภายในของ chat.line.biz ด้วย session cookie",
+  "language": "TypeScript",
+  "license": "ISC",
+  "github": {
+    "stars": 0,
+    "forks": 0,
+    "open_issues": 0,
+    "last_push": "2026-11-02",
+    "created": "2025-08-30",
+    "fetched_at": "2026-11-05"
+  },
+  "users_claim": null,
+  "auth": {
+    "method_th": "ไม่มี flow login: รับ cookie ของเซสชัน chat.line.biz ที่ล็อกอินแล้ว (header string, JSON array, Cookie-Editor/Playwright export) กรองเฉพาะ *.line.biz และทิ้ง cookie ที่หมดอายุ; เขียน (POST) ใช้ CSRF จาก GET /api/v1/csrfToken ส่งใน X-XSRF-TOKEN แล้ว retry 1 ครั้งเมื่อ 403; 401 ที่ body code=not_login = SESSION_EXPIRED",
+    "storage_th": "MemoryCookieStore ในหน่วยความจำ รับ Set-Cookie หมุนเซสชัน; มี interface CookieStore ให้เสียบ Redis เอง; exportCookies() สำหรับบันทึก; redact cookie/CSRF ในข้อความ error",
+    "borrow_th": "ควรลอก: CookieStore แบบเสียบได้, allow-list โดเมน line.biz/line.me, redact header ลับ, error code SESSION_EXPIRED แยกจาก UNAUTHORIZED, CSRF fetch+retry-once. ควรเลี่ยง: ไม่มี login เอง ต้องให้คนเอา cookie มาใส่"
+  },
+  "attachments": {
+    "how_th": "อ่านอย่างเดียว: type ของ message มี image/video/audio/file พร้อม contentHash, contentProvider, fileName, fileSize, expired/expiredAt แต่ไม่มี endpoint ดาวน์โหลดหรืออัปโหลด และไม่มีการส่งข้อความ (มีแค่ logout เป็น POST) ; retrieveFlex ดึง flexJson",
+    "borrow_th": "ลอก schema ของ message/attachment (contentHash, expiredAt) ได้ ส่วนดาวน์โหลด/อัปโหลดต้องดูจาก LINELib"
+  },
+  "core_features": [
+    {
+      "name": "CookieStore",
+      "detail_th": "รับ cookie 3 รูปแบบ + store แบบเสียบได้"
+    },
+    {
+      "name": "CSRF handling",
+      "detail_th": "ดึง token เองและ retry หลัง 403"
+    },
+    {
+      "name": "Resources",
+      "detail_th": "me, bots, chats, messages, contacts, members, tags, owners, auth.logout"
+    },
+    {
+      "name": "Pagination",
+      "detail_th": "PagePromise + async iterator ตาม cursor"
+    },
+    {
+      "name": "Retry",
+      "detail_th": "GET เท่านั้น backoff + Retry-After สูงสุด 60 วินาที"
+    },
+    {
+      "name": "Error model",
+      "detail_th": "APIError แยก 401/403/429 และ redact header"
+    },
+    {
+      "name": "Typed",
+      "detail_th": "ESM ไม่มี runtime dependency, validate argument ฝั่ง client"
+    }
+  ],
+  "flow": [
+    {
+      "actor": "user",
+      "label": "ส่ง cookie เข้า client"
+    },
+    {
+      "actor": "tool",
+      "label": "parse/กรอง *.line.biz"
+    },
+    {
+      "actor": "service",
+      "label": "GET /api/v2/.../chats"
+    },
+    {
+      "actor": "service",
+      "label": "GET /api/v3/.../messages"
+    },
+    {
+      "actor": "service",
+      "label": "Set-Cookie หมุนเซสชัน"
+    },
+    {
+      "actor": "tool",
+      "label": "401 not_login -> expired"
+    }
+  ],
+  "highlights_th": [
+    "ครอบคลุม endpoint อ่านข้อมูลชัดเจน พร้อม type และ unit test 241 ข้อผ่าน",
+    "จัดการ cookie/CSRF/redact อย่างระมัดระวัง",
+    "ส่งหัว x-oa-chat-client-version เลียนเว็บแอป"
+  ],
+  "weaknesses_th": [
+    "ไม่มี login และไม่มี send message/ไฟล์",
+    "ยังไม่มี star, commit ล่าสุดคือ 2026-11-02 (ใหม่มาก)",
+    "build ล้มบน node 22.14 (ต้อง >=22.18)"
+  ],
+  "tools_or_endpoints": [
+    "GET /api/v1/me",
+    "GET /api/v1/bots",
+    "GET /api/v1/bots/{id}",
+    "GET /api/v1/bots/{id}/owners",
+    "GET /api/v1/bots/{id}/tags",
+    "GET /api/v2/bots/{id}/chats",
+    "GET /api/v2/bots/{id}/contacts",
+    "GET /api/v1/bots/{bot}/chats/{chat}/members",
+    "GET /api/v3/bots/{bot}/chats/{chat}/messages",
+    "GET /api/v1/bots/{bot}/chats/{chat}/messages/flexJson",
+    "POST /api/v1/logoutUri",
+    "GET /api/v1/csrfToken",
+    "header X-XSRF-TOKEN",
+    "header x-oa-chat-client-version: 20240513144702",
+    "hosts: chat.line.biz, manager.line.biz, account.line.biz"
+  ],
+  "trial": {
+    "status": "partial",
+    "summary_th": "ไม่มีบัญชี จึง login/เรียกจริงไม่ได้. ติดตั้งได้เมื่อปิด engine-strict, tsc --noEmit ผ่าน, vitest 13 ไฟล์ 241 test ผ่าน, build (tsdown) ล้มบน node 22.14",
+    "log": "trials/linebiz.md"
+  },
+  "screenshots": [
+    {
+      "file": "shots/linebiz-1.png",
+      "caption_th": "หน้า GitHub ของ linebiz",
+      "kind": "github-page"
+    },
+    {
+      "file": "shots/linebiz-2.png",
+      "caption_th": "ผล tsc และ unit test ที่รันจริง",
+      "kind": "real-run"
+    }
+  ],
+  "scores": {
+    "relevance": 4,
+    "auth": 4,
+    "attachments": 2,
+    "maturity": 3,
+    "tryability": 3,
+    "reasons_th": {
+      "relevance": "ตรงกับ API เว็บ LINE OA แต่อ่านอย่างเดียว",
+      "auth": "cookie store/CSRF/expiry ออกแบบดี แต่ไม่มี login",
+      "attachments": "มี schema ของไฟล์แนบ ไม่มีดาวน์โหลด/อัปโหลด",
+      "maturity": "test ครบ เอกสารดี แต่ใหม่มากและ 0 star",
+      "tryability": "รัน typecheck+test ได้ แต่เรียกของจริงไม่ได้"
+    }
+  },
+  "sources": [
+    "https://github.com/PrakritManStudio/linebiz"
+  ]
+}

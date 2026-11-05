@@ -1,0 +1,157 @@
+{
+  "slug": "slack-mcp-server",
+  "name": "korotovsky/slack-mcp-server",
+  "category": "chat-mcp-unofficial",
+  "url": "https://github.com/korotovsky/slack-mcp-server",
+  "one_liner_th": "MCP Slack ที่ใช้ browser token (xoxc/xoxd) ไม่ต้องสร้าง bot; ส่งข้อความปิดไว้เป็นค่าเริ่มต้น",
+  "language": "Go",
+  "license": "MIT",
+  "github": {
+    "stars": 1886,
+    "forks": 389,
+    "open_issues": 90,
+    "last_push": "2026-07-16",
+    "created": "2025-04-12",
+    "fetched_at": "2026-11-05"
+  },
+  "users_claim": null,
+  "auth": {
+    "method_th": "ผู้ใช้คัดลอก xoxc token และ cookie xoxd จาก browser ที่ล็อกอิน Slack อยู่ (หรือใช้ xoxp/xoxb ทางการ) ใส่ env SLACK_MCP_XOXC_TOKEN / SLACK_MCP_XOXD_TOKEN. ตอนสตาร์ทเรียก auth.test ทันที ถ้า token ผิดจะ fatal invalid_auth แล้วจบ (ยืนยันจากการรันจริงด้วย token ปลอม). ถ้าเปิดโหมด SSE/HTTP ใช้ SLACK_MCP_API_KEY (Bearer, เทียบแบบ constant-time)",
+    "storage_th": "token อยู่ใน environment variable (ไม่เก็บไฟล์); cache users/channels เป็น JSON ใน ~/Library/Caches/slack-mcp-server/",
+    "borrow_th": "ควรเลียนแบบ: ใช้ session cookie ของมนุษย์แบบไม่ต้องขออนุมัติ admin, ตรวจ token ทันทีตอนสตาร์ท (fail fast), มี proxy/custom UA/TLS. ควรหลีกเลี่ยง: ต้องให้ผู้ใช้คัดลอก token มือ และไม่มีกลไก refresh/หมดอายุที่ชัดเจน"
+  },
+  "attachments": {
+    "how_th": "tool attachment_get_data (ต้องเปิดด้วย SLACK_MCP_ATTACHMENT_TOOL) ดาวน์โหลดไฟล์ตาม file ID; จำกัด 5 MB; ถ้าเป็น image/* คืนเป็น MCP image content (base64 + metadata) ให้ LLM เห็นตรงๆ; ถ้าเป็น text/csv/json คืนข้อความ, อย่างอื่นคืน base64 พร้อม encoding field. ในประวัติข้อความ attachment ปรากฏเป็น attachmentIDs/คอลัมน์ CSV",
+    "borrow_th": "ควรเลียนแบบมาก: opt-in tool, จำกัดขนาด, แยกตามชนิด MIME (image เป็น image content, text เป็น text), คืนไบต์ผ่าน MCP โดยไม่ต้องเขียนลงดิสก์/ไม่ต้องมี filesystem ฝั่ง client. ข้อจำกัด: ไม่มี channel-level restriction สำหรับ attachment"
+  },
+  "core_features": [
+    {
+      "name": "Browser-token auth",
+      "detail_th": "xoxc+xoxd ไม่ต้องติดตั้ง app/ขอสิทธิ์ admin"
+    },
+    {
+      "name": "Send disabled by default",
+      "detail_th": "conversations_add_message ไม่ถูกลงทะเบียนจนกว่าจะตั้ง SLACK_MCP_ADD_MESSAGE_TOOL"
+    },
+    {
+      "name": "Channel allow/deny list",
+      "detail_th": "ค่า env เป็น true / รายการ channel ID / ใช้ ! นำหน้าเพื่อยกเว้น"
+    },
+    {
+      "name": "Tool allowlist",
+      "detail_th": "SLACK_MCP_ENABLED_TOOLS เลือกเปิดเฉพาะ tool ที่ต้องการ (ตรวจชื่อ tool ผิดแล้ว abort)"
+    },
+    {
+      "name": "Cursor pagination",
+      "detail_th": "conversations_history/search คืน cursor (base64) ให้เรียกหน้าถัดไป พร้อม limit"
+    },
+    {
+      "name": "Attachment tool",
+      "detail_th": "attachment_get_data จำกัด 5MB คืน image content/text/base64"
+    },
+    {
+      "name": "Unfurl guard",
+      "detail_th": "SLACK_MCP_ADD_MESSAGE_UNFURLING ปิด unfurl เมื่อลิงก์นอก whitelist"
+    },
+    {
+      "name": "Caches + SSE key",
+      "detail_th": "cache users/channels ลดการเรียก API; โหมด SSE ต้องมี API key"
+    }
+  ],
+  "flow": [
+    {
+      "actor": "user",
+      "label": "คัดลอก xoxc/xoxd จาก browser"
+    },
+    {
+      "actor": "tool",
+      "label": "ตั้ง env แล้วสตาร์ท server"
+    },
+    {
+      "actor": "service",
+      "label": "auth.test ตรวจ token"
+    },
+    {
+      "actor": "agent",
+      "label": "เรียก conversations_history"
+    },
+    {
+      "actor": "service",
+      "label": "Slack internal/web API"
+    },
+    {
+      "actor": "agent",
+      "label": "attachment_get_data (opt-in)"
+    }
+  ],
+  "highlights_th": [
+    "ส่งข้อความเป็น opt-in + allowlist/denylist ระดับ channel — ตรงกับ send gating ที่เราต้องการ",
+    "attachment คืนเป็น MCP image content โดยตรง จำกัด 5MB แยกตาม MIME",
+    "เป็น Go แต่มี npm package (slack-mcp-server 1.3.0) ที่แนบ binary ตาม platform ใช้ผ่าน npx ได้",
+    "มี test เยอะ และ push ล่าสุดก.ค. 2026"
+  ],
+  "weaknesses_th": [
+    "ต้องก๊อป token จาก browser เอง และไม่มีการ refresh/แจ้งหมดอายุที่ชัดเจน",
+    "เรียก Slack ตอนสตาร์ท จึง list tools แบบ offline ไม่ได้",
+    "ผิดข้อกำหนดของ Slack ได้ (ใช้ session ของ browser) และ cache เก็บข้อมูลผู้ใช้ plaintext"
+  ],
+  "tools_or_endpoints": [
+    "conversations_history",
+    "conversations_replies",
+    "conversations_add_message",
+    "conversations_search_messages",
+    "conversations_unreads",
+    "conversations_mark",
+    "conversations_leave",
+    "conversations_join",
+    "reactions_add",
+    "reactions_remove",
+    "attachment_get_data",
+    "channels_list",
+    "channels_me",
+    "users_search",
+    "usergroups_list",
+    "usergroups_me",
+    "usergroups_create",
+    "usergroups_update",
+    "usergroups_users_update",
+    "saved_list",
+    "saved_update",
+    "saved_clear_completed"
+  ],
+  "trial": {
+    "status": "partial",
+    "summary_th": "พบ npm package slack-mcp-server 1.3.0 (binary darwin-arm64) ติดตั้งด้วย --ignore-scripts แล้วรันด้วย token ปลอม (xoxc-DUMMY/xoxd-DUMMY, ไม่ตั้ง ADD_MESSAGE_TOOL). เซิร์ฟเวอร์ยิง Slack auth.test ตอนสตาร์ทและ fatal invalid_auth จึงหยุด; รายชื่อ tool อ่านจาก source (pkg/server/server.go)",
+    "log": "trials/slack-mcp-server.md"
+  },
+  "screenshots": [
+    {
+      "file": "shots/slack-mcp-server-1.png",
+      "caption_th": "ผลรันจริง: invalid_auth ตอนสตาร์ท + รายการ tool จาก source",
+      "kind": "real-run"
+    },
+    {
+      "file": "shots/slack-mcp-server-2.png",
+      "caption_th": "หน้า GitHub ของ repo",
+      "kind": "github-page"
+    }
+  ],
+  "scores": {
+    "relevance": 4,
+    "auth": 4,
+    "attachments": 5,
+    "maturity": 4,
+    "tryability": 2,
+    "reasons_th": {
+      "relevance": "ทำงานเป็นผู้ใช้จริงในคอนโซลแชตผ่าน session ที่ไม่เป็นทางการ พร้อม list/read/search/send/attachment — รูปแบบใกล้เคียงที่สุดตัวหนึ่ง",
+      "auth": "session ของมนุษย์โดยไม่ต้องขออนุมัติ + fail-fast + API key สำหรับ SSE; แต่ต้องก๊อป token เองและไม่มี refresh",
+      "attachments": "opt-in, 5MB, แยก MIME, คืน image content ให้ LLM โดยตรง — แบบที่ควรเลียนแบบ",
+      "maturity": "มี test ครบ, ดูแลต่อเนื่อง (push 2026-07), เอกสารละเอียด, 1.9k ดาว",
+      "tryability": "รัน binary ได้แต่ตายที่ auth.test ด้วย token ปลอม ไม่เห็น tools/list จริง"
+    }
+  },
+  "sources": [
+    "https://github.com/korotovsky/slack-mcp-server",
+    "https://www.npmjs.com/package/slack-mcp-server"
+  ]
+}

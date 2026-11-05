@@ -1,0 +1,148 @@
+{
+  "slug": "omnichat-bridge",
+  "name": "kaojai-ai/omnichat-bridge",
+  "category": "line-browser-ext",
+  "url": "https://github.com/kaojai-ai/omnichat-bridge",
+  "one_liner_th": "ส่วนขยาย Chrome ของบริษัทไทย ดึงแชต LINE OA/Shopee ส่งเข้าเซิร์ฟเวอร์ และตอบกลับผ่านแท็บที่ล็อกอินอยู่",
+  "language": "JavaScript",
+  "license": "MIT",
+  "github": {
+    "stars": 1,
+    "forks": 0,
+    "open_issues": 16,
+    "last_push": "2026-11-05",
+    "created": "2026-07-22",
+    "fetched_at": "2026-11-05"
+  },
+  "users_claim": null,
+  "auth": {
+    "method_th": "ไม่ล็อกอินเอง ใช้เซสชันคุกกี้ของผู้ใช้ที่เปิด chat.line.biz อยู่ content script (world MAIN) ครอบ window.fetch แล้วเรียก /api ด้วย credentials:include ไม่ขอสิทธิ์ cookies/webRequest/tabs จึงอ่านคุกกี้ไม่ได้ ตรวจ 401/403 เพื่อ invalidate สถานะ และมี health alarm ทุก 1 นาที",
+    "storage_th": "ไม่เก็บคุกกี้ LINE; เก็บเฉพาะ config/hmac_secret ของเซิร์ฟเวอร์ปลายทางใน chrome.storage และเซ็นคำขอขาออกด้วย HMAC-SHA256 (method+path+timestamp+nonce+body hash)",
+    "borrow_th": "ควรเลียนแบบ: รันโค้ดในหน้าเว็บที่ล็อกอินแล้ว ใช้ same-origin fetch, จับ 401/403 แล้วล้างสถานะ session epoch, ไม่แตะคุกกี้ ควรหลีกเลี่ยง: ต้องมีแท็บเปิดค้างและพึ่ง header x-oa-chat-client-version ที่ hardcode"
+  },
+  "attachments": {
+    "how_th": "ขาเข้า: ส่งต่อเฉพาะ contentProvider.originalContentUrl เป็น media_url (ไม่ดาวน์โหลดไบต์) สติกเกอร์สร้าง URL จาก stickershop CDN ขาออก: อัปโหลด multipart ไปที่ /messages/{chat}/uploadFile ได้ contentMessageToken แล้ว POST bulkSendFiles; จำกัดรูป 20 MiB (JPEG/PNG/GIF) วิดีโอ/ไฟล์ 32 MiB ตรวจ MIME และ deadline 25 วินาที ไม่ส่งซ้ำอัตโนมัติเมื่อผลไม่แน่ชัด",
+    "borrow_th": "คัดลอกลำดับ uploadFile -> bulkSendFiles, ขีดจำกัดขนาด/MIME และกฎ 'ไม่ resend เมื่อไม่แน่ใจ' ตรวจยืนยันด้วย sendId จากประวัติ; ส่วนขาเข้าควรดาวน์โหลดแบบ on-demand เองเพราะ repo นี้ไม่ทำ"
+  },
+  "core_features": [
+    {
+      "name": "Polling /v2 chats + /v3 messages",
+      "detail_th": "ดึงรายการแชตและข้อความย้อนหลังด้วย cursor next/backward"
+    },
+    {
+      "name": "fetch intercept",
+      "detail_th": "ครอบ window.fetch เพื่อเรียนรู้โปรไฟล์ของคำขอ messages/send ที่สำเร็จ"
+    },
+    {
+      "name": "Send text/image/video/file/sticker",
+      "detail_th": "ส่งผ่านหน้า LINE ด้วยเซสชันของผู้ใช้"
+    },
+    {
+      "name": "Send confirmation by sendId",
+      "detail_th": "ยืนยันผลจากประวัติด้วย sendId ทุก 1 วินาที"
+    },
+    {
+      "name": "HMAC-signed delivery",
+      "detail_th": "ส่งเหตุการณ์ไปเซิร์ฟเวอร์ผู้ใช้พร้อมลายเซ็นและคิว/retry"
+    },
+    {
+      "name": "Multi-account detection",
+      "detail_th": "หา basicId จาก HTML/ /api/v1/bots"
+    },
+    {
+      "name": "Shopee adapter",
+      "detail_th": "รองรับ provider อื่นด้วยสถาปัตยกรรม adapter"
+    }
+  ],
+  "flow": [
+    {
+      "actor": "user",
+      "label": "เปิด chat.line.biz"
+    },
+    {
+      "actor": "browser",
+      "label": "content script MAIN world"
+    },
+    {
+      "actor": "service",
+      "label": "GET /v2 chats, /v3 messages"
+    },
+    {
+      "actor": "tool",
+      "label": "normalize + HMAC sign"
+    },
+    {
+      "actor": "service",
+      "label": "POST ไป server ผู้ใช้"
+    },
+    {
+      "actor": "agent",
+      "label": "สั่ง send_text/send_file"
+    },
+    {
+      "actor": "service",
+      "label": "uploadFile/bulkSendFiles"
+    }
+  ],
+  "highlights_th": [
+    "ใกล้โจทย์เราที่สุด: ครบทั้งอ่าน ส่ง และไฟล์แนบผ่าน endpoint ภายในของ chat.line.biz",
+    "โมเดลสิทธิ์รัดกุม: ไม่มี cookies permission, เซ็น HMAC, มี PRIVACY.md และเอกสารแนบไฟล์",
+    "มีเทสต์ 995 รายการ อัปเดตทุกวัน"
+  ],
+  "weaknesses_th": [
+    "ต้องเปิดแท็บ LINE ค้างไว้และอยู่ในเบราว์เซอร์ ไม่ใช่ MCP",
+    "เทสต์ล้ม 1 รายการ (provider-readiness-grace); background.js 5.5k บรรทัด ดาวน์โหลดสื่อขาเข้าไม่ทำเอง",
+    "README เตือนความเสี่ยงฝ่าฝืนกติกา LINE; ดาว 1"
+  ],
+  "tools_or_endpoints": [
+    "GET /api/v1/bots?noFilter=true&limit=1000",
+    "GET /api/v2/bots/{botId}/chats?folderType=ALL&limit&next",
+    "GET /api/v3/bots/{botId}/chats/{chatId}/messages?limit&backward",
+    "POST /api/v1/bots/{botId}/chats/{chatId}/messages/send",
+    "POST /api/v1/bots/{botId}/messages/{chatId}/uploadFile",
+    "POST /api/v1/bots/{botId}/chats/{chatId}/messages/bulkSendFiles",
+    "header x-oa-chat-client-version: 20240513144702"
+  ],
+  "trial": {
+    "status": "partial",
+    "summary_th": "ติดตั้ง/รันกับ LINE จริงไม่ได้ (ไม่มีล็อกอิน) จึงทำ static trial: อ่าน manifest และ endpoint ทั้งหมด รัน node --test ได้ 995 เทสต์ ผ่าน 994 ล้ม 1 และแคปตารางสิทธิ์กับรายการ endpoint",
+    "log": "trials/omnichat-bridge.md"
+  },
+  "screenshots": [
+    {
+      "file": "shots/omnichat-bridge-1.png",
+      "caption_th": "ตารางสิทธิ์ใน manifest.json และ content scripts ของ chat.line.biz",
+      "kind": "real-run"
+    },
+    {
+      "file": "shots/omnichat-bridge-2.png",
+      "caption_th": "endpoint ของ chat.line.biz ที่ extension เรียก และขีดจำกัดไฟล์แนบ",
+      "kind": "real-run"
+    },
+    {
+      "file": "shots/omnichat-bridge-3.png",
+      "caption_th": "หน้า GitHub ของ repo",
+      "kind": "github-page"
+    }
+  ],
+  "scores": {
+    "relevance": 5,
+    "auth": 4,
+    "attachments": 4,
+    "maturity": 3,
+    "tryability": 2,
+    "reasons_th": {
+      "relevance": "อ่าน/ส่ง/ไฟล์แนบบน chat.line.biz ตรงโจทย์ แต่เป็น extension ไม่ใช่ MCP",
+      "auth": "ใช้เซสชันในหน้าโดยไม่อ่านคุกกี้ ไม่มี cookies permission เซ็น HMAC ขาออก แต่ต้องมีแท็บเปิด",
+      "attachments": "uploadFile->bulkSendFiles พร้อม limit/MIME/deadline แต่ไม่ดาวน์โหลดสื่อขาเข้า",
+      "maturity": "มีเทสต์ 995 และเอกสาร แต่ดาว 1 อายุ 3.5 เดือนและเทสต์ล้ม 1",
+      "tryability": "รัน unit test ได้ แต่รันกับ LINE จริงไม่ได้"
+    }
+  },
+  "sources": [
+    "https://github.com/kaojai-ai/omnichat-bridge",
+    "https://github.com/kaojai-ai/omnichat-bridge/blob/main/extension/manifest.json",
+    "https://github.com/kaojai-ai/omnichat-bridge/blob/main/extension/line-oa-realtime.js",
+    "https://github.com/kaojai-ai/omnichat-bridge/blob/main/docs/line-oa-attachments.md"
+  ]
+}

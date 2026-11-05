@@ -1,0 +1,117 @@
+{
+  "slug": "sleekflow",
+  "name": "SleekFlow",
+  "category": "inbox-saas",
+  "url": "https://sleekflow.io/channels-integrations/line",
+  "one_liner_th": "inbox omnichannel เชิงพาณิชย์ เด่นในไทย/ฮ่องกง รองรับ LINE Business",
+  "language": null,
+  "license": "proprietary (SaaS)",
+  "github": null,
+  "users_claim": {
+    "text": "Trusted by 7,000+ businesses",
+    "url": "https://sleekflow.io/channels-integrations/line"
+  },
+  "auth": {
+    "method_th": "ผู้ดูแลเชื่อม LINE OA ผ่านช่องทางทางการ (Messaging API) ฝั่ง agent ล็อกอินบัญชี SleekFlow; ขั้นตอน webhook ยังไม่ได้ยืนยันจากหน้าที่อ่าน",
+    "storage_th": "ไม่เปิดเผย (SaaS)",
+    "borrow_th": "ไม่มีอะไรให้ลอก เพราะใช้ Messaging API"
+  },
+  "attachments": {
+    "how_th": "ส่งได้: เอกสาร รูป วิดีโอ เสียง (สูงสุด 16MB), ข้อความสูงสุด 1,800 ตัวอักษร, payment link, product catalog; รับได้: ข้อความ รูป เสียง อีโมจิ; ไม่รับ location/sticker/contact",
+    "borrow_th": "ใช้ตัวเลข 16MB และ 1,800 ตัวอักษรเป็น guard ฝั่งส่ง; รับ location/sticker/contact ให้แสดงเป็น placeholder"
+  },
+  "core_features": [
+    {
+      "name": "Shared inbox",
+      "detail_th": "รวมแชทหลายช่องทางรวมถึง LINE Business"
+    },
+    {
+      "name": "Message types",
+      "detail_th": "ส่งข้อความ/ไฟล์/รูป/วิดีโอ/เสียง/payment link/catalog"
+    },
+    {
+      "name": "File limit",
+      "detail_th": "ไฟล์ส่งออกสูงสุด 16MB"
+    },
+    {
+      "name": "7-day window",
+      "detail_th": "ส่งหาคนที่ยังไม่เป็นเพื่อนได้ภายใน 7 วันหลังเขาทักมา"
+    },
+    {
+      "name": "Automation",
+      "detail_th": "flow/AI automation และ integration Shopify/HubSpot"
+    },
+    {
+      "name": "Payment",
+      "detail_th": "payment link ต้องใช้ SleekFlow Payment"
+    }
+  ],
+  "flow": [
+    {
+      "actor": "service",
+      "label": "ลูกค้าทัก LINE OA"
+    },
+    {
+      "actor": "service",
+      "label": "webhook เข้า SleekFlow"
+    },
+    {
+      "actor": "browser",
+      "label": "เห็นใน shared inbox"
+    },
+    {
+      "actor": "agent",
+      "label": "agent ตอบ/แนบไฟล์ ≤16MB"
+    },
+    {
+      "actor": "service",
+      "label": "ส่งกลับทาง LINE"
+    }
+  ],
+  "highlights_th": [
+    "ระบุข้อจำกัดชนิดข้อความชัดเจนในศูนย์ช่วยเหลือ",
+    "มี limit 16MB ที่เทียบกับเราได้",
+    "ไม่ได้พูดถึง history import"
+  ],
+  "weaknesses_th": [
+    "SaaS ปิด ดูได้แค่เอกสารสาธารณะ",
+    "ขั้นตอนเชื่อม LINE (webhook) ไม่ได้ยืนยัน",
+    "เอกสารเก่า/ใหม่ขัดกันเรื่องรับวิดีโอ/เอกสาร"
+  ],
+  "tools_or_endpoints": [],
+  "trial": {
+    "status": "not-run",
+    "summary_th": "ไม่มีบัญชีจึงไม่ได้ทดลอง อ่านหน้า help center และถ่ายภาพหน้า LINE; ไม่พบเรื่อง history import",
+    "log": "trials/sleekflow.md"
+  },
+  "screenshots": [
+    {
+      "file": "shots/sleekflow-1.png",
+      "caption_th": "ศูนย์ช่วยเหลือ: LINE Business channel overview",
+      "kind": "docs"
+    },
+    {
+      "file": "shots/sleekflow-2.png",
+      "caption_th": "หน้า SleekFlow LINE Business และตัวเลขลูกค้า 7,000+",
+      "kind": "website"
+    }
+  ],
+  "scores": {
+    "relevance": 4,
+    "auth": 1,
+    "attachments": 3,
+    "maturity": 4,
+    "tryability": 1,
+    "reasons_th": {
+      "relevance": "inbox ที่ agent ตอบลูกค้า LINE ตรงกับรูปแบบงาน แต่ใช้ API ทางการ",
+      "auth": "ไม่มีข้อมูล auth ให้เรียนรู้",
+      "attachments": "มี limit และชนิดที่รับ/ส่งชัดเจน",
+      "maturity": "ผลิตภัณฑ์ที่ใช้จริงในตลาด",
+      "tryability": "ไม่มีบัญชี ไม่ได้ลอง"
+    }
+  },
+  "sources": [
+    "https://help.sleekflow.io/en_US/line-business-channel/line-business-channel-overview",
+    "https://sleekflow.io/channels-integrations/line"
+  ]
+}

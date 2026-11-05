@@ -1,0 +1,150 @@
+{
+  "slug": "beeper-desktop-mcp",
+  "name": "Beeper Desktop MCP (@beeper/desktop-mcp)",
+  "category": "mcp-official",
+  "url": "https://developers.beeper.com/desktop-api/mcp",
+  "one_liner_th": "MCP ในตัว Beeper Desktop คุยหลายแอปแชตผ่าน Desktop API ในเครื่อง",
+  "language": "TypeScript",
+  "license": "MIT",
+  "github": {
+    "stars": 24,
+    "forks": 2,
+    "open_issues": 8,
+    "last_push": "2026-09-25",
+    "created": "2025-08-24",
+    "fetched_at": "2026-11-05"
+  },
+  "users_claim": null,
+  "auth": {
+    "method_th": "2 ทาง: OAuth (client MCP ที่รองรับ Streamable HTTP ที่ http://localhost:23373/v0/mcp ทำให้อัตโนมัติ) หรือ access token ที่สร้างเอง ส่งเป็น Authorization: Bearer / env BEEPER_ACCESS_TOKEN ซึ่งข้าม OAuth",
+    "storage_th": "token อยู่ใน env/ header ของ client; บัญชีแชตจริงล็อกอินอยู่ในแอป Beeper Desktop ที่ต้องเปิดค้าง พอร์ต 23373 เฉพาะเครื่อง",
+    "borrow_th": "ลอกแนวคิด: agent ไม่เคยเห็นรหัสผ่านแชต แอปที่ล็อกอินอยู่เป็นผู้ถือ session และ agent ถือแค่ token แคบๆ ของ local API; เหมาะกับแผน session ของเรา"
+  },
+  "attachments": {
+    "how_th": "มี asset API แยก: assets.download (mxc:// ลงดิสก์เครื่อง), assets.serve (stream), assets.upload / uploadBase64 (ได้ uploadID) แล้วแนบตอน messages.send ด้วย attachment.uploadID พร้อม type hint (image/video/audio/file/gif/voice-note/sticker)",
+    "borrow_th": "ลอก pattern อัปโหลดสองขั้น (upload ได้ id แล้วอ้างตอนส่ง) และดาวน์โหลดตามต้องการ (on-demand) แทนการยัดไบนารีใน context"
+  },
+  "core_features": [
+    {
+      "name": "chats.search/list",
+      "detail_th": "ค้นและลิสต์แชตข้ามบัญชี/แอป"
+    },
+    {
+      "name": "messages.list",
+      "detail_th": "อ่านข้อความในแชตแบบ cursor"
+    },
+    {
+      "name": "messages.search",
+      "detail_th": "ค้นข้อความข้ามแชต"
+    },
+    {
+      "name": "messages.send",
+      "detail_th": "ส่งข้อความ พร้อม attachment ผ่าน uploadID"
+    },
+    {
+      "name": "assets.*",
+      "detail_th": "ดาวน์โหลด/เสิร์ฟ/อัปโหลดไฟล์"
+    },
+    {
+      "name": "accounts.contacts",
+      "detail_th": "ลิสต์/ค้นรายชื่อต่อบัญชี"
+    },
+    {
+      "name": "Code Mode",
+      "detail_th": "เปิดแค่ 2 tools: execute (เขียนโค้ดต่อ SDK) กับ search_docs"
+    }
+  ],
+  "flow": [
+    {
+      "actor": "user",
+      "label": "เปิด Beeper Desktop"
+    },
+    {
+      "actor": "agent",
+      "label": "search_docs หา method"
+    },
+    {
+      "actor": "agent",
+      "label": "execute โค้ด client.*"
+    },
+    {
+      "actor": "tool",
+      "label": "MCP ส่งต่อ Desktop API"
+    },
+    {
+      "actor": "service",
+      "label": "localhost:23373 /v1/*"
+    },
+    {
+      "actor": "service",
+      "label": "bridge ไปแอปแชตจริง"
+    }
+  ],
+  "highlights_th": [
+    "ฟังก์ชันตรงกับ 5 tools ของเรา: list chats, read, search, send และ contacts (60 endpoints /v1/*)",
+    "ใช้ Code Mode: เปิดแค่ execute และ search_docs ลด context ของ tool",
+    "มี asset upload/download แยก จัดการไฟล์ได้เป็นระบบ"
+  ],
+  "weaknesses_th": [
+    "ต้องมีแอป Beeper Desktop ติดตั้งและเปิดอยู่ จึงรันจริงกับแชตไม่ได้ในสภาพแวดล้อมนี้",
+    "ไม่รองรับ LINE OA ในฐานะ bridge ที่ใช้ได้กับ chat.line.biz (ต้องดูรายการ bridge เอง ไม่ได้ตรวจสอบ)",
+    "Code Mode ทำให้ไม่มี tool ชื่อชัดต่อ action ต้องให้ LLM เขียนโค้ด เสี่ยงกว่าเรื่องการควบคุม"
+  ],
+  "tools_or_endpoints": [
+    "execute",
+    "search_docs",
+    "GET /v1/chats",
+    "GET /v1/chats/search",
+    "GET /v1/chats/{chatID}/messages",
+    "GET /v1/messages/search",
+    "POST /v1/chats/{chatID}/messages",
+    "GET /v1/accounts",
+    "GET /v1/accounts/{accountID}/contacts",
+    "POST /v1/assets/download",
+    "GET /v1/assets/serve",
+    "POST /v1/assets/upload",
+    "POST /v1/assets/upload/base64"
+  ],
+  "trial": {
+    "status": "partial",
+    "summary_th": "รัน inspector tools/list กับ npx @beeper/desktop-mcp ด้วย BEEPER_ACCESS_TOKEN=DUMMY ได้ 2 tools (execute, search_docs) ไม่ได้เรียก API จริงเพราะไม่มี Beeper Desktop; อ่านรายการ endpoint 60 รายการจาก api.md ของ SDK แบบ static",
+    "log": "trials/beeper-desktop-mcp.md"
+  },
+  "screenshots": [
+    {
+      "file": "shots/beeper-desktop-mcp-1.png",
+      "caption_th": "เอกสาร Built-in MCP server ของ Beeper",
+      "kind": "docs"
+    },
+    {
+      "file": "shots/beeper-desktop-mcp-2.png",
+      "caption_th": "ผล tools/list จริง: execute + search_docs",
+      "kind": "real-run"
+    },
+    {
+      "file": "shots/beeper-desktop-mcp-3.png",
+      "caption_th": "repo beeper/desktop-api-js (SDK ที่มี mcp-server)",
+      "kind": "github-page"
+    }
+  ],
+  "scores": {
+    "relevance": 4,
+    "auth": 4,
+    "attachments": 4,
+    "maturity": 3,
+    "tryability": 3,
+    "reasons_th": {
+      "relevance": "ทำงานเหมือนคนใช้แอปแชต: list/read/search/send ครบ แต่เป็นแอปคนละตัว ไม่ใช่ LINE OA chat.line.biz",
+      "auth": "แอปที่ล็อกอินถือ session, agent ถือ token เฉพาะ local พร้อม OAuth",
+      "attachments": "มี upload/download asset แยก ใช้ uploadID และดึงตามต้องการ",
+      "maturity": "SDK ทางการ Stainless อัปเดตล่าสุดก.ย. 2026 แต่ดาวน้อยและ API ยังใหม่ (v0)",
+      "tryability": "รัน tools/list ได้ แต่เรียก API จริงไม่ได้ ต้องใช้ Beeper Desktop"
+    }
+  },
+  "sources": [
+    "https://developers.beeper.com/desktop-api/mcp",
+    "https://github.com/beeper/desktop-api-js",
+    "https://github.com/beeper/desktop-api-js/blob/main/api.md",
+    "https://github.com/beeper/desktop-api-js/tree/main/packages/mcp-server"
+  ]
+}

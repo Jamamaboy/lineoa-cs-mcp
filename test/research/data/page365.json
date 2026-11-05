@@ -1,0 +1,113 @@
+{
+  "slug": "page365",
+  "name": "Page365",
+  "category": "inbox-saas",
+  "url": "https://www.page365.net/",
+  "one_liner_th": "ระบบจัดการร้านค้าออนไลน์ไทย รวมแชท Facebook/LINE/IG พร้อมออเดอร์",
+  "language": null,
+  "license": "proprietary (SaaS)",
+  "github": null,
+  "users_claim": {
+    "text": "กว่า 500,000 ร้านพิสูจน์แล้ว (hero ของเว็บไซต์)",
+    "url": "https://www.page365.net/"
+  },
+  "auth": {
+    "method_th": "เชื่อม Facebook Page, LINE OA, IG แล้วให้แอดมินหลายคนล็อกอินระบบ Page365",
+    "storage_th": "ไม่เปิดเผย",
+    "borrow_th": "แนวคิดระบุแอดมินที่ตอบแต่ละแชท ใช้เป็น audit ได้"
+  },
+  "attachments": {
+    "how_th": "ไม่ระบุสาธารณะเรื่องไฟล์/รูป",
+    "borrow_th": "ไม่มี"
+  },
+  "core_features": [
+    {
+      "name": "Unified chat",
+      "detail_th": "รวมแชท FB/LINE OA/IG ตอบจากหน้าเดียว"
+    },
+    {
+      "name": "Admin tracking",
+      "detail_th": "ระบุแอดมินที่ตอบ จัดการหลายแอดมิน"
+    },
+    {
+      "name": "Auto-reply",
+      "detail_th": "ตอบอัตโนมัติ คีย์ลัด บรอดแคสต์"
+    },
+    {
+      "name": "Orders",
+      "detail_th": "ออเดอร์จากแชท/ไลฟ์ สถานะรอจ่าย/รอส่ง"
+    },
+    {
+      "name": "Reports",
+      "detail_th": "รายงานยอดขาย เชื่อม PEAK/FlowAccount"
+    }
+  ],
+  "flow": [
+    {
+      "actor": "service",
+      "label": "ลูกค้าทักจาก FB/LINE/IG"
+    },
+    {
+      "actor": "browser",
+      "label": "เข้า inbox รวม"
+    },
+    {
+      "actor": "agent",
+      "label": "แอดมินตอบ/ติดแท็ก"
+    },
+    {
+      "actor": "agent",
+      "label": "สร้างออเดอร์จากแชท"
+    },
+    {
+      "actor": "service",
+      "label": "แจ้งสถานะ/เลขพัสดุ"
+    }
+  ],
+  "highlights_th": [
+    "รวมแชทกับออเดอร์ในระบบเดียว",
+    "มีแอป iOS คะแนน 4.8 (16K ratings)",
+    "ตรงบริบทร้านค้าไทย"
+  ],
+  "weaknesses_th": [
+    "ไม่มีเอกสาร technical",
+    "รายละเอียดไฟล์/รูปไม่ชัด",
+    "เว็บมี cookie banner และหน้าย่อยบางหน้า 404"
+  ],
+  "tools_or_endpoints": [],
+  "trial": {
+    "status": "not-run",
+    "summary_th": "ไม่มีบัญชี ดูหน้าเว็บและ App Store เท่านั้น",
+    "log": "trials/page365.md"
+  },
+  "screenshots": [
+    {
+      "file": "shots/page365-1.png",
+      "caption_th": "หน้าแรก page365.net (มี cookie banner เล็กๆ ไม่บังเนื้อหา)",
+      "kind": "website"
+    },
+    {
+      "file": "shots/page365-2.png",
+      "caption_th": "App Store: Page365 สำหรับ Facebook, LINE, Instagram",
+      "kind": "website"
+    }
+  ],
+  "scores": {
+    "relevance": 3,
+    "auth": 1,
+    "attachments": 1,
+    "maturity": 4,
+    "tryability": 1,
+    "reasons_th": {
+      "relevance": "inbox ร้านค้าไทยที่รวม LINE OA ใกล้เคียง แต่เน้นขายของ",
+      "auth": "ไม่มีข้อมูล auth",
+      "attachments": "ไม่มีข้อมูลไฟล์",
+      "maturity": "ใช้งานจริง มีแอป",
+      "tryability": "ไม่มีบัญชี ไม่ได้ลอง"
+    }
+  },
+  "sources": [
+    "https://www.page365.net/",
+    "https://apps.apple.com/th/app/page365/id894477175"
+  ]
+}

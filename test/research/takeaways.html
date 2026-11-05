@@ -1,0 +1,32 @@
+<h4 style="margin-top:0">ตัวที่ควรอ่านก่อน</h4>
+<ol>
+  <li><a href="#p-omnichat-bridge">omnichat-bridge</a> ใกล้โจทย์ที่สุด อ่าน ส่ง และส่งไฟล์ผ่าน endpoint ภายในของ chat.line.biz ได้ครบ มี test 995 ข้อ เป็นของบริษัทไทย</li>
+  <li><a href="#p-linelib">LINELib</a> ครบที่สุดในฝั่ง LINE ทั้ง login, ส่ง, อัปโหลด 2 ขั้น และ SSE เป็นแหล่งอ้างอิงเรื่อง endpoint</li>
+  <li><a href="#p-telegram-mcp">telegram-mcp</a> ต้นแบบเรื่อง auth และไฟล์แนบ: guard ว่าเป็นบัญชีที่ตั้งไว้, จำกัดโฟลเดอร์ไฟล์ (allowed roots), ดาวน์โหลดแบบ atomic, จำกัดขนาดหลายชั้น</li>
+  <li><a href="#p-slack-mcp-server">slack-mcp-server</a> ต้นแบบเรื่องเปิดการส่งแบบ opt-in + allowlist และการคืนไฟล์แนบเป็น MCP image content (จำกัด 5 MB)</li>
+  <li><a href="#p-chatwoot">Chatwoot</a> ต้นแบบ domain model ได้แก่ Conversation, Message, Attachment (<code>file_type</code>: image/audio/video/file/location/fallback) และ ContactInbox</li>
+</ol>
+
+<h4>สิ่งที่จะเพิ่มหรือเปลี่ยนในแผน (จากงานวิจัยรอบนี้)</h4>
+<table>
+<thead><tr><th>เรื่อง</th><th>จะทำอะไร</th><th>ได้มาจาก</th></tr></thead>
+<tbody>
+<tr><td>ส่งซ้ำ</td><td>ถ้าไม่แน่ใจว่าส่งสำเร็จหรือไม่ ห้ามส่งซ้ำอัตโนมัติ ให้ตรวจจาก <code>sendId</code> ในประวัติแชทก่อน (idempotency)</td><td>omnichat-bridge</td></tr>
+<tr><td>ขนาดไฟล์</td><td>เกณฑ์ตอนส่ง: รูป 20 MiB · วิดีโอ/ไฟล์ 32 MiB (ยังต้องยืนยันจาก HAR) · ตรวจ MIME จริง ไม่ส่งเป็น <code>application/octet-stream</code> ทุกไฟล์</td><td>omnichat-bridge, LINELib (ตัวอย่างที่ไม่ควรทำ)</td></tr>
+<tr><td>ดาวน์โหลดไฟล์</td><td>เขียนลงไฟล์ temp แล้วค่อยย้าย (atomic) และมี allowlist นามสกุลไฟล์ต่อ tool</td><td>telegram-mcp</td></tr>
+<tr><td>Cookie</td><td>ส่ง cookie เฉพาะโดเมนใน allowlist (<code>*.line.biz</code>) · redact header ลับใน log · ใช้ error <code>AUTH_EXPIRED</code> แยกจาก <code>FORBIDDEN</code> · refresh CSRF แล้วลองใหม่ได้แค่ครั้งเดียว</td><td>linebiz</td></tr>
+<tr><td>Session</td><td>lock file กันไม่ให้ server สองตัวใช้ session เดียวกัน · ไม่ขอ login ผ่าน stdio (login เป็น CLI แยก)</td><td>telegram-mcp, LINELib</td></tr>
+<tr><td>Search index</td><td>ใช้ <code>/download/{bot}/{chat}/messages.csv</code> ดึงประวัติทั้งห้องรวดเดียวมาเติม index (เร็วกว่าไล่ทีละหน้า)</td><td>propertyos-line-importer</td></tr>
+<tr><td>Profile</td><td><code>get_user_profile</code> ดึง <code>notes</code>, <code>tags</code> และ <code>owners</code> (ผู้รับผิดชอบ) มาด้วย</td><td>propertyos-line-importer</td></tr>
+<tr><td>Domain model</td><td>แยก Contact กับ id ของช่องทาง (<code>source_id</code>) · มี message ชนิด activity/system · ข้อความที่ไม่รองรับต้องเป็น placeholder ไม่ทิ้งเงียบ ๆ</td><td>Chatwoot, respond.io, SleekFlow</td></tr>
+<tr><td>Mock server</td><td>bind แค่ <code>127.0.0.1</code> (bridge ของ whatsapp-mcp เปิด REST ให้ทุก interface โดยไม่มี auth)</td><td>whatsapp-mcp (ตัวอย่างที่ไม่ควรทำ)</td></tr>
+<tr><td>Dependency</td><td>pin major version ของ MCP SDK (whatsapp-mcp ติดตั้งไม่ขึ้นเพราะ <code>mcp</code> 2.x ไม่มี <code>fastmcp</code> แล้ว)</td><td>whatsapp-mcp</td></tr>
+</tbody></table>
+
+<h4>สิ่งที่ยังไม่มีใครทำ (จุดที่งานของเราจะต่างออกไป)</h4>
+<ul>
+  <li>ไม่มีโปรเจกต์ไหนเป็น <b>MCP server สำหรับ LINE OA ในนามพนักงาน CS</b> ที่เจอใกล้ที่สุดคือ extension (omnichat-bridge) กับ library (LINELib)</li>
+  <li>ไม่มีใครทำ <b>mock backend + contract test</b> ที่ทำให้ test ได้โดยไม่ต้องมีบัญชีจริง</li>
+  <li>ไม่มีใครทำ search ภาษาไทยเลย ของเราใช้ FTS5 trigram และจำกัดโฟลเดอร์ outbox ตอนส่งไฟล์ให้ลูกค้า</li>
+</ul>
+<p class="dim small">หมายเหตุ: ทุกอย่างที่เกี่ยวกับ chat.line.biz อ่านจาก source code ของ repo เหล่านี้ ยังไม่ได้ทดสอบกับบัญชีจริง (ไม่มีบัญชี) ต้องยืนยันด้วย HAR ใน Phase 4</p>
