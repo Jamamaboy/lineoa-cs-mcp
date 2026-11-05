@@ -15,6 +15,7 @@ describe("MCP read core against the mock", () => {
       "get_user_profile",
       "list_chats",
       "read_chat",
+      "search_messages",
     ]);
     for (const t of tools) expect(t.annotations?.readOnlyHint).toBe(true);
   });
@@ -64,6 +65,19 @@ describe("MCP read core against the mock", () => {
     expect(r.json.assignee).toBe("ปุ้ย ฝ่ายบริการลูกค้า");
     expect(r.json.notes).toHaveLength(2);
     expect(r.json.webUrl).toBe(somchai.webUrl);
+  });
+
+  it("search_messages finds Thai text inside words, with context and a webUrl", async () => {
+    const r = await stack.call("search_messages", { query: "สลิป" });
+    expect(r.json.hits.length).toBeGreaterThan(0);
+    const hit = r.json.hits[0];
+    expect(hit.text).toContain("สลิป");
+    expect(hit.webUrl).toContain(hit.chatId);
+    expect(r.json.indexRefresh.chatsUpdated).toBeGreaterThan(0);
+    const again = await stack.call("search_messages", { query: "สลิป" });
+    expect(again.json.indexRefresh.chatsUpdated).toBe(0);
+    const staffOnly = await stack.call("search_messages", { query: "สลิป", from: "staff", refresh: false });
+    for (const h of staffOnly.json.hits) expect(h.from).toBe("staff");
   });
 
   it("turns a missing session into AUTH_EXPIRED with the fix in the message", async () => {

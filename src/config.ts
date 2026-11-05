@@ -11,6 +11,9 @@ export interface Config {
   cookie: () => string | undefined;
   botAllowlist: string[];
   allowSend: boolean;
+  /** Local search index (SQLite file, or ":memory:"). */
+  indexFile: string;
+  syncLimits: { maxChats: number; maxMessagesPerChat: number };
 }
 
 /** Reads a Playwright storageState file and builds a Cookie header for the console host. */
@@ -46,5 +49,10 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
       .map((s) => s.trim())
       .filter(Boolean),
     allowSend: env.LINEOA_ALLOW_SEND === "true",
+    indexFile: expandHome(env.LINEOA_INDEX_FILE ?? "~/.local/share/lineoa-mcp/index.db"),
+    syncLimits: {
+      maxChats: Number(env.LINEOA_SYNC_MAX_CHATS ?? 50),
+      maxMessagesPerChat: Number(env.LINEOA_SYNC_MAX_MESSAGES ?? 200),
+    },
   };
 }
