@@ -110,7 +110,7 @@ src/
   audit/               audit-log.ts
 mock-server/           app.ts  seed/ (แชทไทย + อังกฤษ, รูป, PDF)  public/ (console เล็ก ๆ)
 test/                  e2e/ (InMemoryTransport)  contract/ (รันกับ LineOAClient ตัวไหนก็ได้)  unit/
-docs/                  ASSIGNMENT.md  PLAN.md  PLAN_thai.md  PLAN.html  DESIGN.md  research/  plans/
+docs/                  ASSIGNMENT.md  PLAN*.md/html (spec ร่วม)  plan/  dev/ (+ dev/plans)  research/  ← แยกโฟลเดอร์ตาม lane
 .claude/               skill, agent, rule, profile และ agent-strategy/ จาก plan kit
 CLAUDE.md  AGENTS.md  README.md
 ```
@@ -272,7 +272,7 @@ commit ทุกครั้งที่ทำขั้นที่มีคว�
 
 - **Orchestrator** (session หลัก, Opus) เป็นเจ้าของแผนนี้ และเขียน **domain type + interface `LineOAClient`** เอง เพราะทุกส่วนต้องใช้
   นอกจากนี้ยังรวมงาน แก้จุดเล็ก ๆ และตรวจรับงานรอบสุดท้าย
-- `/write-plan` → แผน HTML หนึ่งหน้าต่อ phase เก็บใน `docs/plans/` แต่ละหน้าผ่าน `plan-reviewer` และ `plan-risk-auditor`
+- `/write-plan` → แผน HTML หนึ่งหน้าต่อ phase เก็บใน `docs/dev/plans/` แต่ละหน้าผ่าน `plan-reviewer` และ `plan-risk-auditor`
   เพราะเวลาจำกัด จึง **review แค่รอบเดียว**
 - `/implement-plan` แบ่งงานให้ `coder` (Sonnet) เป็นรอบ ๆ **ไม่ให้แก้ไฟล์ทับกัน**
   - รอบที่ 1 (หลังจาก contract พร้อม): `mock-server/**` ‖ `src/tools/** + src/client/mock/**` ‖ `src/auth/**`
@@ -283,7 +283,7 @@ commit ทุกครั้งที่ทำขั้นที่มีคว�
   - ปิด `uxui-reviewer` เพราะ console ของ mock ไม่ใช่ UI ที่ถูกให้คะแนน
 - ทุกการรันบันทึกลง `.claude/agent-strategy/runs.md` log นี้เป็นหลักฐานว่าเราทำงานกับ coding agent อย่างไร
 - ค่าใน profile ที่ต้องกรอก:
-  - plan dir: `docs/plans`
+  - plan dir: `docs/dev/plans`
   - base branch: `main`
   - verify: `npm run lint && npm run typecheck && npm test`
   - high-risk: `src/auth/**`, `src/attachments/outbox.ts`, `src/tools/send-message.ts`
