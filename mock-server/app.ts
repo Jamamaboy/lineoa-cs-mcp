@@ -127,6 +127,13 @@ a{color:#0b6} .row{background:#fff;border-radius:10px;padding:10px 12px;margin:6
     return chat ? c.json(chat) : c.json({ code: "not_found" }, 404);
   });
 
+  app.get("/api/v1/bots/:botId/chats/:chatId/notes", (c) => {
+    const list = seed.notes.get(c.req.param("chatId")) ?? [];
+    return c.json({ list, total: list.length });
+  });
+  app.get("/api/v1/bots/:botId/tags", (c) => c.json({ list: seed.tags }));
+  app.get("/api/v1/bots/:botId/owners", (c) => c.json({ list: seed.owners }));
+
   app.get("/api/v3/bots/:botId/chats/:chatId/messages", (c) => {
     const known = seed.chats.get(c.req.param("botId"))?.some((x) => x.chatId === c.req.param("chatId"));
     const events = seed.events.get(c.req.param("chatId"));

@@ -47,6 +47,10 @@ export interface Seed {
   chats: Map<string, RawChat[]>;
   /** Full history per chat id, newest first (the order chat.line.biz returns). */
   events: Map<string, RawEvent[]>;
+  /** Staff notes per chat id. */
+  notes: Map<string, unknown[]>;
+  tags: unknown[];
+  owners: unknown[];
 }
 
 /** Builds the mock's in-memory state from the research fixtures. */
@@ -71,5 +75,8 @@ export function loadSeed(dir = DEFAULT_FIXTURES_DIR): Seed {
   for (const c of all) {
     if (!events.has(c.chatId)) events.set(c.chatId, c.latestEvent ? [c.latestEvent] : []);
   }
-  return { me, bots, chats, events };
+  const notes = new Map<string, unknown[]>([[detail.chatId, load<{ list: unknown[] }>(dir, "notes").list]]);
+  const tags = load<{ list: unknown[] }>(dir, "tags").list;
+  const owners = load<{ list: unknown[] }>(dir, "owners").list;
+  return { me, bots, chats, events, notes, tags, owners };
 }
