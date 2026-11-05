@@ -120,3 +120,9 @@
 - Why: Required action 4 (send a message), made safe for an agent.
 - Commits: feat(mock): add the CSRF token and the send endpoint; feat(client): send a text message…; feat(audit): log every send attempt…; feat(tools): add send_message…
 - For other lanes: none.
+
+## 2026-11-06 03:47 ICT · CLI, browser choice and one-step setup
+- What: login works with Chrome, Edge, Brave, Chromium, Firefox or WebKit (auto picks the first installed Chromium-family browser; Firefox/WebKit need a one-time playwright-core install; real Safari cannot be automated); lineoa CLI (status, chats with --needs-reply/--unread/--all, read, search, --oa) with colored output that switches off when piped; lineoa setup (npm run setup) writes Claude Desktop config (backup .bak) and runs claude mcp add, absolute paths, read-only unless --allow-send, --dry-run. Fixes from the live run: the real console rejects chat pages over 25 (client now pages; mock mirrors the 400); SQLite ExperimentalWarning hidden. Live: status, chats --needs-reply and search ran against the real OA.
+- Why: The user wants an install a non-technical person can do, a pretty terminal view, and more than one browser.
+- Commits: feat(auth): log in with Chrome, Edge…; fix(client): fetch chats 25 at a time; fix(mock): reject chat pages over 25…; feat(cli): add the lineoa terminal command…; feat(cli): lineoa setup adds the server…
+- For other lanes: none.
