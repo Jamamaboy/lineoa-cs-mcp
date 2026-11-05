@@ -77,3 +77,16 @@
 - Commits: `chore(deps): add playwright-core…`, `feat(auth): npm run login…`, `feat(config): talk to the real
   console by default…`, `feat(dx): npm run try -- --real…`.
 - For other lanes: the real endpoints get their first live check here (GET only).
+
+## 2026-11-06 03:50 ICT · First live read of chat.line.biz
+- What: the user ran the login (Chrome window) once. The session file was written with mode 600, and the account
+  reaches 4 OAs. `npm run try -- --real` then called the real console over GET only. `auth_status`, `list_chats`
+  (10 chats) and `read_chat` (one already-read chat) all returned correct data. The `webUrl` matches the console's
+  own chat URL.
+- Confirmed live: `GET /api/v1/me`, `/api/v1/bots?noFilter=true&limit=1000`, `/api/v2/bots/{botId}/chats?folderType=ALL`,
+  `/api/v1/bots/{botId}/chats/{chatId}`, `/api/v3/bots/{botId}/chats/{chatId}/messages`. Cookie auth with
+  `x-oa-chat-client-version` works, and the response shapes match the research fixtures. Bot-sent template
+  messages arrive as `messageSent` and show as staff.
+- Why: the user wanted the real OA connected, not only the mock.
+- Commits: this commit. No real names, ids or messages were written to the repo.
+- For other lanes: research fixtures for these 5 GET endpoints are now confirmed against the live console.

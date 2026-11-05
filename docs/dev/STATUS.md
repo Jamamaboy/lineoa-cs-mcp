@@ -1,11 +1,11 @@
 # dev status
-Last updated: 2026-11-06 03:40 ICT · branch feat/login
+Last updated: 2026-11-06 03:50 ICT · branch dev
 
 ## Now
 - `feat/login`: `npm run login` (Chrome window, the person logs in, only *.line.biz cookies saved 0600);
   the server now defaults to the real console, read-only; `.mcp.json` offers `lineoa-cs` (real) and
-  `lineoa-cs-mock`; `npm run try -- --real` reads the live OA without opening unread chats. Waiting for the
-  user's login to verify against the live OA.
+  `lineoa-cs-mock`; `npm run try -- --real` reads the live OA without opening unread chats. **Verified against the live OA**
+  (read-only): the user logged in once; auth_status, list_chats and read_chat returned real data.
 - **Try it in one command** (`feat/try-it`): `npm run try` (no AI client needed); `.mcp.json` registers
   `lineoa-cs-mock` for Claude Code in this folder; `LINEOA_MOCK=1` starts the mock inside the server; the mock now
   serves a small web console (`/` and the `webUrl` page `/{botId}/chat/{chatId}`).
@@ -26,7 +26,7 @@ Last updated: 2026-11-06 03:40 ICT · branch feat/login
 - Then one tool per feature: `get_user_profile` + `webUrl`, `search_messages`, `get_attachment`, `send_message`.
 
 ## Blocked
-- none
+- none (waiting for the user's review of feat/login before the next feature)
 
 ## Requests
 - → user: for `feat/login`, a one-time browser login to the live OA (read-only rules, PLAN A11).
