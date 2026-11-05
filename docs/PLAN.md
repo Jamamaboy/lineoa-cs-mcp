@@ -2,6 +2,7 @@
 
 Status: draft v1, 2026-11-05. Deadline: **Fri 6 Nov 2026, 23:59 ICT**, about 1.5 working days from now.
 Source of truth for the task: [`docs/ASSIGNMENT.md`](ASSIGNMENT.md).
+Thai translation: [`docs/PLAN_thai.md`](PLAN_thai.md) · Thai version with diagrams: [`docs/PLAN.html`](PLAN.html).
 
 ---
 
