@@ -22,3 +22,24 @@
 - Why: stage 2. The real client can point at this mock unchanged, so "works on mock" stays close to "works on real".
 - Commits: `feat(mock): serve a fake chat.line.biz from the research fixtures`.
 - For other lanes: the cookie is Secure (Hono enforces the `__Host-` rule); browsers accept it on 127.0.0.1.
+
+## 2026-11-06 03:20 ICT · MVP read core (auth_status, list_chats, read_chat)
+- What:
+  - `src/domain/` holds types (Chat, Message, AttachmentRef), typed errors, and normalizers from raw chat.line.biz
+    JSON. Unknown message types become placeholders, never dropped. Flex cards become `[card] altText`.
+  - `src/client/http.ts` does a GET with the session cookie and the `x-oa-chat-client-version` header, using
+    `redirect: manual`. A redirect or 401 maps to AUTH_EXPIRED. A non-JSON body maps to ENDPOINT_CHANGED instead of
+    a fake success.
+  - `src/client/line-client.ts` is the `LineOAClient` seam, one implementation for mock and real, with a bot
+    allowlist.
+  - `src/config.ts` reads the cookie from `LINEOA_COOKIE` or a Playwright `storageState` file on every request.
+  - Tools: `auth_status`, `list_chats` (ongoing/unread/all filtered client-side, `webUrl`, cursor) and `read_chat`
+    (oldest→newest, attachment metadata only, system events hidden unless `includeSystem`, `prevCursor`, never marks
+    read). All are annotated read-only.
+  - e2e: a real MCP client goes over InMemoryTransport → server → mock on a random port (5 tests).
+- Why: stage 2–3 MVP. The user wants a small core verified before adding tools.
+- Deviation from PLAN: tool output uses LINE's raw ids (no `chat_` prefixes) so `webUrl` and ids match the console;
+  revisit if the model mixes ids up.
+- Commits: `feat(core): MCP server with auth_status, list_chats and read_chat`.
+- For other lanes: research proposals 3 (redirect = AUTH_EXPIRED), 4 (system events hidden by default), 5 (reads
+  never mark read, stated in descriptions) and the ENDPOINT_CHANGED error are already in.

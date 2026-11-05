@@ -1,7 +1,11 @@
 # dev status
-Last updated: 2026-11-06 03:00 ICT · branch feat/mock-server
+Last updated: 2026-11-06 03:20 ICT · branch feat/read-core
 
 ## Now
+- **MVP core works on the mock** (`feat/read-core`): MCP server over stdio with `auth_status`, `list_chats`,
+  `read_chat`. One HTTP client (`LineOAClient`) for mock and real. Typed errors (AUTH_EXPIRED incl. login
+  redirects, FORBIDDEN, NOT_FOUND, RATE_LIMITED, ENDPOINT_CHANGED). `webUrl` on every chat. 10 tests; stdio smoke
+  test by hand against `npm run mock` showed the chat list and a chat with file metadata.
 - `feat/mock-server` done: `npm run mock` serves a fake chat.line.biz on 127.0.0.1:8787 from the research
   fixtures (me, bots, chats with `next`, chat detail, messages with `backward`), session cookie `__Host-chat-ses`,
   401 `not_login` without it, and a mock login form. 4 tests.
@@ -10,8 +14,7 @@ Last updated: 2026-11-06 03:00 ICT · branch feat/mock-server
 ## Next
 - MVP core (feature by feature, each verified before the next):
   1. ~~`feat/mock-server`~~ done.
-  2. `feat/read-core`: domain types + `LineOAClient` (one HTTP client for the mock and the real console) +
-     MCP server with `auth_status`, `list_chats`, `read_chat` + e2e test. Check it in Claude Code.
+  2. ~~`feat/read-core`~~ done.
   3. `feat/login`: Playwright login CLI + session store → read the live OA (read-only) to prove real pulling works.
 - Then one tool per feature: `get_user_profile` + `webUrl`, `search_messages`, `get_attachment`, `send_message`.
 
