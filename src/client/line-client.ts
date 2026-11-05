@@ -1,8 +1,9 @@
+import { randomInt } from "node:crypto";
 import type { Config } from "../config.js";
 import { LineOAError } from "../domain/errors.js";
 import { type RawChat, type RawEvent, toChat, toMessage } from "../domain/normalize.js";
 import type { AttachmentRef, Bot, Chat, Me, Message, UserProfile } from "../domain/types.js";
-import { getBytes, getJson } from "./http.js";
+import { getBytes, getJson, postJson } from "./http.js";
 
 export interface Page<T> {
   items: T[];
@@ -32,6 +33,11 @@ export interface LineOAClient {
     chatId: string,
     messageId: string,
   ): Promise<{ ref: AttachmentRef; bytes: Uint8Array; contentType?: string }>;
+  /**
+   * Sends one text message as the logged-in staff member. Never retries a send whose result is
+   * unknown: it looks the sendId up in history instead (SEND_UNCERTAIN if not found).
+   */
+  sendText(botId: string, chatId: string, text: string): Promise<{ sendId: string; messageId?: string }>;
 }
 
 export function createLineClient(cfg: Config, fetchImpl?: typeof fetch): LineOAClient {
@@ -157,6 +163,41 @@ export function createLineClient(cfg: Config, fetchImpl?: typeof fetch): LineOAC
       throw new LineOAError(
         "NOT_FOUND",
         `Message ${messageId} is not in the last 250 messages of this chat.`,
+      );
+    },
+
+    async sendText(botId, chatId, text) {
+      assertAllowed(botId);
+      const sendId = `${chatId}_${Date.now()}_${randomInt(1e7, 1e8)}`;
+      const path = `/api/v1/bots/${botId}/chats/${chatId}/messages/send`;
+      const token = async () => (await getJson<{ token: string }>(deps, "/api/v1/csrfToken")).token;
+      const findSent = async () => {
+        const r = await rawMessages(botId, chatId);
+        return r.list.find((e) => (e as { sendId?: string }).sendId === sendId)?.message?.id;
+      };
+
+      let status: number;
+      try {
+        status = (await postJson(deps, path, { id: "", type: "textV2", text, sendId }, await token())).status;
+        // An expired CSRF token gives 403: fetch a fresh one and try exactly once more.
+        if (status === 403)
+          status = (await postJson(deps, path, { id: "", type: "textV2", text, sendId }, await token()))
+            .status;
+      } catch (err) {
+        if (err instanceof LineOAError) throw err;
+        status = 0; // network failure: the message may or may not have gone out
+      }
+      if (status === 403) throw new LineOAError("FORBIDDEN", "This staff account may not send in this chat.");
+      if (status === 404) throw new LineOAError("NOT_FOUND", `Chat ${chatId} not found.`);
+      if (status >= 200 && status < 300) {
+        const messageId = await findSent().catch(() => undefined);
+        return { sendId, ...(messageId ? { messageId } : {}) };
+      }
+      const messageId = await findSent().catch(() => undefined);
+      if (messageId) return { sendId, messageId };
+      throw new LineOAError(
+        "SEND_UNCERTAIN",
+        `Not sure the message was sent (sendId ${sendId}). Check the chat before sending again; do not resend blindly.`,
       );
     },
   };

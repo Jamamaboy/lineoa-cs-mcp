@@ -1,7 +1,8 @@
 # dev status
-Last updated: 2026-11-06 03:42 ICT · branch dev
+Last updated: 2026-11-06 03:44 ICT · branch dev
 
 ## Now
+- Done: send_message (off by default)
 - Done: get_attachment
 - Done: search_messages
 - Done: needs_reply filter

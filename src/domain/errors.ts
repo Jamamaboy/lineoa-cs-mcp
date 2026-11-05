@@ -8,7 +8,9 @@ export type ErrorCode =
   | "UPSTREAM_ERROR"
   | "CONFIG_ERROR"
   | "ATTACHMENT_EXPIRED"
-  | "ATTACHMENT_TOO_LARGE";
+  | "ATTACHMENT_TOO_LARGE"
+  | "SEND_DISABLED"
+  | "SEND_UNCERTAIN";
 
 export class LineOAError extends Error {
   constructor(
