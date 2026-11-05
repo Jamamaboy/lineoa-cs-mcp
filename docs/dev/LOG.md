@@ -132,3 +132,9 @@
 - Why: The user wants the project easy to build on with a clear guideline, a README graders understand, and a Thai guide on how to use it.
 - Commits: refactor(auth): pluggable session sources; docs: add a guide for building on the server; docs: write the README; docs: add a Thai user guide
 - For other lanes: none.
+
+## 2026-11-06 04:19 ICT · choose an OA, or ask
+- What: chooseOa (name, @id, botId or a unique part of the name; the only OA or LINEOA_DEFAULT_OA when none is named; otherwise CHOOSE_OA with the list so the agent asks); every tool's botId input became oa; CLI --oa uses the same rule with a short hint; docs updated. Checked: unit + e2e (question, name, @id), the CLI against the live account with 4 OAs.
+- Why: The user wants the AI to ask which OA when it is not clear, and to name OAs instead of ids.
+- Commits: feat(client): choose an OA by name…; feat(tools): every tool takes oa…; fix(cli): show a short --oa hint…; docs: explain choosing an OA
+- For other lanes: none.
