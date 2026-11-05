@@ -23,7 +23,7 @@ Last updated: 2026-11-06 02:30 ICT · branch plan
 
 ## Requests
 - → dev: **Unpaused. Start now.** Follow the dev column (`docs/plan/run-plan.md`): scaffold → mock from
-  `test/research/line-api-shapes` fixtures (Support-like seed: rich menu texts, bot template, flex card, screenshot,
+  `test/research/line-api-shapes` fixtures (support-OA-like seed: rich menu texts, bot template, flex card, screenshot,
   PDF; 2 OAs with one shared person) ‖ auth → 6 core tools + `webUrl` + send gating → e2e tests. Case layer (§5b) is
   stage 6, after the checkpoint.
 - → research: when `~/lineoa-har/*.har` exists, build a redacted endpoint map and diff it against the fixtures

@@ -1,17 +1,17 @@
 # PLAN: LINE OA CS MCP server
 
-Status: **v3** (re-scoped around Acme Support case handling), 2026-11-06. Deadline: **Fri 6 Nov 2026,
+Status: **v3** (re-scoped around support-OA case handling), 2026-11-06. Deadline: **Fri 6 Nov 2026,
 23:59 ICT**. Run plan: [`docs/plan/run-plan.md`](plan/run-plan.md).
 
 What changed in v3 (the details are in the sections below):
-- The product is framed as a CS assistant for the **Acme Support** OA. The graded core (5 tools + auth +
+- The product is framed as a CS assistant for a **support OA**. The graded core (5 tools + auth +
   attachments) still comes first; a **case layer** sits on top of it as a "should" (§1, §5b).
 - Every chat and profile result carries **`webUrl`**, a deep link into chat.line.biz so a human can take over (§5).
 - **PII rules** (§6b): personal data stays in the server, masked by default in tool output.
 - A **live OA is available, read-only**, plus a new free test OA for sending (§2 A1, A11).
 - Research requests applied to §6a: markAsRead is PUT, the pagination cursor is unconfirmed, and folder filters
   are client-side.
-- §8 is now an ordered list of stages up to the deadline. §10 lists the Support flows.
+- §8 is now an ordered list of stages up to the deadline. §10 lists the support-OA flows.
 
 Source of truth for the task: [`docs/ASSIGNMENT.md`](ASSIGNMENT.md).
 Thai translation: [`docs/PLAN_thai.md`](PLAN_thai.md) · Thai version with diagrams: [`docs/PLAN.html`](PLAN.html).
@@ -34,19 +34,19 @@ CS person does. It is not the Messaging API bot channel. The server needs 5 requ
 
 The extra tool `get_attachment` exists for the attachment requirement (section 7).
 
-**Product framing (v3).** Acme runs two LINE OAs. The main OA *is* the product: customers record income and
-expenses there, and a bot replies with templates. The **Support OA** is where customers report problems. Its rich
+**Product framing (v3).** A business may run more than one OA, for example a product OA where customers use the
+service through chat, and a support OA where they report problems. The support OA's rich
 menu has 4 buttons (onboarding / feature request / report problem / how-to), and a bot template asks for email,
-problem and screenshots. We build for the Support OA's CS team:
+problem and screenshots. We build for the support OA's CS team:
 
 | Level | What | Why |
 |---|---|---|
-| Must | 5 tools + `get_attachment` + `webUrl`, auth, attachments, on a mock that imitates Acme Support | Graded directly |
+| Must | 5 tools + `get_attachment` + `webUrl`, auth, attachments, on a mock that imitates a support OA | Graded directly |
 | Should | Case layer: `list_cases`, `open_case`, `tag_case`, `set_case_status`, `get_person`, `case_stats` (§5b) | Shows real CS understanding; small, because the AI client does all the AI work |
-| Could | Main-OA usage context for a person (§5b), link-candidate tool, unanswered-after-resolve alert, Telegram demo via Claude Code Channels | Nice for the interview story |
-| README only | Real main-OA linking in production, a shared team server, realtime (SSE) | Limitations / with more time |
+| Could | Product-OA usage context for a person (§5b), link-candidate tool, unanswered-after-resolve alert, Telegram demo via Claude Code Channels | Nice for the interview story |
+| README only | Real product-OA linking in production, a shared team server, realtime (SSE) | Limitations / with more time |
 
-**What the user sees.** There is no web app. The CS person (or Acme' automation agent) talks to an AI client
+**What the user sees.** There is no web app. The CS person (or the business's own automation agent) talks to an AI client
 such as Claude Desktop or Claude Code. The client calls our tools, and the client's own permission prompt appears
 before `send_message`. The CS person logs in once per shift with `npm run login`. The only web page is the mock's
 small console, which shows what the agent did.
@@ -72,9 +72,9 @@ What we're graded on, and where this plan covers it:
 | A5 | The agent runs locally next to the CS person (stdio transport). | A remote deployment would need Streamable HTTP plus real auth on the MCP side. |
 | A6 | Messages the agent sends show up as sent by the logged-in staff member, so the CS person is accountable for them. Every send is audit-logged. | n/a |
 | A7 | In the real console, marking a chat as read is a **separate call** (`PUT /api/v2/bots/{botId}/chats/{chatId}/markAsRead`; only PUT is evidenced). Fetching messages does not mark anything as read. `read_chat` never marks read. A separate `markRead` flag stays off by default. | If the CS team wants read state to follow what the agent has read, we turn it on. |
-| A8 | We link a Support reporter to the **main Acme OA** because CS needs usage context: plan or trial, Google connection, last sync, credits, recent error replies. In the sample data, a Google Sheets sync came 4 minutes before the Support report about it. | Without the link, CS has to ask the customer for what the product already knows. |
+| A8 | We link a support-OA reporter to the **product OA** because CS needs usage context: account status, connected integrations, recent activity, recent error replies. | Without the link, CS has to ask the customer for what the product already knows. |
 | A9 | One chat holds **many cases**. A rich-menu button message opens a new case, typed by the button. The AI may also open a case when the customer starts a new topic without a button. | If CS prefers one case per chat, `open_case` is simply not used. |
-| A10 | Linking a person across OAs uses the email the customer typed, matched inside the server, **and a CS confirmation**. A "Google connected (email)" event in the main OA counts as a verified email. Automatic linking by LINE userId needs both OAs under one provider, which we haven't checked. | If the provider is shared, userId linking can be added later. |
+| A10 | Linking a person across OAs uses the email the customer typed, matched inside the server, **and a CS confirmation**. An event in the product OA that confirms the email counts as a verified email. Automatic linking by LINE userId needs both OAs under one provider, which we haven't checked. | If the provider is shared, userId linking can be added later. |
 | A11 | The live OA holds real people's chats. It is **read-only**: no sends, no Follow up or Resolve, and no opening of unread chats (opening one marks it read). HAR files stay in `~/lineoa-har/`, outside the repo. Send and upload are tested on the test OA only. | n/a |
 | A12 | The AI client does the AI work (tag suggestions, summaries, drafts). The server holds no LLM key and makes no LLM calls. | A server-side LLM would need a DPA and a key in config. |
 
@@ -141,7 +141,7 @@ src/
   attachments/         fetch.ts  mime.ts  image.ts  outbox.ts
   cases/               store.ts  case-opener.ts  tools (v3 "should")
   audit/               audit-log.ts
-mock-server/           app.ts  seed/ (Acme-Support-like: rich menu, bot templates, flex cards, screenshots, PDF;
+mock-server/           app.ts  seed/ (support-OA-like: rich menu, bot templates, flex cards, screenshots, PDF;
                        2 OAs with one shared person, anonymized)  public/ (mini console, webUrl target)
 test/                  e2e/ (InMemoryTransport)  contract/ (runs on any LineOAClient)  unit/
 docs/                  ASSIGNMENT.md  PLAN*.md/html (shared spec)  plan/  dev/ (+ dev/plans)  research/  ← one folder per lane
@@ -180,7 +180,7 @@ CLAUDE.md  AGENTS.md  README.md
 | `get_attachment` | `chatId`, `messageId`, `attachmentId?`, `mode?: inline\|save` | image → MCP `image` content (downscaled) + local path; other files → saved path + metadata (+ text preview for txt/csv) | read-only |
 | (extra) `auth_status` | none | logged-in staff, reachable OAs, session age | lets the agent check auth before a long run |
 
-Bot flex cards (for example the Support bot's templates) come back as `type: "flex"` with their `altText` and a
+Bot flex cards (for example the support bot's templates) come back as `type: "flex"` with their `altText` and a
 flattened text, never dropped.
 
 Errors are typed and actionable: `AUTH_EXPIRED` ("ask the CS person to run `npm run login`"), `NOT_FOUND`,
@@ -197,19 +197,18 @@ LINE side; nothing here writes to LINE.
 | `open_case` | `chatId`, `fromMessageId`, `type` | `Case` | The AI splits a new topic that came without a button. Idempotent on `fromMessageId`. |
 | `tag_case` | `caseId`, `add?[]`, `remove?[]` | `Case` | AI tags are stored as `source: ai, confirmed: false`. They become confirmed when CS asks for the tag. |
 | `set_case_status` | `caseId`, `status`, `summary?`, `confirmedByStaff?` | `Case` | `resolved` needs `confirmedByStaff: true`, which the agent may pass only after the human says so. Without it, the case goes to `resolve_suggested`. Audit-logged. |
-| `get_person` | `personRef` or `chatId` | `Person` + `cases[]` + `linkCandidates[]` (+ main-OA `usage[]` if linked, a "could") | Masked email. A link needs CS confirmation (A10). |
+| `get_person` | `personRef` or `chatId` | `Person` + `cases[]` + `linkCandidates[]` (+ product-OA `usage[]` if linked, a "could") | Masked email. A link needs CS confirmation (A10). |
 | `case_stats` | `from`, `to`, `groupBy: type\|area\|severity\|status` | counts, median first-response time, open count | SQL only. Period summaries come from the stored case `summary` fields; the AI client writes the prose. |
 
 First tag taxonomy:
 - type: `onboarding`, `feature-request`, `report-problem`, `how-to`
-- area: `dashboard`, `google-sheet`, `currency`, `billing-credit`, `login`, `line-bot`, `other`
+- area: `billing`, `account`, `integration`, `login`, `line-bot`, `other`
 - severity: `low`, `medium`, `high`
 
-Main-OA usage events ("could"): a rule-based parser turns the main OA's bot templates into events (`plan`,
-`trial_expired`, `google_connected`, `sheets_sync`, `credits_left`, `payment_notice`, `bot_error`). It runs only for
+Product-OA usage events ("could"): a rule-based parser turns the product OA's bot templates into events (`account_status`,
+`integration_connected`, `sync_run`, `usage_left`, `recurring_notice`, `bot_error`). It runs only for
 linked persons, over about 14 days before a case opened. Amounts are hidden unless CS asks to reveal them. Daily
-repeated `payment_notice` events are a proactive alert candidate; whether they are reminders or repeat charges is an
-open question for Acme.
+repeated `recurring_notice` events are a proactive alert candidate.
 
 ---
 
@@ -288,7 +287,7 @@ Notes:
   reveal is audit-logged.
 - Email matching for linking happens inside the server; the real email never goes to the LLM.
 - Images are never sent to the model unless `get_attachment` is called. Screenshots can contain other people's data.
-- Amounts from the main OA are hidden by default (§5b).
+- Amounts from the product OA are hidden by default (§5b).
 - Retention: a config value (default 180 days, matching LINE's free-plan history), plus `npm run forget -- <personRef>`
   to delete one person everywhere. Both go in the README with the legal basis (contract / legitimate interest) and
   the note that an LLM provider is a processor that needs a DPA.
@@ -306,7 +305,7 @@ Reading:
   it is complete, so a partial file is never visible (atomic, from telegram-mcp). Download cap: 32 MiB by default.
 - **MIME from magic bytes**, not from the extension or what the server says. File names are cleaned (path traversal,
   control characters).
-- **Images** (payment slips, product photos): resized to at most 1568 px on the long edge. If the result is under
+- **Images** (receipts, product photos): resized to at most 1568 px on the long edge. If the result is under
   about 1 MB it is returned inline as MCP `image` content so a vision model can read it (the threshold is
   respond.io's); otherwise it is saved and returned as a `resource_link`. The local path is returned in both cases.
 - **Other files** (PDF, docx, xlsx, zip): saved locally. The tool returns the path + metadata (+ a text preview for
@@ -339,7 +338,7 @@ The only fixed time is the deadline, **Fri 6 Nov 2026 23:59 ICT**. Stages run in
 | 0 | PLAN v3, merged into `dev` and `research`; dev unpaused (done) | plan |
 | 0 | Create the test OA; capture HAR on the live OA (read-only) and on the test OA (with sends) | user |
 | 1 | Scaffold TS + Biome + vitest + CI; install the plan kit | dev |
-| 2 | Domain types + `LineOAClient` → mock server from fixtures (Support-like seed, 2 OAs, one shared person) ‖ auth (SessionStore, login CLI against the mock) | dev |
+| 2 | Domain types + `LineOAClient` → mock server from fixtures (support-OA-like seed, 2 OAs, one shared person) ‖ auth (SessionStore, login CLI against the mock) | dev |
 | 2 | HAR → redacted endpoint map, diff vs fixtures | research |
 | 3 | The 6 core tools + `webUrl` + send gating | dev |
 | 4 | e2e tests (MCP client → server → mock) + fixes from the HAR diff | dev |
@@ -347,12 +346,12 @@ The only fixed time is the deadline, **Fri 6 Nov 2026 23:59 ICT**. Stages run in
 | 5 | `WebClient` on the real console (test OA first) + contract tests | dev |
 | 6 | Case layer (§5b) | dev |
 | 7 | README (setup, architecture, auth, attachments, PII, limitations) + demo GIF | dev |
-| 8 | Could: Telegram demo through Claude Code Channels, main-OA usage events | dev |
+| 8 | Could: Telegram demo through Claude Code Channels, product-OA usage events | dev |
 | 9 | Release `dev` → `main`, tag `v0.1.0`, CHANGELOG | dev |
 | 10 | Optional bonus video (separate public repo) | — |
 | — | Push to a public repo and reply to the email before the deadline | user |
 
-Cut order if time runs out: bonus → Telegram → main-OA usage → case layer → WebClient. The mock path must always stay
+Cut order if time runs out: bonus → Telegram → product-OA usage → case layer → WebClient. The mock path must always stay
 green. Whatever is cut is listed in the README with the reason.
 
 ---
@@ -378,20 +377,20 @@ green. Whatever is cut is listed in the README with the reason.
 
 ---
 
-## 10. User flows (v3, Acme Support)
+## 10. User flows (v3, support OA)
 
 | id | Flow | Tools | Rule |
 |---|---|---|---|
 | F1 | Morning triage: "which chats are waiting?" | `list_chats(ongoing)` → `read_chat` ×N | `read_chat` never marks read (A7). The answer lists `webUrl` for each chat. |
 | F2 | Reply to a reporter | `read_chat` → `get_user_profile` → draft → `send_message` | The AI drafts; the human approves in the client's permission prompt. `dryRun` is available. |
 | F3 | A bug screenshot arrives | `read_chat` → `get_attachment(inline)` | Images reach the model only on request (§6b). |
-| F4 | "Has anyone else reported the currency bug?" | `search_messages` → `read_chat` | Thai substring search; results carry context and `webUrl`. |
+| F4 | "Has anyone else reported the same bug?" | `search_messages` → `read_chat` | Thai substring search; results carry context and `webUrl`. |
 | F5 | Session expires mid-run | any → `AUTH_EXPIRED` → the human runs `npm run login` | No silent re-login. |
 | F6 | Send a how-to PDF | put the file in the outbox → `send_message(attachmentPaths)` | Outbox only; PDF send needs HAR confirmation. |
 | F7 | Case triage | `list_cases(open)` → `tag_case` (AI suggests) → `set_case_status(waiting)` | AI tags stay unconfirmed until CS agrees. |
 | F8 | Close a case | the human says "done" → `set_case_status(resolved, confirmedByStaff)` | A message after resolve reopens the case as `open` and flags it. |
 | F9 | Weekly summary | `case_stats(groupBy=area)` + `list_cases(since)` | The AI client writes the prose from the stored summaries. |
-| F10 | Who is this reporter? | `get_person` → link candidate → CS confirms | Masked email; main-OA usage only after the link (could). |
+| F10 | Who is this reporter? | `get_person` → link candidate → CS confirms | Masked email; product-OA usage only after the link (could). |
 | F11 | Take over by hand | any result → open `webUrl` | The human continues in chat.line.biz. |
 
 ---

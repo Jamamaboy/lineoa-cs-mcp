@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>สรุปแผน: ผู้ช่วย CS ของ Acme บน LINE OA</title>
+<title>สรุปแผน: ผู้ช่วย CS บน LINE OA</title>
 <!-- ฉบับภาษาไทยพร้อม diagram ของ docs/PLAN.md (PLAN.md เป็นฉบับหลัก)
      ใช้ token และ class ชุดเดียวกับ plan kit (skills/write-plan/references/plan-template.html)
      ไม่มี CDN · เปิดจาก file:// ได้ · diagram เป็น inline SVG -->
@@ -183,11 +183,11 @@ figure.d figcaption{font-size:12.5px;color:var(--ink-3);margin-top:8px;padding:0
 <div class="wrap">
 
 <header class="masthead">
-  <h1>สรุปแผน: ผู้ช่วย CS ของ Acme บน LINE OA</h1>
+  <h1>สรุปแผน: ผู้ช่วย CS บน LINE OA</h1>
   <p class="sub">สรุปจาก <code>docs/PLAN.md</code> (v3) ตามที่ผมเข้าใจ ภาษาไทย อ่านจบใน 5 นาที · รายละเอียดเต็มอยู่ใน <code>docs/PLAN.html</code> · 6 พ.ย. 2026 · กำหนดส่ง ศ. 6 พ.ย. 23:59</p>
   <div class="bar">
     <div class="stat"><span>Tool ทั้งหมด</span><b class="big">13</b><span>ตามโจทย์ 5 + ไฟล์/auth 2 + ชั้นเคส 6</span></div>
-    <div class="stat"><span>Use case</span><b class="big">11</b><span>flow ของ Acme Support</span></div>
+    <div class="stat"><span>Use case</span><b class="big">11</b><span>flow ของ support OA</span></div>
     <div class="stat"><span>ไฟล์ใน repo ตอนส่ง</span><b class="big">~270</b><span>มีแล้ว 156 · จะเพิ่มประมาณ 115</span></div>
     <div class="stat"><span>หน้าเว็บที่เราทำ</span><b class="big">1</b><span>console เล็ก ๆ ของ mock เท่านั้น</span></div>
   </div>
@@ -203,7 +203,7 @@ figure.d figcaption{font-size:12.5px;color:var(--ink-3);margin-top:8px;padding:0
 <div class="card"><div class="card-b">
 <ul>
   <li><b>สร้างอะไร:</b> MCP server ที่ให้ AI (เช่น Claude) ทำงานในหน้าแชท LINE OA Manager (chat.line.biz) แทนพนักงาน CS ได้ คือดูรายการแชท อ่านแชท ค้นข้อความ ตอบลูกค้า และดูโปรไฟล์</li>
-  <li><b>ให้ใคร:</b> ทีม CS ของ OA <b>Acme Support</b> ซึ่งเป็นที่ลูกค้าแจ้งปัญหา (ส่วน OA หลักของ Acme คือตัวแอปที่ลูกค้าใช้บันทึกรายรับรายจ่าย)</li>
+  <li><b>ให้ใคร:</b> ทีม CS ของ <b>support OA</b> ซึ่งเป็นที่ลูกค้าแจ้งปัญหา (ธุรกิจอาจมี OA ของผลิตภัณฑ์ที่ลูกค้าใช้บริการผ่านแชทอีกตัว)</li>
   <li><b>เข้าบัญชียังไง:</b> CS login เองใน browser จริงครั้งเดียวต่อกะ server เก็บแค่ session cookie แล้วเรียก API ภายในของหน้าเว็บ ไม่เคยเห็นรหัสผ่าน และไม่ใช้ Messaging API เพราะอ่านแชทเก่าและค้นหาไม่ได้</li>
   <li><b>ไฟล์แนบ:</b> ในแชทส่งแค่ข้อมูลไฟล์ จะโหลดไฟล์จริงก็ต่อเมื่อ AI ขอ รูปจะถูกย่อแล้วส่งให้ AI เห็น ไฟล์อื่นบันทึกลงเครื่องแล้วคืน path · ส่งไฟล์ได้เฉพาะจากโฟลเดอร์ outbox</li>
   <li><b>ของแถมที่ทำให้ต่าง:</b> <b>ชั้นเคส</b> (1 แชทมีหลายเคส แท็ก สถานะ สถิติ) และ <b><code>webUrl</code></b> ลิงก์ให้ CS กดไปคุยเองในหน้าเว็บ</li>
@@ -220,9 +220,9 @@ figure.d figcaption{font-size:12.5px;color:var(--ink-3);margin-top:8px;padding:0
     <div class="chatmock"><div class="bar"><b>Claude Desktop</b> · lineoa-cs · 13 tools</div><div class="in">
       <div class="me">เช้านี้มีเคสไหนรอตอบบ้าง</div>
       <div class="tool">list_chats(ongoing)</div><div class="tool">list_cases(open)</div>
-      <div>มี 3 เคสรอตอบ:<br>• <b>Somchai</b> แจ้งปัญหา Google Sheet ไม่แปลง USD→THB (มีรูป 1) <span class="dim">· เปิดในหน้าเว็บ ↗</span><br>• <b>Arm</b> ถามเรื่องตัดเงินทุกวัน (เรื่องเงิน ควรตอบก่อน)<br>• <b>Nok</b> ขอวิธี export PDF</div>
+      <div>มี 3 เคสรอตอบ:<br>• <b>Somchai</b> แจ้งปัญหา เชื่อม integration ไม่สำเร็จ (มีรูป 1) <span class="dim">· เปิดในหน้าเว็บ ↗</span><br>• <b>Arm</b> ถามเรื่องการเรียกเก็บเงิน (เรื่องเงิน ควรตอบก่อน)<br>• <b>Nok</b> ขอวิธี export PDF</div>
       <div class="me" style="margin-top:8px">เปิดของ Somchai แล้วร่างคำตอบให้หน่อย</div>
-      <div class="tool">read_chat</div><div class="tool">get_attachment → รูป</div><div class="tool">get_person → ใช้ Google Sheets sync 4 นาทีก่อนแจ้ง</div>
+      <div class="tool">read_chat</div><div class="tool">get_attachment → รูป</div><div class="tool">get_person → มีกิจกรรมใน OA ผลิตภัณฑ์ก่อนแจ้ง</div>
       <div>ร่าง: "สวัสดีครับคุณ Somchai ทีมรับเรื่องแล้ว…"</div>
       <div class="ask"><b>อนุญาตให้ใช้ send_message ไหม?</b> ส่งถึง Somchai · [อนุญาต] [ไม่อนุญาต]</div>
     </div></div>
@@ -231,12 +231,12 @@ figure.d figcaption{font-size:12.5px;color:var(--ink-3);margin-top:8px;padding:0
     <div class="colhead">② ตอน login (ครั้งเดียวต่อกะ)</div>
     <div class="term"><span class="g">$</span> npm run login
 <span class="d">เปิด browser… login LINE Business ID เอง</span>
-✓ Logged in as มิ้นท์ · OA: Acme Support
+✓ Logged in as มิ้นท์ · OA: Support
 ✓ Session saved (chmod 600)</div>
     <div class="colhead" style="margin-top:14px">③ console ของ mock (ให้ grader เห็นว่า AI ทำอะไร)</div>
-    <div class="console"><div class="top">Mock LINE OA · Acme Support</div><div class="cols">
+    <div class="console"><div class="top">Mock LINE OA · Support</div><div class="cols">
       <div class="list"><div class="on">Somchai K. <span class="dim">· 1</span></div><div>Arm</div><div>Nok</div></div>
-      <div class="msgs"><div class="b1">[ปุ่ม] แจ้งปัญหา</div><div class="b1">som***@gmail.com Google Sheet ไม่แปลง USD เป็น THB</div><div class="b1">🖼 screenshot.jpg</div><div class="b2">สวัสดีครับคุณ Somchai ทีมรับเรื่องแล้ว… <span style="opacity:.7">· ส่งโดย agent</span></div></div>
+      <div class="msgs"><div class="b1">[ปุ่ม] แจ้งปัญหา</div><div class="b1">som***@gmail.com เชื่อม integration ไม่สำเร็จ</div><div class="b1">🖼 screenshot.jpg</div><div class="b2">สวัสดีครับคุณ Somchai ทีมรับเรื่องแล้ว… <span style="opacity:.7">· ส่งโดย agent</span></div></div>
     </div></div>
     <p class="dim" style="font-size:12.5px;margin-top:6px">mock เลียนแบบ chat.line.biz รันในเครื่อง ไม่ต้องมีบัญชี LINE · <code>webUrl</code> ใน mock จะเปิดหน้านี้</p>
   </div>
@@ -249,13 +249,13 @@ figure.d figcaption{font-size:12.5px;color:var(--ink-3);margin-top:8px;padding:0
   <div class="card"><div class="card-h"><h3>F1 คัดแชทตอนเช้า</h3><span class="pill ok">หลัก</span></div><div class="card-b"><div class="say">"มีแชทไหนรอตอบ"</div><p class="tl">list_chats → read_chat ×N</p><p class="dim">ไม่ทำเครื่องหมายว่าอ่าน · มีลิงก์ทุกแชท</p></div></div>
   <div class="card"><div class="card-h"><h3>F2 ตอบลูกค้า</h3><span class="pill ok">หลัก</span></div><div class="card-b"><div class="say">"ร่างคำตอบแล้วส่ง"</div><p class="tl">read_chat → get_user_profile → send_message</p><p class="dim">AI ร่าง คนกดอนุญาต · มี dryRun</p></div></div>
   <div class="card"><div class="card-h"><h3>F3 ดูภาพหน้าจอบั๊ก</h3><span class="pill ok">หลัก</span></div><div class="card-b"><div class="say">"รูปที่ลูกค้าส่งมาคืออะไร"</div><p class="tl">read_chat → get_attachment</p><p class="dim">รูปไปถึง AI เมื่อขอเท่านั้น</p></div></div>
-  <div class="card"><div class="card-h"><h3>F4 ค้นเรื่องเดียวกัน</h3><span class="pill ok">หลัก</span></div><div class="card-b"><div class="say">"มีใครแจ้งเรื่องสกุลเงินอีกไหม"</div><p class="tl">search_messages → read_chat</p><p class="dim">ค้นภาษาไทยได้ · มีข้อความรอบ ๆ</p></div></div>
+  <div class="card"><div class="card-h"><h3>F4 ค้นเรื่องเดียวกัน</h3><span class="pill ok">หลัก</span></div><div class="card-b"><div class="say">"มีใครแจ้งเรื่องเดียวกันอีกไหม"</div><p class="tl">search_messages → read_chat</p><p class="dim">ค้นภาษาไทยได้ · มีข้อความรอบ ๆ</p></div></div>
   <div class="card"><div class="card-h"><h3>F5 session หมดอายุ</h3><span class="pill ok">หลัก</span></div><div class="card-b"><div class="say">(ระหว่างทำงาน)</div><p class="tl">AUTH_EXPIRED → npm run login</p><p class="dim">ไม่ login ใหม่ให้เองเงียบ ๆ</p></div></div>
   <div class="card"><div class="card-h"><h3>F6 ส่ง PDF วิธีใช้</h3><span class="pill ok">หลัก</span></div><div class="card-b"><div class="say">"ส่งคู่มือ export ให้ Nok"</div><p class="tl">send_message(attachmentPaths)</p><p class="dim">ส่งจาก outbox เท่านั้น</p></div></div>
   <div class="card"><div class="card-h"><h3>F7 คัดเคส</h3><span class="pill acc">ชั้นเคส</span></div><div class="card-b"><div class="say">"แท็กเคสที่เปิดอยู่ให้หน่อย"</div><p class="tl">list_cases → tag_case → set_case_status(waiting)</p><p class="dim">แท็กจาก AI รอ CS ยืนยัน</p></div></div>
   <div class="card"><div class="card-h"><h3>F8 ปิดเคส</h3><span class="pill acc">ชั้นเคส</span></div><div class="card-b"><div class="say">"เคสนี้เสร็จแล้ว"</div><p class="tl">set_case_status(resolved, confirmedByStaff)</p><p class="dim">ลูกค้าพิมพ์มาอีก = เปิดเคสใหม่ + เตือน</p></div></div>
   <div class="card"><div class="card-h"><h3>F9 สรุปรายสัปดาห์</h3><span class="pill acc">ชั้นเคส</span></div><div class="card-b"><div class="say">"สัปดาห์นี้ปัญหาไหนเยอะสุด"</div><p class="tl">case_stats(groupBy=area) + list_cases</p><p class="dim">ตัวเลขจาก SQL · AI เขียนสรุป</p></div></div>
-  <div class="card"><div class="card-h"><h3>F10 คนแจ้งคือใคร</h3><span class="pill acc">ชั้นเคส</span></div><div class="card-b"><div class="say">"ลูกค้าคนนี้ใช้แพ็กเกจอะไร"</div><p class="tl">get_person → CS ยืนยันการ link</p><p class="dim">อีเมลปิดบัง · บริบท OA หลัก = ถ้ามีเวลา</p></div></div>
+  <div class="card"><div class="card-h"><h3>F10 คนแจ้งคือใคร</h3><span class="pill acc">ชั้นเคส</span></div><div class="card-b"><div class="say">"ลูกค้าคนนี้ใช้งานอะไรล่าสุด"</div><p class="tl">get_person → CS ยืนยันการ link</p><p class="dim">อีเมลปิดบัง · บริบท OA ผลิตภัณฑ์ = ถ้ามีเวลา</p></div></div>
   <div class="card"><div class="card-h"><h3>F11 CS ขอคุยเอง</h3><span class="pill ok">หลัก</span></div><div class="card-b"><div class="say">"ขอคุยเองดีกว่า"</div><p class="tl">เปิด webUrl</p><p class="dim">ไปที่หน้าแชทนั้นใน chat.line.biz</p></div></div>
 </div>
 
@@ -346,7 +346,7 @@ figure.d figcaption{font-size:12.5px;color:var(--ink-3);margin-top:8px;padding:0
   <rect class="bx dash" x="570" y="68" width="110" height="44" rx="7"/><text class="b" x="580" y="87">10 วิดีโอโบนัส</text><text class="t2" x="580" y="104">ถ้ามีเวลา</text>
   <rect class="bx crit" x="690" y="68" width="200" height="44" rx="7"/><text class="b" x="700" y="87">push + ตอบอีเมล</text><text class="t2" x="700" y="104">ก่อน ศ. 23:59</text>
 </svg></div>
-<figcaption>ถ้าไม่ทัน ตัดตามลำดับ: วิดีโอโบนัส → Telegram → บริบท OA หลัก → ชั้นเคส → WebClient · ทาง mock ต้องผ่านเสมอ</figcaption>
+<figcaption>ถ้าไม่ทัน ตัดตามลำดับ: วิดีโอโบนัส → Telegram → บริบท OA ผลิตภัณฑ์ → ชั้นเคส → WebClient · ทาง mock ต้องผ่านเสมอ</figcaption>
 </figure>
 
 <!-- ======================================================= -->
@@ -367,7 +367,7 @@ figure.d figcaption{font-size:12.5px;color:var(--ink-3);margin-top:8px;padding:0
 <ul>
   <li>endpoint ของ chat.line.biz มาจากการอ่านโค้ดของคนอื่น ยังไม่ได้ยืนยันกับของจริง <b>รอไฟล์ HAR</b> จาก OA จริง (อ่านอย่างเดียว) และ OA ทดสอบ</li>
   <li>ยังไม่รู้ว่าหน้าเว็บส่ง PDF ได้ไหม และมี API ค้นข้อความหรือเปล่า (ถ้าไม่มี เราค้นจาก index ในเครื่อง)</li>
-  <li>ข้อความ "ชำระค่าบริการ ฿X,XXX" ทุกวันใน OA หลัก เป็นการเตือนหรือตัดเงินซ้ำ ต้องถาม Acme</li>
+  <li>ข้อความแจ้งเตือนที่ซ้ำทุกวันใน OA ของผลิตภัณฑ์ เป็นการเตือนปกติหรือส่งซ้ำ ต้องถามเจ้าของ OA</li>
   <li>รอตัดสินใจ: ข้อเสนอ 5 ข้อจากรีเซิร์จรอบ 5 (จำกัดการส่งต่อวัน, <code>ENDPOINT_CHANGED</code>, redirect = หมดอายุ, กรองสติกเกอร์, บอกชัดว่าอ่านไม่ mark read)</li>
 </ul>
 </div>
