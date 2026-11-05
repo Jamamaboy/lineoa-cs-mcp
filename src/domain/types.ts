@@ -62,3 +62,19 @@ export interface Message {
   /** For system events (follow, unsend, read receipts) when they are included. */
   event?: string;
 }
+
+export interface UserProfile {
+  userId: string;
+  chatId: string;
+  botId: string;
+  name: string;
+  nickname?: string;
+  /** Still a friend of the OA (false = blocked or unfollowed). */
+  friend?: boolean;
+  tags: string[];
+  /** Staff member the chat is assigned to, if any. */
+  assignee?: string;
+  notes: { text: string; at: string }[];
+  lastTalkedAt?: string;
+  webUrl: string;
+}

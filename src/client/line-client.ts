@@ -1,7 +1,7 @@
 import type { Config } from "../config.js";
 import { LineOAError } from "../domain/errors.js";
 import { type RawChat, type RawEvent, toChat, toMessage } from "../domain/normalize.js";
-import type { Bot, Chat, Me, Message } from "../domain/types.js";
+import type { Bot, Chat, Me, Message, UserProfile } from "../domain/types.js";
 import { getJson } from "./http.js";
 
 export interface Page<T> {
@@ -24,6 +24,8 @@ export interface LineOAClient {
     chatId: string,
     opts: { limit: number; cursor?: string },
   ): Promise<Page<Message>>;
+  /** The chat's profile plus the staff-side tags, notes and assignee. */
+  getProfile(botId: string, chatId: string): Promise<UserProfile>;
 }
 
 export function createLineClient(cfg: Config, fetchImpl?: typeof fetch): LineOAClient {
@@ -83,6 +85,39 @@ export function createLineClient(cfg: Config, fetchImpl?: typeof fetch): LineOAC
       );
       const items = r.list.map(toMessage).filter((m): m is Message => m !== undefined);
       return { items, ...(r.backward ? { cursor: r.backward } : {}) };
+    },
+
+    async getProfile(botId, chatId) {
+      assertAllowed(botId);
+      const base = `/api/v1/bots/${botId}`;
+      const [raw, notes, tags, owners] = await Promise.all([
+        getJson<RawChat>(deps, `${base}/chats/${chatId}`),
+        getJson<{ list: { body: string; updatedAt?: number; createdAt?: number }[] }>(
+          deps,
+          `${base}/chats/${chatId}/notes`,
+        ),
+        getJson<{ list: { tagId: string; name: string }[] }>(deps, `${base}/tags`),
+        getJson<{ list: { bizId: string; name: string }[] }>(deps, `${base}/owners`),
+      ]);
+      const tagName = new Map(tags.list.map((t) => [t.tagId, t.name]));
+      const chat = toChat(raw, botId, cfg.webBaseUrl);
+      const assignee = owners.list.find((o) => o.bizId === raw.assignedBizId)?.name;
+      return {
+        userId: raw.profile?.userId ?? chatId,
+        chatId,
+        botId,
+        name: chat.name,
+        ...(raw.profile?.nickname ? { nickname: raw.profile.nickname } : {}),
+        ...(raw.profile?.friend !== undefined ? { friend: raw.profile.friend } : {}),
+        tags: (raw.tagIds ?? []).map((id) => tagName.get(id) ?? id),
+        ...(assignee ? { assignee } : {}),
+        notes: notes.list.map((n) => ({
+          text: n.body,
+          at: new Date(n.updatedAt ?? n.createdAt ?? 0).toISOString(),
+        })),
+        ...(raw.lastTalkedAt ? { lastTalkedAt: new Date(raw.lastTalkedAt).toISOString() } : {}),
+        webUrl: chat.webUrl,
+      };
     },
   };
 }

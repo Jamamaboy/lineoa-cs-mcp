@@ -24,12 +24,14 @@ export interface RawEvent {
 }
 export interface RawChat {
   chatId: string;
+  tagIds?: string[];
+  assignedBizId?: string;
   read?: boolean;
   done?: boolean;
   followedUp?: boolean;
   chatType?: string;
   lastTalkedAt?: number;
-  profile?: { name?: string; userId?: string; groupId?: string };
+  profile?: { name?: string; userId?: string; groupId?: string; nickname?: string; friend?: boolean };
   latestEvent?: RawEvent;
 }
 
