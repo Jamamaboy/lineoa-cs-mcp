@@ -1,7 +1,8 @@
 # dev status
-Last updated: 2026-11-06 03:39 ICT · branch dev
+Last updated: 2026-11-06 03:42 ICT · branch dev
 
 ## Now
+- Done: get_attachment
 - Done: search_messages
 - Done: needs_reply filter
 - Done: get_user_profile

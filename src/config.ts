@@ -7,8 +7,13 @@ export interface Config {
   baseUrl: string;
   /** Where `webUrl` links point. Same as baseUrl unless set. */
   webBaseUrl: string;
-  /** Cookie header to send. Comes from LINEOA_COOKIE or the session file. */
-  cookie: () => string | undefined;
+  /** Cookie header for a host (default: the console's). From LINEOA_COOKIE or the session file. */
+  cookie: (host?: string) => string | undefined;
+  /** Where attachment bytes live (chat-content.line.biz on the real console). */
+  contentBaseUrl: string;
+  /** Downloaded attachments go here. */
+  cacheDir: string;
+  maxAttachmentBytes: number;
   botAllowlist: string[];
   allowSend: boolean;
   /** Local search index (SQLite file, or ":memory:"). */
@@ -43,7 +48,13 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
     baseUrl,
     webBaseUrl: (env.LINEOA_WEB_BASE_URL ?? baseUrl).replace(/\/$/, ""),
     // Read on every request, so a fresh `npm run login` works without restarting the server.
-    cookie: () => env.LINEOA_COOKIE || cookieFromSessionFile(sessionFile, host),
+    cookie: (h = host) => env.LINEOA_COOKIE || cookieFromSessionFile(sessionFile, h),
+    contentBaseUrl: (
+      env.LINEOA_CONTENT_URL ??
+      (host === "chat.line.biz" ? "https://chat-content.line.biz" : `${baseUrl}/content`)
+    ).replace(/\/$/, ""),
+    cacheDir: expandHome(env.LINEOA_CACHE_DIR ?? "~/.cache/lineoa-mcp/attachments"),
+    maxAttachmentBytes: Number(env.LINEOA_MAX_ATTACHMENT_MB ?? 32) * 1024 * 1024,
     botAllowlist: (env.LINEOA_BOT_ALLOWLIST ?? "")
       .split(",")
       .map((s) => s.trim())

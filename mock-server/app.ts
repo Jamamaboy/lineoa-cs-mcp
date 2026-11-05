@@ -1,6 +1,7 @@
 import { randomBytes } from "node:crypto";
 import { Hono } from "hono";
 import { getCookie, setCookie } from "hono/cookie";
+import sharp from "sharp";
 import { loadSeed, type Seed } from "./fixtures.js";
 
 const esc = (s: string) =>
@@ -8,6 +9,31 @@ const esc = (s: string) =>
     /[&<>"']/g,
     (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[ch] ?? ch,
   );
+
+/** Stand-in bytes for each fixture's contentHash: a real PNG for images, real headers for the rest. */
+async function fakeContent(hash: string): Promise<{ body: Uint8Array; type: string }> {
+  if (hash.includes("pdf")) {
+    return { body: new TextEncoder().encode("%PDF-1.4\n% mock receipt\n%%EOF\n"), type: "application/pdf" };
+  }
+  if (hash.includes("xlsx")) {
+    return {
+      body: new Uint8Array([0x50, 0x4b, 0x03, 0x04, ...new Array(60).fill(0)]),
+      type: "application/zip",
+    };
+  }
+  if (hash.includes("video") || hash.includes("voice")) {
+    const head = [0, 0, 0, 0x18, 0x66, 0x74, 0x79, 0x70, 0x6d, 0x70, 0x34, 0x32]; // ....ftypmp42
+    return { body: new Uint8Array([...head, ...new Array(500).fill(0)]), type: "video/mp4" };
+  }
+  // A tall "slip" photo, bigger than the model needs, so the resize path is exercised.
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1800">
+<rect width="100%" height="100%" fill="#f4f4f5"/><rect x="80" y="80" width="1040" height="220" fill="#06c755"/>
+<text x="120" y="230" font-size="110" font-family="sans-serif" fill="#fff">MOCK SLIP</text>
+<text x="120" y="600" font-size="90" font-family="sans-serif" fill="#111">Amount 1,250.00 THB</text>
+<text x="120" y="760" font-size="60" font-family="sans-serif" fill="#555">ref ${hash.replace(/[^\w-]/g, "")}</text></svg>`;
+  const png = await sharp(Buffer.from(svg)).png().toBuffer();
+  return { body: new Uint8Array(png), type: "image/png" };
+}
 
 /** Same cookie name as chat.line.biz. */
 export const SESSION_COOKIE = "__Host-chat-ses";
@@ -107,6 +133,14 @@ a{color:#0b6} .row{background:#fff;border-radius:10px;padding:10px 12px;margin:6
     const token = getCookie(c, SESSION_COOKIE);
     if (!token || !sessions.has(token)) return c.json({ code: "not_login" }, 401);
     await next();
+  });
+
+  // --- attachment bytes, like chat-content.line.biz/bot/{botId}/{contentHash}; needs the session too ---
+  app.get("/content/bot/:botId/:hash", async (c) => {
+    const token = getCookie(c, SESSION_COOKIE);
+    if (!token || !sessions.has(token)) return c.json({ code: "not_login" }, 401);
+    const { body, type } = await fakeContent(c.req.param("hash"));
+    return new Response(body, { status: 200, headers: { "Content-Type": type } });
   });
 
   app.get("/api/v1/me", (c) => c.json(seed.me));

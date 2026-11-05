@@ -12,6 +12,7 @@ describe("MCP read core against the mock", () => {
     const { tools } = await stack.client.listTools();
     expect(tools.map((t) => t.name).sort()).toEqual([
       "auth_status",
+      "get_attachment",
       "get_user_profile",
       "list_chats",
       "read_chat",
@@ -78,6 +79,21 @@ describe("MCP read core against the mock", () => {
     expect(again.json.indexRefresh.chatsUpdated).toBe(0);
     const staffOnly = await stack.call("search_messages", { query: "สลิป", from: "staff", refresh: false });
     for (const h of staffOnly.json.hits) expect(h.from).toBe("staff");
+  });
+
+  it("get_attachment shows a slip photo to the model and saves a PDF", async () => {
+    const list = await stack.call("list_chats", { filter: "all", limit: 50 });
+    const chatId = list.json.chats.find((c: { name: string }) => c.name === "สมชาย ใจดี").chatId;
+    const slip = await stack.call("get_attachment", { chatId, messageId: "586900000000000106" });
+    const image = slip.content.find((c) => c.type === "image");
+    expect(image?.mimeType).toBe("image/jpeg");
+    expect(slip.json.shownAs).toMatch(/^\d+x1568 jpeg$/);
+    const pdf = await stack.call("get_attachment", { chatId, messageId: "586900000000000114" });
+    expect(pdf.json.mime).toBe("application/pdf");
+    expect(pdf.json.savedPath).toMatch(/\.pdf$/);
+    expect(pdf.content.some((c) => c.type === "image")).toBe(false);
+    const text = await stack.call("get_attachment", { chatId, messageId: "586900000000000104" });
+    expect(text.isError).toBe(true);
   });
 
   it("turns a missing session into AUTH_EXPIRED with the fix in the message", async () => {

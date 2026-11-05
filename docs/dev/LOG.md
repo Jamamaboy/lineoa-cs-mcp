@@ -108,3 +108,9 @@
 - Why: Required action 3 (search across chats); no search endpoint exists on chat.line.biz.
 - Commits: feat(index): add a local message store…; feat(index): sync recent chats…; feat(tools): add search_messages…
 - For other lanes: none.
+
+## 2026-11-06 03:42 ICT · get_attachment
+- What: sharp (prebuilt, no install script); file helpers (MIME from magic bytes, atomic 0600 cache by content hash, shrink to 1568 px JPEG) + unit tests; mock serves attachment bytes behind the cookie; client getAttachment (finds the message in the last 250, refuses expired, cookie only to *.line.biz, 32 MB cap); tool get_attachment returns MCP image content (<=1 MB) or the saved path. Live check: a real image downloaded from chat-content.line.biz with the session cookie (85 KB JPEG).
+- Why: The attachment requirement of the assignment; the live check confirms the content host accepts the saved session.
+- Commits: chore(deps): add sharp…; feat(mock): serve attachment bytes…; feat(attachments): sniff types…; feat(client): download a message's image or file; feat(tools): add get_attachment
+- For other lanes: none.
