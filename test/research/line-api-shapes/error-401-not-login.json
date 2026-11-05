@@ -1,0 +1,29 @@
+{
+  "_meta": {
+    "endpoint": "ANY chat.line.biz /api/* when the session cookie is missing or expired",
+    "host": "https://chat.line.biz",
+    "requestHeaders": {
+      "Accept": "application/json, text/plain, */*",
+      "x-oa-chat-client-version": "20240513144702",
+      "Cookie": "__Host-chat-ses=FAKE-SESSION; chat-device-group=FAKE-DEVICE; XSRF-TOKEN=FAKE-XSRF"
+    },
+    "sources": [
+      "linebiz src/core/errors.ts:213-224",
+      "linebiz README.md:237,334"
+    ],
+    "uncertain": [
+      "Only `code: \"not_login\"` is evidenced. Any `message`/other fields are unknown — keep the mock body minimal.",
+      "Whether chat-content.line.biz returns the same JSON or a redirect"
+    ],
+    "notes": [
+      "Map to AUTH_EXPIRED. Sessions typically last < 1 day and are not renewed (linebiz README.md:334).",
+      "propertyos treats both 401 and 403 as 'cookie invalid' (src/oam-api.js)"
+    ]
+  },
+  "response": {
+    "status": 401,
+    "body": {
+      "code": "not_login"
+    }
+  }
+}

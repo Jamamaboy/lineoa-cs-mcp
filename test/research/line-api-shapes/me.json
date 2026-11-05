@@ -1,0 +1,34 @@
+{
+  "_meta": {
+    "endpoint": "GET /api/v1/me",
+    "host": "https://chat.line.biz",
+    "requestHeaders": {
+      "Accept": "application/json, text/plain, */*",
+      "x-oa-chat-client-version": "20240513144702",
+      "Cookie": "__Host-chat-ses=FAKE-SESSION; chat-device-group=FAKE-DEVICE; XSRF-TOKEN=FAKE-XSRF"
+    },
+    "sources": [
+      "linebiz src/types/me.ts:2-8",
+      "linebiz src/resources/me.ts:14",
+      "linebiz test/fixtures/me.ts:4-10",
+      "propertyos-line-importer src/oam-api.js (/me used as login probe)"
+    ],
+    "uncertain": [
+      "language value for Thai users ('th' assumed)",
+      "linePictureUri host"
+    ],
+    "conflicts": [
+      "LINELib reads the staff name from GET /api/v1/bots top-level `userName` instead (LINELib AuthService.py:322); its /me stub is only {name} (tests/test_chat_service.py:742-749)"
+    ]
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "bizId": "00000000-0000-4000-8000-0000000000a1",
+      "language": "th",
+      "name": "ปุ้ย ฝ่ายบริการลูกค้า",
+      "linePictureUri": "https://profile.line-scdn.net/FAKE-staff-picture",
+      "localStorageEncryptionKey": "FAKE-local-storage-key"
+    }
+  }
+}

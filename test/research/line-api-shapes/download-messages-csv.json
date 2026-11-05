@@ -1,0 +1,32 @@
+{
+  "_meta": {
+    "endpoint": "GET /download/{botId}/{chatId}/messages.csv?timezoneOffset=-420",
+    "host": "https://chat.line.biz",
+    "requestHeaders": {
+      "Accept": "text/csv,*/*",
+      "x-oa-chat-client-version": "20240513144702",
+      "Cookie": "__Host-chat-ses=FAKE-SESSION; chat-device-group=FAKE-DEVICE; XSRF-TOKEN=FAKE-XSRF"
+    },
+    "sources": [
+      "propertyos-line-importer src/oam-api.js:~823 (Accept), :870-876 (URL, timezoneOffset=-420), test/oam-api.test.js:366-381 (body starts 'Sender type,')",
+      "propertyos-line-importer src/oam-api.js:37-41,677-690 (~1000 req / 60 s, 429 + Retry-After)"
+    ],
+    "uncertain": [
+      "ONLY the first header column 'Sender type' is evidenced. 'Sender name, Sent date, Sent time, Content' are GUESSES; no repo or public doc lists them (web search 2026-11-05 found nothing).",
+      "Encoding/BOM, date format, how media appears (we wrote 'Photo'/'File'), quoting of newlines",
+      "Whether the real file has metadata lines before the header"
+    ],
+    "notes": [
+      "Path is /download/... not /api/...",
+      "timezoneOffset in minutes, JS getTimezoneOffset sign (ICT = -420)",
+      "Body file: download-messages.csv"
+    ]
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "text/csv; charset=UTF-8"
+    },
+    "bodyFile": "download-messages.csv"
+  }
+}

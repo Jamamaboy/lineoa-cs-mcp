@@ -1,0 +1,35 @@
+{
+  "_meta": {
+    "endpoint": "PUT /api/v2/bots/{botId}/chats/{chatId}/markAsRead",
+    "host": "https://chat.line.biz",
+    "requestHeaders": {
+      "Accept": "application/json, text/plain, */*",
+      "x-oa-chat-client-version": "20240513144702",
+      "Cookie": "__Host-chat-ses=FAKE-SESSION; chat-device-group=FAKE-DEVICE; XSRF-TOKEN=FAKE-XSRF",
+      "Content-Type": "application/json",
+      "X-XSRF-TOKEN": "FAKE-XSRF"
+    },
+    "sources": [
+      "LINELib ChatService.py:1286-1340"
+    ],
+    "uncertain": [
+      "Response body (LINELib ignores it, returns {})"
+    ],
+    "conflicts": [
+      "Method: LINELib uses PUT on /api/v2 (ChatService.py:1337). PLAN.md A7 wrote 'PUT/POST' — no repo shows POST. Mock should accept PUT (and may accept POST to be lenient)."
+    ],
+    "notes": [
+      "Reading messages does NOT mark read; this is a separate call (PLAN A7)."
+    ]
+  },
+  "request": {
+    "lastMessage": {
+      "messageId": "586900000000000115",
+      "timestamp": 1793844910000
+    }
+  },
+  "response": {
+    "status": 200,
+    "body": {}
+  }
+}

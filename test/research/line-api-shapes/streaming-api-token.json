@@ -1,0 +1,35 @@
+{
+  "_meta": {
+    "endpoint": "POST /api/v1/bots/{botId}/streamingApiToken",
+    "host": "https://chat.line.biz",
+    "requestHeaders": {
+      "Accept": "application/json, text/plain, */*",
+      "x-oa-chat-client-version": "20240513144702",
+      "Cookie": "__Host-chat-ses=FAKE-SESSION; chat-device-group=FAKE-DEVICE; XSRF-TOKEN=FAKE-XSRF",
+      "Content-Type": "application/json",
+      "X-XSRF-TOKEN": "FAKE-XSRF"
+    },
+    "sources": [
+      "LINELib ChatService.py:968-996, LINELib.py:258-293, sse.py:42-100, tests/test_sse.py:53-75"
+    ],
+    "uncertain": [
+      "Which of streamingApiBaseUrl/Version/connectionId/lastEventId really appear (LINELib tolerates absence)"
+    ],
+    "notes": [
+      "Later (not MVP). SSE: GET https://chat-streaming-api.line.biz/api/v2/sse?token=&deviceType=&clientType=PC&pingSecs=60[&lastEventId=]",
+      "SSE events: init, ping, chat. chat data = {botId, chatId, subEvent:'message', payload:{type:'message', timestamp, message:{...}}}"
+    ]
+  },
+  "request": "(empty body)",
+  "response": {
+    "status": 200,
+    "body": {
+      "streamingApiToken": "FAKE-streaming-token",
+      "expiredAt": 1793926800000,
+      "streamingApiBaseUrl": "https://chat-streaming-api.line.biz",
+      "streamingApiVersion": "v2",
+      "connectionId": "FAKE-connection-id",
+      "lastEventId": "0"
+    }
+  }
+}
