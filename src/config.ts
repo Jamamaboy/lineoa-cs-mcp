@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { homedir } from "node:os";
+import { DEFAULT_SESSION_FILE, expandHome } from "./auth/session-file.js";
 import { LineOAError } from "./domain/errors.js";
 
 export interface Config {
@@ -12,8 +12,6 @@ export interface Config {
   botAllowlist: string[];
   allowSend: boolean;
 }
-
-const expandHome = (p: string) => (p.startsWith("~/") ? homedir() + p.slice(1) : p);
 
 /** Reads a Playwright storageState file and builds a Cookie header for the console host. */
 export function cookieFromSessionFile(path: string, host: string): string | undefined {
@@ -29,14 +27,15 @@ export function cookieFromSessionFile(path: string, host: string): string | unde
 }
 
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
-  const baseUrl = (env.LINEOA_BASE_URL ?? "http://127.0.0.1:8787").replace(/\/$/, "");
+  // The real console by default; the mock is used only when asked for (LINEOA_MOCK=1 or a mock URL).
+  const baseUrl = (env.LINEOA_BASE_URL ?? "https://chat.line.biz").replace(/\/$/, "");
   let host: string;
   try {
     host = new URL(baseUrl).hostname;
   } catch {
     throw new LineOAError("CONFIG_ERROR", `LINEOA_BASE_URL is not a URL: ${baseUrl}`);
   }
-  const sessionFile = env.LINEOA_SESSION_FILE ?? "~/.config/lineoa-mcp/session.json";
+  const sessionFile = env.LINEOA_SESSION_FILE ?? DEFAULT_SESSION_FILE;
   return {
     baseUrl,
     webBaseUrl: (env.LINEOA_WEB_BASE_URL ?? baseUrl).replace(/\/$/, ""),
