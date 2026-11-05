@@ -1,0 +1,29 @@
+{
+  "_meta": {
+    "endpoint": "GET https://chat-content.line.biz/bot/{botId}/{contentHash}[/preview]",
+    "sources": [
+      "line-chat-history-downloader scripts/downloader.js:168-169,199-",
+      "LINELib sse.py:57-58, ChatService.py:827-843,916-920",
+      "PLAN.md §6a, §7"
+    ],
+    "conflicts": [
+      "downloader fetches the original at /bot/{botId}/{contentHash}; LINELib only ever fetches /preview (also for audio). Mock should serve both."
+    ],
+    "uncertain": [
+      "Response Content-Type / Content-Disposition (filename) headers",
+      "status when expired (404? 410?)",
+      "max size; Range support"
+    ],
+    "notes": [
+      "Auth = the same session cookies (not a signed URL)",
+      "Stickers: https://stickershop.line-scdn.net/stickershop/v1/sticker/{stickerId}/android/sticker.png (public, LINELib sse.py:87)",
+      "Sent image/video use contentProvider.originalContentUrl/previewImageUrl instead of a hash"
+    ]
+  },
+  "examples": {
+    "original": "https://chat-content.line.biz/bot/Ub0700000000000000000000000000001/fakehash-slip-1234",
+    "preview": "https://chat-content.line.biz/bot/Ub0700000000000000000000000000001/fakehash-slip-1234/preview",
+    "file": "https://chat-content.line.biz/bot/Ub0700000000000000000000000000001/fakehash-receipt-pdf",
+    "sticker": "https://stickershop.line-scdn.net/stickershop/v1/sticker/52002734/android/sticker.png"
+  }
+}

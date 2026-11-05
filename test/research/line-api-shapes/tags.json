@@ -1,0 +1,50 @@
+{
+  "_meta": {
+    "endpoint": "GET /api/v1/bots/{botId}/tags",
+    "host": "https://chat.line.biz",
+    "requestHeaders": {
+      "Accept": "application/json, text/plain, */*",
+      "x-oa-chat-client-version": "20240513144702",
+      "Cookie": "__Host-chat-ses=FAKE-SESSION; chat-device-group=FAKE-DEVICE; XSRF-TOKEN=FAKE-XSRF"
+    },
+    "query": {
+      "tagIds": "(optional filter)"
+    },
+    "sources": [
+      "linebiz src/types/tags.ts:2-8, src/resources/tags.ts:29, test/fixtures/tags.ts",
+      "propertyos-line-importer test/fixtures/tags.json"
+    ],
+    "notes": [
+      "Real tag ids are 26 lowercase alnum chars (linebiz test/fixtures/ids.ts:6); ours are fake but same length.",
+      "Chat.tagIds / Contact.tagIds reference these."
+    ]
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "list": [
+        {
+          "tagId": "fakevip000000000000000000a",
+          "name": "ลูกค้า VIP",
+          "count": 12,
+          "createdAt": 1776564000000,
+          "updatedAt": 1793757600000
+        },
+        {
+          "tagId": "fakewaitpay00000000000000b",
+          "name": "รอโอนเงิน",
+          "count": 4,
+          "createdAt": 1780884000000,
+          "updatedAt": 1793833200000
+        },
+        {
+          "tagId": "fakerefund000000000000000c",
+          "name": "ขอคืนเงิน",
+          "count": 2,
+          "createdAt": 1786068000000,
+          "updatedAt": 1793854800000
+        }
+      ]
+    }
+  }
+}

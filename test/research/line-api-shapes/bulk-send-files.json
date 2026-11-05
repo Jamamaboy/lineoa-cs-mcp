@@ -1,0 +1,37 @@
+{
+  "_meta": {
+    "endpoint": "POST /api/v1/bots/{botId}/chats/{chatId}/messages/bulkSendFiles",
+    "host": "https://chat.line.biz",
+    "requestHeaders": {
+      "Accept": "application/json, text/plain, */*",
+      "x-oa-chat-client-version": "20240513144702",
+      "Cookie": "__Host-chat-ses=FAKE-SESSION; chat-device-group=FAKE-DEVICE; XSRF-TOKEN=FAKE-XSRF",
+      "Content-Type": "application/json",
+      "X-XSRF-TOKEN": "FAKE-XSRF"
+    },
+    "sources": [
+      "LINELib ChatService.py:324-340, :385-404",
+      "omnichat-bridge extension/line-oa-realtime.js:1217",
+      "omnichat-bridge test:852"
+    ],
+    "uncertain": [
+      "Response body: LINELib requires a JSON object but reads no key; omnichat ignores it. {} assumed.",
+      "Whether several items per call work (both repos send exactly one)"
+    ],
+    "notes": [
+      "Used for image, video and file alike (omnichat). After send, history shows a messageSent event with the item's sendId."
+    ]
+  },
+  "request": {
+    "items": [
+      {
+        "sendId": "Uc5000000000000000000000000000001_1793858400000_51200977",
+        "contentMessageToken": "FAKE-content-message-token-0001"
+      }
+    ]
+  },
+  "response": {
+    "status": 200,
+    "body": {}
+  }
+}

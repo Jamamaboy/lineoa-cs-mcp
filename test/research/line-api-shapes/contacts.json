@@ -1,0 +1,89 @@
+{
+  "_meta": {
+    "endpoint": "GET /api/v2/bots/{botId}/contacts?query=สม",
+    "host": "https://chat.line.biz",
+    "requestHeaders": {
+      "Accept": "application/json, text/plain, */*",
+      "x-oa-chat-client-version": "20240513144702",
+      "Cookie": "__Host-chat-ses=FAKE-SESSION; chat-device-group=FAKE-DEVICE; XSRF-TOKEN=FAKE-XSRF"
+    },
+    "query": {
+      "query": "สม",
+      "sortKey": "DISPLAY_NAME",
+      "sortOrder": "ASC",
+      "filterKey": "ALL",
+      "limit": 20,
+      "next": "(omit on first page)"
+    },
+    "sources": [
+      "linebiz src/types/contacts.ts:2-33",
+      "linebiz src/resources/contacts.ts:57-71",
+      "linebiz test/fixtures/contacts.ts",
+      "propertyos-line-importer src/oam-api.js:321-331, test/fixtures/contacts-page.json:1-79, src/scrape.js:84-130"
+    ],
+    "uncertain": [
+      "How `query` matches (prefix? substring? Thai?) — name only, NOT message text (PLAN A4)",
+      "Second contact has lastTalkedAt null + chatExists false (propertyos fixture shows this)"
+    ],
+    "conflicts": [
+      "Defaults: linebiz sortKey DISPLAY_NAME/limit 20; propertyos LAST_TALKED_AT/limit 100. Values allowed: sortKey DISPLAY_NAME|LAST_TALKED_AT, sortOrder ASC|DESC, filterKey ALL|FRIEND|NOT_FRIEND|GROUP|SPAM (linebiz contacts.ts:9-17)."
+    ],
+    "notes": [
+      "contactId doubles as chatId (U = 1:1, C = group, R = room) — propertyos scrape.js:84-97",
+      "`profile.nickname` from propertyos fixture (string|null); linebiz does not type it"
+    ]
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "list": [
+        {
+          "contactId": "Uc5000000000000000000000000000001",
+          "profile": {
+            "userId": "Uc5000000000000000000000000000001",
+            "name": "สมชาย ใจดี",
+            "nickname": "พี่ชาย",
+            "friend": true,
+            "lastActivityExpiresAt": 1794448800000,
+            "iconHash": "FAKE-user-iconhash"
+          },
+          "tagIds": [
+            "fakevip000000000000000000a"
+          ],
+          "autoTagIds": [],
+          "done": false,
+          "followedUp": false,
+          "spam": false,
+          "friend": true,
+          "useManualChat": false,
+          "chatAvailable": true,
+          "lastTalkedAt": 1793844660000,
+          "chatExists": true,
+          "assignedBizId": "00000000-0000-4000-8000-0000000000a1"
+        },
+        {
+          "contactId": "Uc5000000000000000000000000000006",
+          "profile": {
+            "userId": "Uc5000000000000000000000000000006",
+            "name": "สมหญิง รักสวย",
+            "nickname": null,
+            "friend": true,
+            "lastActivityExpiresAt": 1794448800000,
+            "iconHash": "FAKE-user-iconhash"
+          },
+          "tagIds": [],
+          "autoTagIds": [],
+          "done": false,
+          "followedUp": false,
+          "spam": false,
+          "friend": true,
+          "useManualChat": false,
+          "chatAvailable": true,
+          "lastTalkedAt": null,
+          "chatExists": false
+        }
+      ],
+      "next": null
+    }
+  }
+}

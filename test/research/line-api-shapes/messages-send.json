@@ -1,0 +1,43 @@
+{
+  "_meta": {
+    "endpoint": "POST /api/v1/bots/{botId}/chats/{chatId}/messages/send",
+    "host": "https://chat.line.biz",
+    "requestHeaders": {
+      "Accept": "application/json, text/plain, */*",
+      "x-oa-chat-client-version": "20240513144702",
+      "Cookie": "__Host-chat-ses=FAKE-SESSION; chat-device-group=FAKE-DEVICE; XSRF-TOKEN=FAKE-XSRF",
+      "Content-Type": "application/json",
+      "X-XSRF-TOKEN": "FAKE-XSRF"
+    },
+    "sources": [
+      "LINELib LINELib.py:613-626 (textV2 body, 7-digit random)",
+      "LINELib ChatService.py:1194-1243 (cardType), :257-286 (mention)",
+      "omnichat-bridge extension/line-oa-realtime.js:1019 (sendId 8-digit), :1184 (endpoint), :~1152-1163 (text limits)",
+      "omnichat-bridge test (request assertion type text)"
+    ],
+    "uncertain": [
+      "Success response body: no repo reads it (LINELib treats as {}; omnichat never parses it). We return {} — confirm in HAR.",
+      "Whether the response carries the new message id (omnichat confirms by polling history for sendId every 1s up to 10s)",
+      "Text length limit: omnichat enforces 2000 (text) / 5000 (textV2) — repo's own numbers"
+    ],
+    "conflicts": [
+      "type: LINELib sends `textV2` with `id:\"\"`; omnichat replays the page's captured template and sets `type:\"text\"` in tests. Mock should accept both.",
+      "sendId random suffix: LINELib 7 digits (random.randint(1000000,9999999)); omnichat 8 digits zero-padded. Format `{chatId}_{epochMs}_{digits}`; treat as opaque.",
+      "mention send (LINELib only): {type:'text', text, mentions:[{userId,offset,length}]} without id/sendId — likely not what the real web app sends."
+    ],
+    "notes": [
+      "Echo: the sent message appears in history as a `messageSent` event with the same `sendId` (omnichat relies on it). Use for SEND_UNCERTAIN lookup.",
+      "Optional `quoteToken` in the body = reply to a message (LINELib LINELib.py:~624)."
+    ]
+  },
+  "request": {
+    "id": "",
+    "type": "textV2",
+    "text": "สวัสดีค่ะคุณนก ทางร้านขอโทษที่ของมาไม่ครบนะคะ เดี๋ยวดำเนินการคืนเงินให้ภายใน 3 วันทำการค่ะ",
+    "sendId": "Uc5000000000000000000000000000002_1793858400000_4821937"
+  },
+  "response": {
+    "status": 200,
+    "body": {}
+  }
+}

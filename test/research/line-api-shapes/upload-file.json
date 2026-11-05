@@ -1,0 +1,46 @@
+{
+  "_meta": {
+    "endpoint": "POST /api/v1/bots/{botId}/messages/{chatId}/uploadFile",
+    "host": "https://chat.line.biz",
+    "requestHeaders": {
+      "Accept": "application/json, text/plain, */*",
+      "x-oa-chat-client-version": "20240513144702",
+      "Cookie": "__Host-chat-ses=FAKE-SESSION; chat-device-group=FAKE-DEVICE; XSRF-TOKEN=FAKE-XSRF",
+      "X-XSRF-TOKEN": "FAKE-XSRF",
+      "Content-Type": "multipart/form-data; boundary=----FAKEBOUNDARY"
+    },
+    "sources": [
+      "LINELib ChatService.py:305-323 (sync), :348-380 (async)",
+      "omnichat-bridge extension/line-oa-realtime.js:1205-1215",
+      "LINELib tests/test_chat_service.py:128",
+      "omnichat-bridge test (uploadBody default)"
+    ],
+    "uncertain": [
+      "Other response fields (only contentMessageToken is read by both repos)",
+      "Server-side size/type limits: omnichat enforces image 20 MiB, video/file 32 MiB (repo's own)",
+      "Token lifetime"
+    ],
+    "conflicts": [
+      "Part content-type: LINELib always sends application/octet-stream; omnichat sends the File's own type. PLAN v2 says send the real MIME."
+    ],
+    "notes": [
+      "Path order is /messages/{chatId}/uploadFile (NOT /chats/{chatId}/messages/...) — both repos agree.",
+      "Single multipart field named `file`."
+    ]
+  },
+  "request": {
+    "multipart": {
+      "file": {
+        "filename": "ใบเสร็จ-INV-2026-1105.pdf",
+        "contentType": "application/pdf",
+        "bytes": "(binary)"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "contentMessageToken": "FAKE-content-message-token-0001"
+    }
+  }
+}
