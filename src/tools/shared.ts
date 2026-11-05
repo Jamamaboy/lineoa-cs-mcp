@@ -1,5 +1,7 @@
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
+import { z } from "zod";
 import type { AuditLog } from "../audit/audit-log.js";
+import { chooseOa } from "../client/choose-oa.js";
 import type { LineOAClient } from "../client/line-client.js";
 import type { Config } from "../config.js";
 import { LineOAError } from "../domain/errors.js";
@@ -34,11 +36,15 @@ export async function run(fn: () => Promise<unknown>): Promise<CallToolResult> {
   }
 }
 
-/** Uses the given OA, or the first one this staff member can reach. */
-export async function resolveBotId(ctx: ToolContext, botId?: string): Promise<string> {
-  if (botId) return botId;
-  const bots = await ctx.client.bots();
-  const first = bots[0];
-  if (!first) throw new LineOAError("NOT_FOUND", "This staff account cannot reach any LINE OA.");
-  return first.botId;
+/** Resolves `oa` (name, @id or botId) to a botId. Several OAs and no name → CHOOSE_OA, so the agent asks. */
+export async function resolveBotId(ctx: ToolContext, oa?: string): Promise<string> {
+  return chooseOa(await ctx.client.bots(), oa, ctx.config.defaultOa).botId;
 }
+
+/** The shared `oa` input every tool takes. */
+export const oaInput = z
+  .string()
+  .optional()
+  .describe(
+    "Which LINE OA: its name, @id or botId (see auth_status). Leave empty only if the account has one OA",
+  );

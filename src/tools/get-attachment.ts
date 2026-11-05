@@ -2,7 +2,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
 import { saveToCache, shrinkImage, sniffMime } from "../attachments/files.js";
-import { fail, resolveBotId, type ToolContext } from "./shared.js";
+import { fail, oaInput, resolveBotId, type ToolContext } from "./shared.js";
 
 /** Images up to this size (after shrinking) are shown to the model; bigger ones are only saved. */
 const INLINE_LIMIT = 1024 * 1024;
@@ -20,14 +20,14 @@ export function registerGetAttachment(server: McpServer, ctx: ToolContext) {
       inputSchema: {
         chatId: z.string(),
         messageId: z.string(),
-        botId: z.string().optional(),
+        oa: oaInput,
         mode: z.enum(["auto", "save"]).default("auto"),
       },
       annotations: { readOnlyHint: true, openWorldHint: true },
     },
-    async ({ chatId, messageId, botId, mode }): Promise<CallToolResult> => {
+    async ({ chatId, messageId, oa, mode }): Promise<CallToolResult> => {
       try {
-        const bot = await resolveBotId(ctx, botId);
+        const bot = await resolveBotId(ctx, oa);
         const { ref, bytes } = await ctx.client.getAttachment(bot, chatId, messageId);
         const { mime, ext } = sniffMime(bytes);
         const savedPath = saveToCache(ctx.config.cacheDir, bytes, ext);

@@ -22,6 +22,7 @@ export async function startStack(env: Record<string, string> = {}) {
     LINEOA_COOKIE: `${SESSION_COOKIE}=e2e`,
     LINEOA_SESSION_FILE: "/nonexistent",
     LINEOA_INDEX_FILE: ":memory:",
+    LINEOA_DEFAULT_OA: "Demo Shop", // the mock account has 2 OAs
     LINEOA_CACHE_DIR: mkdtempSync(join(tmpdir(), "lineoa-cache-")),
     ...env,
   });

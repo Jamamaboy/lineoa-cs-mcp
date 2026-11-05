@@ -10,6 +10,7 @@ import { BROWSERS, type BrowserName } from "./auth/browsers.js";
 import { login } from "./auth/login.js";
 import { setup } from "./cli/setup.js";
 import { cut, ui, when } from "./cli/ui.js";
+import { chooseOa } from "./client/choose-oa.js";
 import { createLineClient } from "./client/line-client.js";
 import { loadConfig } from "./config.js";
 import { LineOAError } from "./domain/errors.js";
@@ -33,10 +34,7 @@ const config = loadConfig();
 const client = createLineClient(config);
 
 async function pickOa() {
-  const bots = await client.bots();
-  const bot = opt.oa ? bots.find((b) => b.name === opt.oa || b.botId === opt.oa) : bots[0];
-  if (!bot) throw new Error(`OA not found: ${opt.oa ?? "(none)"}. Run \`lineoa status\` to see your OAs.`);
-  return bot;
+  return chooseOa(await client.bots(), opt.oa, config.defaultOa);
 }
 
 const commands: Record<string, () => Promise<void>> = {

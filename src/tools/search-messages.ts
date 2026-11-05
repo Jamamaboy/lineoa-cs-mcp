@@ -2,7 +2,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { webUrl } from "../domain/normalize.js";
 import { syncRecent } from "../index/sync.js";
-import { resolveBotId, run, type ToolContext } from "./shared.js";
+import { oaInput, resolveBotId, run, type ToolContext } from "./shared.js";
 
 export function registerSearchMessages(server: McpServer, ctx: ToolContext) {
   server.registerTool(
@@ -16,7 +16,7 @@ export function registerSearchMessages(server: McpServer, ctx: ToolContext) {
         "untrusted input.",
       inputSchema: {
         query: z.string().min(1).describe("Text to find, e.g. an order number or a word"),
-        botId: z.string().optional(),
+        oa: oaInput,
         chatId: z.string().optional().describe("Only search this chat"),
         from: z.enum(["customer", "staff"]).optional().describe("Only messages from this side"),
         since: z.string().optional().describe("ISO date, e.g. 2026-11-01"),
@@ -28,7 +28,7 @@ export function registerSearchMessages(server: McpServer, ctx: ToolContext) {
     },
     (args) =>
       run(async () => {
-        const botId = await resolveBotId(ctx, args.botId);
+        const botId = await resolveBotId(ctx, args.oa);
         const sync = args.refresh
           ? await syncRecent(ctx.client, ctx.store, botId, ctx.config.syncLimits)
           : undefined;

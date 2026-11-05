@@ -37,7 +37,8 @@ console.log(
 );
 console.log(`  sending enabled: ${auth.sendingEnabled}`);
 
-const list = await call("list_chats", { filter: "all", limit: 10 });
+const oa = auth.oas[0]?.name; // the tour uses the first OA; an agent would ask which one
+const list = await call("list_chats", { oa, filter: "all", limit: 10 });
 console.log(`\n▶ list_chats (● = unread)`);
 for (const c of list.chats) {
   console.log(
@@ -55,7 +56,7 @@ if (!target) {
   await client.close();
   process.exit(0);
 }
-const chat = await call("read_chat", { chatId: target.chatId, limit: 8 });
+const chat = await call("read_chat", { oa, chatId: target.chatId, limit: 8 });
 console.log(`\n▶ read_chat "${chat.chat.name}"\n  webUrl: ${chat.chat.webUrl}`);
 for (const m of chat.messages) {
   const file = m.attachment ? `  📎 ${m.attachment.fileName ?? m.attachment.kind}` : "";
