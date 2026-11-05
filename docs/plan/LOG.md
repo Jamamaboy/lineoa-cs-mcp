@@ -17,3 +17,14 @@
 - Why: three parallel sessions need one shared, always-current picture of the work.
 - Commits: `4b1cd7c` plan v2, `2704d78` merge into dev, plus this commit.
 - For other lanes: read CLAUDE.md, especially the context protocol.
+
+## 2026-11-05 23:55 ICT · Re-scope around Acme Support cases
+- What: the user paused dev (expectations did not match) and described the real use case: two OAs (transactional +
+  Support). They want case handling built on the Support OA: reporter identity linked by email to the Acme account
+  and the main OA, AI/CS tags, stats, period summaries and a resolved tick. I analysed the user's real Support chat
+  export (one chat = several cases + a broadcast; the rich menu sets the case type; the bot template gives structured
+  email/problem/evidence; an unanswered follow-up came after the case was closed). A Sonnet agent researched LINE OA
+  terms, permissions and PDPA. A recap artifact with diagrams and 6 decision questions is in the plan chat.
+- Why: build what the CS team actually needs, while the graded core (5 tools + auth + attachments) stays first.
+- Commits: this commit (status/log only; PLAN v3 waits for the user's answers).
+- For other lanes: dev paused; see Requests and Heads-up in docs/plan/STATUS.md.
