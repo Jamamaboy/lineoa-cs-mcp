@@ -147,10 +147,14 @@ try {
   if (!run) throw new Error(`Unknown command "${cmd}". Run \`lineoa help\`.`);
   await run();
 } catch (err) {
+  const code = err instanceof LineOAError ? err.code : "";
+  const msg = (err as Error).message;
   ui.fail(
-    err instanceof LineOAError && err.code === "AUTH_EXPIRED"
+    code === "AUTH_EXPIRED"
       ? "Not logged in. Run: lineoa login"
-      : (err as Error).message,
+      : code === "CHOOSE_OA"
+        ? `${msg.split(" Ask the person")[0]} Pick one with --oa "<name>".`
+        : msg,
   );
   process.exitCode = 1;
 }
