@@ -27,7 +27,8 @@ export function cookieFromSessionFile(path: string, host: string): string | unde
 }
 
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
-  const baseUrl = (env.LINEOA_BASE_URL ?? "http://127.0.0.1:8787").replace(/\/$/, "");
+  // The real console by default; the mock is used only when asked for (LINEOA_MOCK=1 or a mock URL).
+  const baseUrl = (env.LINEOA_BASE_URL ?? "https://chat.line.biz").replace(/\/$/, "");
   let host: string;
   try {
     host = new URL(baseUrl).hostname;

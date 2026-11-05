@@ -1,9 +1,18 @@
 {
   "mcpServers": {
+    "lineoa-cs": {
+      "command": "npx",
+      "args": ["tsx", "src/index.ts"],
+      "env": {
+        "LINEOA_ALLOW_SEND": "false"
+      }
+    },
     "lineoa-cs-mock": {
       "command": "npx",
       "args": ["tsx", "src/index.ts"],
-      "env": { "LINEOA_MOCK": "1" }
+      "env": {
+        "LINEOA_MOCK": "1"
+      }
     }
   }
 }
