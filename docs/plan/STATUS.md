@@ -1,7 +1,9 @@
 # plan status
-Last updated: 2026-11-06 01:30 ICT · branch plan
+Last updated: 2026-11-06 01:40 ICT · branch plan
 
 ## Now
+- **Single-session mode:** the user runs every lane from this one session (CLAUDE.md). No separate dev/research
+  sessions are needed; Requests below are now this session's own to-do list.
 - PLAN v3 is written (`docs/PLAN.md`) and merged into `dev` and `research`. **Dev is unpaused.**
 - Run plan (stages, no clock times): `docs/plan/2026-11-06-tonight.md` (Thai diagram `.html`).
 - PLAN v3 is also in full Thai with diagrams: `docs/PLAN.html` (Thai text: `docs/PLAN_thai.md`).

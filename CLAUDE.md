@@ -23,6 +23,18 @@ Work happens in three parallel **lanes**. Your lane is your current branch (`git
   `STATUS.md`. The other lane picks it up at its next session start.
 - Only the plan lane edits `CLAUDE.md` / `AGENTS.md` and the shared spec (`docs/PLAN*`). Other lanes ask through Requests.
 
+### Single-session mode (current, from 2026-11-06)
+The user drives all three lanes from **one session** (started in the plan worktree). The branches, worktrees and
+folders above stay as they are, so the history still shows each lane. In this mode:
+- The one session may write in all three worktrees. It uses absolute paths and works inside the worktree that
+  owns the file. Each change is committed on that lane's branch (code on `feat/*` in the dev worktree, then merged
+  `--no-ff` into `dev`).
+- Each lane's path rules still hold per commit: a commit touches one lane's paths only. That lane's STATUS and
+  LOG are updated in the same commit.
+- Subagents get one lane and a non-overlapping set of files each. They never commit or merge; the main session
+  does that.
+- Cross-lane requests become direct work, but they are still written in the LOG so the history explains them.
+
 ## Context protocol (mandatory, every session)
 
 **At session start**, before doing anything else:
