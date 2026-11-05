@@ -1,7 +1,8 @@
 # dev status
-Last updated: 2026-11-06 03:36 ICT · branch dev
+Last updated: 2026-11-06 03:37 ICT · branch dev
 
 ## Now
+- Done: needs_reply filter
 - Done: get_user_profile
 - `feat/login`: `npm run login` (Chrome window, the person logs in, only *.line.biz cookies saved 0600);
   the server now defaults to the real console, read-only; `.mcp.json` offers `lineoa-cs` (real) and
