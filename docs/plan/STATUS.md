@@ -1,20 +1,28 @@
 # plan status
-Last updated: 2026-11-05 22:00 ICT · branch plan @ (this commit)
+Last updated: 2026-11-06 01:15 ICT · branch plan
 
 ## Now
-- Plan v2 is done (docs/PLAN.md + Thai copies). Lane rules and context protocol are set up (CLAUDE.md).
+- PLAN v3 is written (`docs/PLAN.md`) and merged into `dev` and `research`. **Dev is unpaused.**
+- Tonight's run until 03:00: `docs/plan/2026-11-06-tonight.md` (Thai diagram `.html`).
 
 ## Next
-- Phase 3: walk through user flows F1–F6 with the user (PLAN §10) and fold the answers back into the tool contracts.
-- Keep PLAN in sync with the dev and research findings that come in through their STATUS Requests and Heads-up.
+- Answer questions from dev and research. Review dev's merges into `dev` (code-review on each).
+- 02:45 checkpoint: every lane green and STATUS current; demo on the mock.
+- Later: sync the Thai copies (`PLAN_thai.md`, `PLAN.html`) to v3 in full (only a v3 summary is at the top now).
 
 ## Blocked
-- Waiting for the user's answers: is a real LINE OA available for testing? confirm before send (dryRun) or auto-send?
-  show slip images by default?
+- none
 
 ## Requests
-- → dev: start Phase 1 (plan kit install, scaffold v0.1.0). Use plan dir `docs/dev/plans/` in the kit profile.
-- → research: Round 3, API shape fixtures in `test/research/line-api-shapes/` for the mock server.
+- → dev: **Unpaused. Start now.** Follow tonight's dev column (`docs/plan/2026-11-06-tonight.md`): scaffold → mock from
+  `test/research/line-api-shapes` fixtures (Support-like seed: rich menu texts, bot template, flex card, screenshot,
+  PDF; 2 OAs with one shared person) ‖ auth → 6 core tools + `webUrl` + send gating → e2e tests. Case layer (§5b) is
+  Friday 12:00, not tonight.
+- → research: when `~/lineoa-har/*.har` exists, build a redacted endpoint map and diff it against the fixtures
+  (prompt in tonight.md). Never commit HAR files or real ids.
+- → user: create the test OA and capture the HARs (rules in PLAN §2 A11).
 
 ## Heads-up (affects other lanes)
-- Docs are now split by lane: `docs/plan/`, `docs/dev/`, `docs/research/`. Write only in your own lane's folder (CLAUDE.md).
+- New fields and tools: `webUrl` on Chat/UserProfile/read_chat; `type: "flex"` messages with `altText`; masking of
+  emails/phones in tool output with `reveal` (PLAN §6b); case tools in PLAN §5b.
+- `read_chat` never calls markAsRead (PUT). `list_chats` filters `unread`/`ongoing` client-side.
