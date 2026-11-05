@@ -3,18 +3,18 @@
 ไฟล์นี้เป็นฉบับแปลของ [`docs/PLAN.md`](PLAN.md) ไว้อ่านเอง ถ้าเนื้อหาสองไฟล์ไม่ตรงกัน ให้ถือ `PLAN.md` เป็นหลัก
 ฉบับที่มี diagram อยู่ที่ [`docs/PLAN.html`](PLAN.html)
 
-สถานะ: v3 (ปรับขอบเขตเป็นผู้ช่วย CS ของ Acme Support) 6 พ.ย. 2026
+สถานะ: v3 (ปรับขอบเขตเป็นผู้ช่วย CS ของ support OA) 6 พ.ย. 2026
 
 กำหนดส่ง: **ศุกร์ 6 พ.ย. 2026 เวลา 23:59 (เวลาไทย)** แผนงานของรอบนี้อยู่ที่ [`docs/plan/run-plan.md`](plan/run-plan.md)
 
 สิ่งที่เปลี่ยนใน v3 (รายละเอียดอยู่ในหัวข้อด้านล่าง):
-- วางตำแหน่งผลิตภัณฑ์เป็นผู้ช่วย CS ของ OA **Acme Support** งานหลักที่ได้คะแนน (tool 5 ตัว + auth + ไฟล์แนบ) ทำก่อน
+- วางตำแหน่งผลิตภัณฑ์เป็นผู้ช่วย CS ของ **support OA** งานหลักที่ได้คะแนน (tool 5 ตัว + auth + ไฟล์แนบ) ทำก่อน
   แล้วมี **ชั้นเคส** วางทับเป็นงาน "ควรมี" (§1, §5b)
 - ผลของแชทและโปรไฟล์ทุกตัวมี **`webUrl`** เป็นลิงก์ตรงเข้า chat.line.biz เพื่อให้คนเข้ามารับช่วงต่อได้ (§5)
 - **กฎข้อมูลส่วนบุคคล** (§6b): ข้อมูลส่วนบุคคลอยู่ใน server และถูกปิดบังเป็นค่าเริ่มต้นในผลลัพธ์ของ tool
 - มี **OA จริงให้ใช้แบบอ่านอย่างเดียว** และมี OA ทดสอบใหม่แบบฟรีสำหรับลองส่งข้อความ (§2 A1, A11)
 - นำคำขอจากทีม research มาใส่ใน §6a แล้ว: markAsRead เป็น PUT, cursor ของการแบ่งหน้ายังไม่ยืนยัน และตัวกรองโฟลเดอร์ทำฝั่ง client
-- §8 ตอนนี้แบ่งเป็นงานคืนนี้กับงานวันศุกร์ §10 แสดง flow ของ Support
+- §8 ตอนนี้แบ่งเป็นงานคืนนี้กับงานวันศุกร์ §10 แสดง flow ของ support OA
 
 โจทย์ตัวจริงอยู่ที่ [`docs/ASSIGNMENT.md`](ASSIGNMENT.md)
 
@@ -35,18 +35,18 @@ MCP server ที่ให้ automation agent เข้าไปทำงาน
 
 มี tool เสริมอีกตัวคือ `get_attachment` สำหรับโจทย์เรื่องไฟล์แนบ (หัวข้อ 7)
 
-**กรอบของผลิตภัณฑ์ (v3)** Acme มี LINE OA สองบัญชี OA หลัก*คือ*ตัวผลิตภัณฑ์ ลูกค้าบันทึกรายรับรายจ่ายที่นั่น และ bot ตอบกลับด้วย template
-ส่วน **Support OA** เป็นที่ที่ลูกค้าแจ้งปัญหา rich menu มีปุ่ม 4 ปุ่ม (onboarding / feature request / report problem / how-to)
-และ bot template จะขออีเมล ปัญหา และภาพหน้าจอ เราสร้างให้ทีม CS ของ Support OA:
+**กรอบของผลิตภัณฑ์ (v3)** ธุรกิจอาจมี LINE OA มากกว่าหนึ่งบัญชี เช่น OA ของผลิตภัณฑ์ที่ลูกค้าใช้บริการผ่านแชท
+และ **support OA** ที่ลูกค้าแจ้งปัญหา rich menu มีปุ่ม 4 ปุ่ม (onboarding / feature request / report problem / how-to)
+และ bot template จะขออีเมล ปัญหา และภาพหน้าจอ เราสร้างให้ทีม CS ของ support OA:
 
 | ระดับ | อะไร | ทำไม |
 |---|---|---|
-| ต้องมี | tool 5 ตัว + `get_attachment` + `webUrl`, auth, ไฟล์แนบ บน mock ที่เลียนแบบ Acme Support | ถูกให้คะแนนโดยตรง |
+| ต้องมี | tool 5 ตัว + `get_attachment` + `webUrl`, auth, ไฟล์แนบ บน mock ที่เลียนแบบ support OA | ถูกให้คะแนนโดยตรง |
 | ควรมี | ชั้นเคส: `list_cases`, `open_case`, `tag_case`, `set_case_status`, `get_person`, `case_stats` (§5b) | แสดงว่าเข้าใจงาน CS จริง ทำน้อยเพราะ AI client ทำงานด้าน AI ทั้งหมด |
-| ถ้ามีเวลา | บริบทการใช้งานจาก OA หลักของแต่ละคน (§5b), tool หา link candidate, แจ้งเตือนเมื่อมีข้อความหลังปิดเคส, demo ผ่าน Telegram ด้วย Claude Code Channels | เป็นเรื่องเล่าที่ดีตอนสัมภาษณ์ |
-| เขียนใน README เท่านั้น | การ link กับ OA หลักจริงใน production, server กลางของทีม, realtime (SSE) | ข้อจำกัด / ถ้ามีเวลาเพิ่ม |
+| ถ้ามีเวลา | บริบทการใช้งานจาก OA ของผลิตภัณฑ์ของแต่ละคน (§5b), tool หา link candidate, แจ้งเตือนเมื่อมีข้อความหลังปิดเคส, demo ผ่าน Telegram ด้วย Claude Code Channels | เป็นเรื่องเล่าที่ดีตอนสัมภาษณ์ |
+| เขียนใน README เท่านั้น | การ link กับ OA ของผลิตภัณฑ์จริงใน production, server กลางของทีม, realtime (SSE) | ข้อจำกัด / ถ้ามีเวลาเพิ่ม |
 
-**ผู้ใช้เห็นอะไร** ไม่มี web app พนักงาน CS (หรือ automation agent ของ Acme) คุยกับ AI client เช่น Claude Desktop หรือ Claude Code
+**ผู้ใช้เห็นอะไร** ไม่มี web app พนักงาน CS (หรือ automation agent ของธุรกิจเอง) คุยกับ AI client เช่น Claude Desktop หรือ Claude Code
 client เรียก tool ของเรา และหน้าต่างขออนุญาตของ client เองจะขึ้นก่อน `send_message` พนักงาน CS login หนึ่งครั้งต่อกะด้วย `npm run login`
 หน้าเว็บเดียวที่มีคือ console เล็ก ๆ ของ mock ที่แสดงว่า agent ทำอะไรไป
 
@@ -71,9 +71,9 @@ client เรียก tool ของเรา และหน้าต่าง
 | A5 | Agent รันในเครื่องเดียวกับพนักงาน CS (stdio transport) | ถ้าจะ deploy ไว้บน server ต้องใช้ Streamable HTTP และต้องทำ auth ฝั่ง MCP จริงจัง |
 | A6 | ข้อความที่ agent ส่ง จะขึ้นว่าส่งโดยพนักงานที่ login อยู่ พนักงานคนนั้นจึงต้องรับผิดชอบข้อความ การส่งทุกครั้งถูกบันทึกใน audit log | ไม่มี |
 | A7 | ใน console จริง การ mark ว่าอ่านแล้วเป็น **การเรียกแยกต่างหาก** (`PUT /api/v2/bots/{botId}/chats/{chatId}/markAsRead` มีหลักฐานแค่ PUT) การดึงข้อความไม่ได้ทำให้แชทถูกนับว่าอ่านแล้ว `read_chat` จะไม่ mark read เลย flag `markRead` แยกปิดไว้เป็นค่าเริ่มต้น | ถ้าทีม CS อยากให้สถานะอ่านแล้วตรงกับที่ agent อ่านไปแล้ว ก็เปิด flag นี้ |
-| A8 | เรา link ผู้แจ้งปัญหาใน Support กับ **OA หลักของ Acme** เพราะ CS ต้องการบริบทการใช้งาน: แพลนหรือช่วงทดลอง การเชื่อม Google, sync ล่าสุด, เครดิต และข้อความ error ล่าสุด ในข้อมูลตัวอย่าง การ sync Google Sheets เกิดขึ้น 4 นาทีก่อนที่ลูกค้าจะแจ้งเรื่องนั้นใน Support | ถ้าไม่ link CS ต้องถามลูกค้าในสิ่งที่ผลิตภัณฑ์รู้อยู่แล้ว |
+| A8 | เรา link ผู้แจ้งปัญหาใน support OA กับ **OA ของผลิตภัณฑ์** เพราะ CS ต้องการบริบทการใช้งาน: สถานะบัญชี, integration ที่เชื่อมอยู่, กิจกรรมล่าสุด และข้อความ error ล่าสุด | ถ้าไม่ link CS ต้องถามลูกค้าในสิ่งที่ผลิตภัณฑ์รู้อยู่แล้ว |
 | A9 | หนึ่งแชทมี**หลายเคส** ข้อความจากปุ่ม rich menu เปิดเคสใหม่ โดยชนิดเคสตามปุ่ม AI เปิดเคสเองได้ด้วยเมื่อลูกค้าเริ่มหัวข้อใหม่โดยไม่ได้กดปุ่ม | ถ้า CS อยากได้หนึ่งแชทหนึ่งเคส ก็แค่ไม่ใช้ `open_case` |
-| A10 | การ link คนข้าม OA ใช้อีเมลที่ลูกค้าพิมพ์ จับคู่ภายใน server **และต้องให้ CS ยืนยัน** event "Google connected (email)" ใน OA หลักนับเป็นอีเมลที่ยืนยันแล้ว การ link อัตโนมัติด้วย LINE userId ต้องให้ทั้งสอง OA อยู่ใต้ provider เดียวกัน ซึ่งเรายังไม่ได้ตรวจ | ถ้าใช้ provider เดียวกัน เพิ่มการ link ด้วย userId ภายหลังได้ |
+| A10 | การ link คนข้าม OA ใช้อีเมลที่ลูกค้าพิมพ์ จับคู่ภายใน server **และต้องให้ CS ยืนยัน** event ใน OA ของผลิตภัณฑ์ที่ยืนยันอีเมลนับเป็นอีเมลที่ยืนยันแล้ว การ link อัตโนมัติด้วย LINE userId ต้องให้ทั้งสอง OA อยู่ใต้ provider เดียวกัน ซึ่งเรายังไม่ได้ตรวจ | ถ้าใช้ provider เดียวกัน เพิ่มการ link ด้วย userId ภายหลังได้ |
 | A11 | OA จริงมีแชทของคนจริง จึงเป็นแบบ**อ่านอย่างเดียว**: ห้ามส่ง ห้ามกด Follow up หรือ Resolve และห้ามเปิดแชทที่ยังไม่อ่าน (เปิดแล้วจะถูก mark ว่าอ่าน) ไฟล์ HAR เก็บใน `~/lineoa-har/` นอก repo ทดสอบการส่งและอัปโหลดบน OA ทดสอบเท่านั้น | ไม่มี |
 | A12 | AI client ทำงานด้าน AI ทั้งหมด (แนะนำแท็ก สรุป ร่างข้อความ) server ไม่เก็บ LLM key และไม่เรียก LLM | ถ้าใช้ LLM ฝั่ง server ต้องมี DPA และต้องใส่ key ใน config |
 
@@ -141,7 +141,7 @@ src/
   attachments/         fetch.ts  mime.ts  image.ts  outbox.ts
   cases/               store.ts  case-opener.ts  tools (v3 "ควรมี")
   audit/               audit-log.ts
-mock-server/           app.ts  seed/ (เหมือน Acme Support: rich menu, bot template, flex card, ภาพหน้าจอ, PDF;
+mock-server/           app.ts  seed/ (เหมือน support OA: rich menu, bot template, flex card, ภาพหน้าจอ, PDF;
                        2 OA ที่มีคนเดียวกันหนึ่งคน, ทำให้ไม่ระบุตัวตนแล้ว)  public/ (console เล็ก ๆ, เป้าหมายของ webUrl)
 test/                  e2e/ (InMemoryTransport)  contract/ (รันกับ LineOAClient ตัวไหนก็ได้)  unit/
 docs/                  ASSIGNMENT.md  PLAN*.md/html (spec ร่วม)  plan/  dev/ (+ dev/plans)  research/  ← แยกโฟลเดอร์ตาม lane
@@ -180,7 +180,7 @@ CLAUDE.md  AGENTS.md  README.md
 | `get_attachment` | `chatId`, `messageId`, `attachmentId?`, `mode?: inline\|save` | รูป → MCP `image` content (ย่อแล้ว) + path ในเครื่อง ไฟล์อื่น → path ที่บันทึกไว้ + ข้อมูลไฟล์ (+ preview ข้อความถ้าเป็น txt/csv) | อ่านอย่างเดียว |
 | (เสริม) `auth_status` | ไม่มี | พนักงานที่ login อยู่, OA ที่เข้าได้, อายุของ session | ให้ agent เช็ก auth ก่อนเริ่มงานยาว ๆ |
 
-flex card ของ bot (เช่น template ของ bot ใน Support) ส่งกลับเป็น `type: "flex"` พร้อม `altText` และข้อความที่แปลงเป็นข้อความธรรมดาแล้ว ไม่ทิ้ง
+flex card ของ bot (เช่น template ของ bot ใน support OA) ส่งกลับเป็น `type: "flex"` พร้อม `altText` และข้อความที่แปลงเป็นข้อความธรรมดาแล้ว ไม่ทิ้ง
 
 error มีชนิดชัดเจน และบอกวิธีแก้ได้:
 - `AUTH_EXPIRED` ("ให้พนักงาน CS รัน `npm run login`")
@@ -201,18 +201,18 @@ error มีชนิดชัดเจน และบอกวิธีแก�
 | `open_case` | `chatId`, `fromMessageId`, `type` | `Case` | AI แยกหัวข้อใหม่ที่มาโดยไม่ได้กดปุ่ม idempotent ตาม `fromMessageId` |
 | `tag_case` | `caseId`, `add?[]`, `remove?[]` | `Case` | แท็กจาก AI เก็บเป็น `source: ai, confirmed: false` และจะเป็น confirmed เมื่อ CS ขอแท็กนั้น |
 | `set_case_status` | `caseId`, `status`, `summary?`, `confirmedByStaff?` | `Case` | `resolved` ต้องมี `confirmedByStaff: true` ซึ่ง agent ส่งได้เฉพาะหลังจากคนบอกแล้ว ถ้าไม่มี เคสจะไปที่ `resolve_suggested` บันทึกลง audit log |
-| `get_person` | `personRef` หรือ `chatId` | `Person` + `cases[]` + `linkCandidates[]` (+ `usage[]` จาก OA หลักถ้า link แล้ว ซึ่งเป็น "ถ้ามีเวลา") | อีเมลถูกปิดบัง การ link ต้องให้ CS ยืนยัน (A10) |
+| `get_person` | `personRef` หรือ `chatId` | `Person` + `cases[]` + `linkCandidates[]` (+ `usage[]` จาก OA ของผลิตภัณฑ์ถ้า link แล้ว ซึ่งเป็น "ถ้ามีเวลา") | อีเมลถูกปิดบัง การ link ต้องให้ CS ยืนยัน (A10) |
 | `case_stats` | `from`, `to`, `groupBy: type\|area\|severity\|status` | จำนวน, เวลาตอบครั้งแรกแบบ median, จำนวนเคสที่เปิดอยู่ | ใช้ SQL อย่างเดียว สรุปรายช่วงเวลามาจากฟิลด์ `summary` ที่เก็บไว้ในเคส AI client เขียนเนื้อความเอง |
 
 taxonomy ของแท็กชุดแรก:
 - ชนิด (type): `onboarding`, `feature-request`, `report-problem`, `how-to`
-- ส่วนของระบบ (area): `dashboard`, `google-sheet`, `currency`, `billing-credit`, `login`, `line-bot`, `other`
+- ส่วนของระบบ (area): `billing`, `account`, `integration`, `login`, `line-bot`, `other`
 - ความรุนแรง (severity): `low`, `medium`, `high`
 
-event การใช้งานจาก OA หลัก ("ถ้ามีเวลา"): parser แบบกฎแปลง bot template ของ OA หลักเป็น event (`plan`, `trial_expired`,
-`google_connected`, `sheets_sync`, `credits_left`, `payment_notice`, `bot_error`) ทำงานเฉพาะคนที่ link แล้ว
+event การใช้งานจาก OA ของผลิตภัณฑ์ ("ถ้ามีเวลา"): parser แบบกฎแปลง bot template ของ OA ของผลิตภัณฑ์เป็น event (`account_status`,
+`integration_connected`, `sync_run`, `usage_left`, `recurring_notice`, `bot_error`) ทำงานเฉพาะคนที่ link แล้ว
 ครอบคลุมประมาณ 14 วันก่อนเคสถูกเปิด ยอดเงินถูกซ่อนไว้ เว้นแต่ CS ขอให้เปิดดู
-`payment_notice` ที่ซ้ำทุกวันเป็นตัวเลือกสำหรับการแจ้งเตือนเชิงรุก ส่วนจะเป็นการเตือนหรือการตัดเงินซ้ำ เป็นคำถามที่ยังต้องถาม Acme
+`recurring_notice` ที่ซ้ำทุกวันเป็นตัวเลือกสำหรับการแจ้งเตือนเชิงรุก
 
 ---
 
@@ -292,7 +292,7 @@ event การใช้งานจาก OA หลัก ("ถ้ามีเ�
   ถูกปิดบังในข้อความและโปรไฟล์เป็นค่าเริ่มต้น argument `reveal: true` ใช้เปิดดู และทุกครั้งที่เปิดดูถูกบันทึกใน audit log
 - การจับคู่อีเมลเพื่อ link ทำภายใน server อีเมลจริงไม่ไปถึง LLM
 - รูปภาพไม่ถูกส่งให้ model เว้นแต่จะเรียก `get_attachment` ภาพหน้าจออาจมีข้อมูลของคนอื่น
-- ยอดเงินจาก OA หลักถูกซ่อนเป็นค่าเริ่มต้น (§5b)
+- ยอดเงินจาก OA ของผลิตภัณฑ์ถูกซ่อนเป็นค่าเริ่มต้น (§5b)
 - การเก็บข้อมูล: ค่าใน config (ค่าเริ่มต้น 180 วัน ตรงกับประวัติแชทของแพลนฟรีของ LINE) และมี `npm run forget -- <personRef>`
   ลบข้อมูลของคนหนึ่งคนทุกที่ ทั้งสองข้อใส่ใน README พร้อมฐานทางกฎหมาย (สัญญา / ประโยชน์โดยชอบด้วยกฎหมาย)
   และหมายเหตุว่าผู้ให้บริการ LLM เป็นผู้ประมวลผลข้อมูลที่ต้องมี DPA
@@ -309,7 +309,7 @@ event การใช้งานจาก OA หลัก ("ถ้ามีเ�
   แล้ว stream ลง `~/.cache/lineoa-mcp/attachments/<sha256>` โดยเขียนลงไฟล์ temp ก่อน แล้วค่อย rename เมื่อโหลดครบ
   ไฟล์ที่โหลดไม่ครบจะไม่โผล่ออกมาให้เห็น (atomic, จาก telegram-mcp) จำกัดขนาดดาวน์โหลดที่ 32 MiB เป็นค่าเริ่มต้น
 - **ตรวจ MIME จาก magic bytes** ไม่เชื่อนามสกุลไฟล์หรือสิ่งที่ server บอก ชื่อไฟล์ถูก clean ก่อนใช้ (กัน path traversal และ control character)
-- **รูปภาพ** (สลิปโอนเงิน รูปสินค้า) ย่อให้ด้านยาวไม่เกิน 1568 px
+- **รูปภาพ** (ใบเสร็จ รูปสินค้า) ย่อให้ด้านยาวไม่เกิน 1568 px
   - ถ้าย่อแล้วเล็กกว่าประมาณ 1 MB ส่งกลับเป็น MCP `image` content ให้ vision model อ่านได้เลย (เกณฑ์นี้เอามาจาก respond.io)
   - ถ้าใหญ่กว่านั้น บันทึกลงเครื่องแล้วส่งกลับเป็น `resource_link`
   - ส่ง path ในเครื่องกลับไปด้วยทั้งสองกรณี
@@ -341,7 +341,7 @@ commit ทุกครั้งที่ทำขั้นที่มีคว�
 | 0 | PLAN v3 merge เข้า `dev` และ `research` แล้วปลด pause dev (เสร็จแล้ว) | plan |
 | 0 | สร้าง OA ทดสอบ · เก็บ HAR จาก OA จริง (อ่านอย่างเดียว) และจาก OA ทดสอบ (ลองส่ง) | user |
 | 1 | ตั้งโปรเจกต์ TS + Biome + vitest + CI · ติดตั้ง plan kit | dev |
-| 2 | domain types + `LineOAClient` → mock server จาก fixture (seed แบบ Support, 2 OA, คนเดียวกันหนึ่งคน) ‖ auth (SessionStore, login CLI กับ mock) | dev |
+| 2 | domain types + `LineOAClient` → mock server จาก fixture (seed แบบ support OA, 2 OA, คนเดียวกันหนึ่งคน) ‖ auth (SessionStore, login CLI กับ mock) | dev |
 | 2 | HAR → แผนที่ endpoint ที่ลบข้อมูลจริงแล้ว เทียบกับ fixture | research |
 | 3 | tool หลัก 6 ตัว + `webUrl` + การปิดการส่ง | dev |
 | 4 | e2e test (MCP client → server → mock) + แก้ตามผล HAR | dev |
@@ -349,12 +349,12 @@ commit ทุกครั้งที่ทำขั้นที่มีคว�
 | 5 | `WebClient` กับ console จริง (OA ทดสอบก่อน) + contract test | dev |
 | 6 | ชั้นเคส (§5b) | dev |
 | 7 | README (setup, สถาปัตยกรรม, auth, ไฟล์แนบ, PII, ข้อจำกัด) + GIF เดโม | dev |
-| 8 | ถ้ามีเวลา: เดโม Telegram ผ่าน Claude Code Channels, event การใช้งานจาก OA หลัก | dev |
+| 8 | ถ้ามีเวลา: เดโม Telegram ผ่าน Claude Code Channels, event การใช้งานจาก OA ของผลิตภัณฑ์ | dev |
 | 9 | release `dev` → `main`, tag `v0.1.0`, CHANGELOG | dev |
 | 10 | วิดีโอโบนัส (repo สาธารณะแยก) ถ้ามีเวลา | — |
 | — | push ขึ้น repo สาธารณะและตอบอีเมลก่อนกำหนดส่ง | user |
 
-ถ้าเวลาไม่พอ ตัดตามลำดับ: วิดีโอโบนัส → Telegram → บริบทจาก OA หลัก → ชั้นเคส → WebClient เส้นทางบน mock ต้องผ่านตลอด
+ถ้าเวลาไม่พอ ตัดตามลำดับ: วิดีโอโบนัส → Telegram → บริบทจาก OA ของผลิตภัณฑ์ → ชั้นเคส → WebClient เส้นทางบน mock ต้องผ่านตลอด
 สิ่งที่ตัดออกจะเขียนไว้ใน README พร้อมเหตุผล
 
 ---
@@ -383,20 +383,20 @@ commit ทุกครั้งที่ทำขั้นที่มีคว�
 
 ---
 
-## 10. User flow (v3, Acme Support)
+## 10. User flow (v3, support OA)
 
 | id | Flow | Tool | กฎ |
 |---|---|---|---|
 | F1 | คัดแชทตอนเช้า: "แชทไหนรออยู่บ้าง" | `list_chats(ongoing)` → `read_chat` ×N | `read_chat` ไม่ mark read เลย (A7) คำตอบแสดง `webUrl` ของแต่ละแชท |
 | F2 | ตอบผู้แจ้งปัญหา | `read_chat` → `get_user_profile` → ร่างข้อความ → `send_message` | AI ร่าง คนอนุมัติในหน้าต่างขออนุญาตของ client มี `dryRun` ให้ใช้ |
 | F3 | มีภาพหน้าจอบั๊กเข้ามา | `read_chat` → `get_attachment(inline)` | รูปถึง model เฉพาะเมื่อมีคนขอ (§6b) |
-| F4 | "มีคนอื่นแจ้งบั๊กเรื่องสกุลเงินไหม" | `search_messages` → `read_chat` | ค้นบางส่วนของคำภาษาไทยได้ ผลมี context และ `webUrl` |
+| F4 | "มีคนอื่นแจ้งบั๊กเรื่องเดียวกันไหม" | `search_messages` → `read_chat` | ค้นบางส่วนของคำภาษาไทยได้ ผลมี context และ `webUrl` |
 | F5 | Session หมดอายุระหว่างทำงาน | tool ใดก็ได้ → `AUTH_EXPIRED` → คนรัน `npm run login` | ไม่ login ใหม่ให้เองเงียบ ๆ |
 | F6 | ส่ง PDF วิธีใช้งาน | วางไฟล์ใน outbox → `send_message(attachmentPaths)` | ผ่าน outbox เท่านั้น การส่ง PDF ต้องยืนยันจาก HAR |
 | F7 | คัดแยกเคส | `list_cases(open)` → `tag_case` (AI แนะนำ) → `set_case_status(waiting)` | แท็กของ AI ยังไม่ confirmed จนกว่า CS เห็นด้วย |
 | F8 | ปิดเคส | คนบอกว่า "เสร็จแล้ว" → `set_case_status(resolved, confirmedByStaff)` | ถ้ามีข้อความเข้ามาหลัง resolve เคสจะเปิดใหม่เป็น `open` และติดธงไว้ |
 | F9 | สรุปรายสัปดาห์ | `case_stats(groupBy=area)` + `list_cases(since)` | AI client เขียนเนื้อความจากสรุปที่เก็บไว้ |
-| F10 | ผู้แจ้งคนนี้คือใคร | `get_person` → link candidate → CS ยืนยัน | อีเมลถูกปิดบัง ข้อมูลการใช้งานจาก OA หลักดูได้หลัง link เท่านั้น (ถ้ามีเวลา) |
+| F10 | ผู้แจ้งคนนี้คือใคร | `get_person` → link candidate → CS ยืนยัน | อีเมลถูกปิดบัง ข้อมูลการใช้งานจาก OA ของผลิตภัณฑ์ดูได้หลัง link เท่านั้น (ถ้ามีเวลา) |
 | F11 | รับช่วงต่อด้วยมือ | ผลลัพธ์ใดก็ได้ → เปิด `webUrl` | คนทำต่อใน chat.line.biz |
 
 ---

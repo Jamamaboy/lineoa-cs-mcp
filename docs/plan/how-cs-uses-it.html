@@ -109,14 +109,14 @@ svg .ln{stroke:var(--mu);stroke-width:1.3;fill:none;marker-end:url(#a)}#a path{f
 <h2>3. CS เปิดใช้ยังไง: ติดตั้งครั้งเดียว 3 ขั้น</h2>
 <div class="card"><div class="step"><div class="num">1</div><div style="flex:1">
 <h3>ติดตั้ง server (IT หรือ CS ทำครั้งเดียว)</h3>
-<div class="term"><span class="g">$</span> git clone …/acme-lineoa-mcp && cd acme-lineoa-mcp
+<div class="term"><span class="g">$</span> git clone …/lineoa-cs-mcp && cd lineoa-cs-mcp
 <span class="g">$</span> npm install && npm run build</div></div></div></div>
 
 <div class="card"><div class="step"><div class="num">2</div><div style="flex:1">
 <h3>Login LINE (ทำต้นกะ ถ้า session หมดอายุ)</h3>
 <div class="term"><span class="g">$</span> npm run login
 <span class="d">Opening browser… sign in to LINE Business ID</span>
-✓ Logged in as มิ้นท์ · OA: Acme Support
+✓ Logged in as มิ้นท์ · OA: Support
 ✓ Session saved (chmod 600)</div>
 <p class="sm mu">browser จริงเด้งขึ้นมา CS กรอกเองทุกอย่าง server ไม่เคยเห็นรหัสผ่าน</p></div></div></div>
 
@@ -151,7 +151,7 @@ svg .ln{stroke:var(--mu);stroke-width:1.3;fill:none;marker-end:url(#a)}#a path{f
 <div class="grid2">
 <div class="card"><h3><span class="pill p1">แบบ A</span> CS คุยกับ AI เอง</h3>
 <ul class="sm"><li>เปิด Claude Desktop แบบในข้อ 4</li><li>AI ช่วยสรุป ค้นหา ร่างคำตอบ CS เป็นคนกดส่ง</li><li>เหมาะกับตอนเดโมให้ grader ดู</li></ul></div>
-<div class="card"><h3><span class="pill p3">แบบ B</span> agent อัตโนมัติของ Acme</h3>
+<div class="card"><h3><span class="pill p3">แบบ B</span> agent อัตโนมัติของธุรกิจเอง</h3>
 <ul class="sm"><li>โจทย์พูดถึง "our automation agent" คือโปรแกรมที่รันเองตามรอบ เช่นทุก 15 นาที</li><li>ใช้ tool ชุดเดียวกัน เช่น ดึงแชทใหม่ แท็กเคส สรุปลงโน้ต</li><li>ค่าเริ่มต้นปิดการส่ง (<code>LINEOA_ALLOW_SEND=false</code>) ให้คนตรวจก่อน</li></ul></div>
 </div>
 <div class="note ok"><b>สิ่งที่จะโชว์ grader:</b> README ที่ทำตาม 3 ขั้นได้ · mock server ที่รันได้โดยไม่ต้องมีบัญชี LINE · วิดีโอหรือ GIF สั้น ๆ ของแบบ A ที่ทำครบ 5 อย่าง · แผนภาพนี้ใน README อธิบายว่าเทคนิคแต่ละตัวอยู่ตรงไหน</div>
