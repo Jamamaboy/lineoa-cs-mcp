@@ -40,11 +40,17 @@ own login. LINE's Messaging API is built for bots: it can't see existing chats o
 ## How it is used
 
 ```mermaid
+%%{init: {'theme':'base','themeVariables':{'fontFamily':'Helvetica,Arial,sans-serif','actorBkg':'#6f4ef2','actorBorder':'#5b3fd1','actorTextColor':'#ffffff','actorLineColor':'#c9bdf7','signalColor':'#3d4450','signalTextColor':'#1f2328','sequenceNumberColor':'#ffffff','noteBkgColor':'#e8f8ee','noteBorderColor':'#06c755','noteTextColor':'#1f2328'}}}%%
 sequenceDiagram
-  actor CS as CS person
+  autonumber
+  box rgb(243,240,255) The CS person's computer
+  participant CS as CS person
   participant AI as AI app
   participant M as lineoa-cs
+  end
+  box rgb(232,248,238) LINE
   participant L as LINE OA Manager
+  end
   CS->>M: npm run setup (once)
   CS->>L: npm run login → logs in in a browser window
   L-->>M: session cookie saved (0600)
@@ -58,10 +64,12 @@ sequenceDiagram
   M-->>AI: chats + webUrl
   AI->>M: read_chat · get_attachment
   AI->>CS: summary + draft reply
-  CS->>AI: OK, send it
-  AI->>M: send_message (only if sending is on)
-  M->>L: POST message (CSRF, sendId)
-  M-->>AI: sent · audit-logged
+  rect rgb(232,248,238)
+    CS->>AI: OK, send it
+    AI->>M: send_message (only if sending is on)
+    M->>L: POST message (CSRF, sendId)
+    M-->>AI: sent · audit-logged
+  end
 ```
 
 ## What it unblocks
