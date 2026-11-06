@@ -1,5 +1,12 @@
 # lineoa-cs
 
+[![release](https://img.shields.io/github/v/release/Jamamaboy/lineoa-cs-mcp?label=release)](https://github.com/Jamamaboy/lineoa-cs-mcp/releases)
+[![ci](https://github.com/Jamamaboy/lineoa-cs-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/Jamamaboy/lineoa-cs-mcp/actions/workflows/ci.yml)
+![node](https://img.shields.io/badge/node-%E2%89%A522.13-339933?logo=node.js&logoColor=white)
+![mcp](https://img.shields.io/badge/MCP-stdio-6b4fbb)
+![read-only by default](https://img.shields.io/badge/sending-off%20by%20default-2da44e)
+
+<!-- INTRO: the owner writes this paragraph. Until then, the text below describes the project. -->
 An MCP server that lets an AI agent work a LINE Official Account the way a customer-support person does. It
 can list ongoing chats, read a chat, search messages across chats, send a message, see a customer's profile,
 and open the images and files customers send.
@@ -8,6 +15,60 @@ It works through the same web console a CS person uses (LINE OA Manager, `chat.l
 own login. LINE's Messaging API is built for bots: it can't see existing chats or history, and it can't search.
 
 **Read-only by default.** Sending is off until you turn it on.
+
+<!-- SHOWCASE: replace with the recorded Claude session GIF (docs/assets/demo.gif). -->
+![lineoa in a terminal, against the built-in mock](docs/assets/demo-cli.gif)
+
+<p align="center"><img src="docs/assets/supports.svg" alt="What it works with: AI apps, login browsers, platforms and the LINE side" width="880"></p>
+
+## Features
+
+```mermaid
+flowchart LR
+  AI["AI app<br/>Claude Code · Claude Desktop<br/>any MCP client"] -->|stdio| S
+  CLI["lineoa CLI"] --> C
+  subgraph S["lineoa-cs MCP server"]
+    direction TB
+    R["Read<br/>auth_status · list_chats<br/>read_chat · get_user_profile"]
+    F["Find<br/>search_messages"]
+    A["Files<br/>get_attachment"]
+    W["Write · off by default<br/>send_message"]
+  end
+  F <--> IDX[("local index<br/>SQLite")]
+  A --> CACHE[("file cache<br/>0600")]
+  W --> GATE["flag → chat allowlist → daily cap<br/>→ dryRun → human OK → audit log"]
+  S --> C["LineOAClient<br/>cookie · CSRF · typed errors"]
+  GATE --> C
+  C -->|HTTPS + session| LINE["chat.line.biz"]
+  C -.->|same paths| MOCK["built-in mock"]
+```
+
+## How it is used
+
+```mermaid
+sequenceDiagram
+  actor CS as CS person
+  participant AI as AI app
+  participant M as lineoa-cs
+  participant L as LINE OA Manager
+  CS->>M: npm run setup (once)
+  CS->>L: npm run login → logs in in a browser window
+  L-->>M: session cookie saved (0600)
+  CS->>AI: "Which chats are waiting for a reply?"
+  AI->>M: list_chats(needs_reply)
+  M-->>AI: CHOOSE_OA: you can reach "Shop A", "Shop B"
+  AI->>CS: Which OA?
+  CS->>AI: Shop A
+  AI->>M: list_chats(oa: "Shop A", needs_reply)
+  M->>L: GET chats
+  M-->>AI: chats + webUrl
+  AI->>M: read_chat · get_attachment
+  AI->>CS: summary + draft reply
+  CS->>AI: OK, send it
+  AI->>M: send_message (only if sending is on)
+  M->>L: POST message (CSRF, sendId)
+  M-->>AI: sent · audit-logged
+```
 
 ## What it unblocks
 
@@ -183,6 +244,15 @@ is in the repo:
 - Each feature is a branch of small commits, each one green on its own.
 
 [`docs/README.md`](docs/README.md) maps every document. A Thai user guide is in [`docs/USAGE.th.md`](docs/USAGE.th.md).
+
+## Versions
+
+| version | date | highlights |
+|---|---|---|
+| [v0.1.1](https://github.com/Jamamaboy/lineoa-cs-mcp/releases/tag/v0.1.1) | 2026-11-06 | security and reliability fixes from a code review |
+| [v0.1.0](https://github.com/Jamamaboy/lineoa-cs-mcp/releases/tag/v0.1.0) | 2026-11-06 | first release: 7 tools, login, CLI, setup, mock |
+
+Details are in [CHANGELOG.md](CHANGELOG.md).
 
 ## Develop
 
