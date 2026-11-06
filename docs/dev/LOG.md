@@ -325,3 +325,9 @@
 - Why: Dev review: duplicated version, setup relied on a devDependency.
 - Commits: `chore: one version source, tsx at runtime, mock on a free port` (this commit; the LOG entry ships with the work)
 - For other lanes: none.
+
+## 2026-11-06 19:54 ICT · tests for T5
+- What: tests/unit/local-files.test.ts
+- Why: Cover the T5 behaviour.
+- Commits: `test: local files, setup and version` (this commit; the LOG entry ships with the work)
+- For other lanes: none.

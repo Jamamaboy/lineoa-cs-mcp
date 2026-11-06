@@ -2,6 +2,7 @@
 Last updated: 2026-11-06 19:54 ICT · branch feat/review-fixes
 
 ## Now
+- Done: tests for T5
 - Done: version + deps (T5c)
 - Done: setup (T5b)
 - Done: robust local files (T5a)
