@@ -69,14 +69,14 @@ export class MessageStore {
     until?: string;
     limit: number;
   }): StoredHit[] {
-    const where = ["m.bot_id = ?", "(m.text LIKE ? ESCAPE '\\' OR c.name LIKE ? ESCAPE '\\')"];
+    const where = ["m.bot_id = ?", "m.text LIKE ? ESCAPE '\\'"];
     const like = `%${q.text.replace(/[\\%_]/g, (ch) => `\\${ch}`)}%`;
-    const args: string[] = [q.botId, like, like];
+    const args: string[] = [q.botId, like];
     const filters: [string, string | undefined][] = [
       ["m.chat_id = ?", q.chatId],
       ["m.sender = ?", q.from],
       ["m.sent_at >= ?", q.since],
-      ["m.sent_at <= ?", q.until],
+      ["m.sent_at < ?", q.until], // exclusive: the caller passes the moment just after the last day
     ];
     for (const [clause, value] of filters) {
       if (value === undefined) continue;

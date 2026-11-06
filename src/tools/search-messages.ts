@@ -4,6 +4,14 @@ import { webUrl } from "../domain/normalize.js";
 import { syncRecent } from "../index/sync.js";
 import { idInput, oaInput, resolveBotId, run, type ToolContext } from "./shared.js";
 
+const dateInput = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "use YYYY-MM-DD");
+
+/** Local midnight of `day` plus `addDays`, as the ISO string the store compares against. */
+function startOfDay(day: string, addDays: number): string {
+  const [y, m, d] = day.split("-").map(Number) as [number, number, number];
+  return new Date(y, m - 1, d + addDays).toISOString();
+}
+
 export function registerSearchMessages(server: McpServer, ctx: ToolContext) {
   server.registerTool(
     "search_messages",
@@ -19,8 +27,8 @@ export function registerSearchMessages(server: McpServer, ctx: ToolContext) {
         oa: oaInput,
         chatId: idInput.optional().describe("Only search this chat"),
         from: z.enum(["customer", "staff"]).optional().describe("Only messages from this side"),
-        since: z.string().optional().describe("ISO date, e.g. 2026-11-01"),
-        until: z.string().optional().describe("ISO date"),
+        since: dateInput.optional().describe("First day to include, YYYY-MM-DD (local time)"),
+        until: dateInput.optional().describe("Last day to include, YYYY-MM-DD (local time)"),
         limit: z.number().int().min(1).max(50).default(20),
         refresh: z.boolean().default(true).describe("Copy new messages before searching"),
       },
@@ -39,8 +47,8 @@ export function registerSearchMessages(server: McpServer, ctx: ToolContext) {
             limit: args.limit,
             ...(args.chatId ? { chatId: args.chatId } : {}),
             ...(args.from ? { from: args.from } : {}),
-            ...(args.since ? { since: args.since } : {}),
-            ...(args.until ? { until: args.until } : {}),
+            ...(args.since ? { since: startOfDay(args.since, 0) } : {}),
+            ...(args.until ? { until: startOfDay(args.until, 1) } : {}),
           })
           .map((h) => ({
             ...h,

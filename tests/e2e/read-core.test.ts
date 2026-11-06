@@ -79,6 +79,16 @@ describe("MCP read core against the mock", () => {
     expect(again.json.indexRefresh.chatsUpdated).toBe(0);
     const staffOnly = await stack.call("search_messages", { query: "สลิป", from: "staff", refresh: false });
     for (const h of staffOnly.json.hits) expect(h.from).toBe("staff");
+    const day = hit.sentAt.slice(0, 10); // the hit's own day must be inside since=until=that day
+    const oneDay = await stack.call("search_messages", {
+      query: "สลิป",
+      since: day,
+      until: day,
+      refresh: false,
+    });
+    expect(oneDay.json.hits.length).toBeGreaterThan(0);
+    const bad = await stack.call("search_messages", { query: "สลิป", until: "5 Nov" });
+    expect(bad.isError).toBe(true);
   });
 
   it("get_attachment shows a slip photo to the model and saves a PDF", async () => {
