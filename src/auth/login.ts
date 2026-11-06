@@ -5,6 +5,7 @@
  */
 import { type BrowserName, openBrowser } from "./browsers.js";
 import { sessionPath, writeSession } from "./session-file.js";
+import { hostMatches } from "./session-source.js";
 
 export interface LoginResult {
   staffName: string;
@@ -38,7 +39,7 @@ export async function login(opts: { console?: string; browser?: BrowserName; tim
       list?: { botId: string; name: string }[];
     };
     const state = await context.storageState();
-    const cookies = state.cookies.filter((c) => c.domain.replace(/^\./, "").endsWith("line.biz"));
+    const cookies = state.cookies.filter((c) => hostMatches(c.domain.replace(/^\./, ""), "line.biz"));
     const sessionFile = sessionPath();
     writeSession(sessionFile, { cookies, origins: [] });
     return {

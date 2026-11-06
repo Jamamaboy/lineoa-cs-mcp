@@ -138,3 +138,28 @@
 - Why: The user wants the AI to ask which OA when it is not clear, and to name OAs instead of ids.
 - Commits: feat(client): choose an OA by name…; feat(tools): every tool takes oa…; fix(cli): show a short --oa hint…; docs: explain choosing an OA
 - For other lanes: none.
+
+## 2026-11-06 04:21 ICT · v0.1.0 released to a new public repo
+- What: History rewritten with git filter-repo before going public (company name, real OA names and a real amount replaced in every commit; commit counts unchanged; full backup bundle kept outside the repo); plan docs and fixtures made company-neutral; CHANGELOG + version 0.1.0; dev merged to main and tagged v0.1.0; new public repo github.com/Jamamaboy/lineoa-cs-mcp with main, dev, plan, research and the tag; GitHub release v0.1.0; CI on main green. The old private repo is the git remote private-old and was not changed.
+- Why: The assignment needs a public repo, and the owner wants it to describe only what the MCP server does.
+- Commits: chore(release): v0.1.0; release: v0.1.0 (main)
+- For other lanes: none.
+
+## 2026-11-06 07:16 ICT · Grader dry-run and review fixes (feat/polish)
+- What: a fresh clone of the public repo was installed, checked and toured per the README (all passed; build and
+  npm audit clean). A code-review agent then reported 11 defects, and all were fixed in small commits:
+  - ids that could rewrite request paths (bypassing the OA allowlist) are refused;
+  - cookies go only to line.biz and its subdomains;
+  - bad numeric settings are a CONFIG_ERROR instead of switching limits off;
+  - uncertain sends count toward the cap, the echo is checked on the event and its message, only a failed POST
+    is uncertain, and audit errors can't flip a delivered send to a failure;
+  - search dates cover whole days and only message text matches;
+  - filtered lists read more pages;
+  - a missing list in a response is ENDPOINT_CHANGED;
+  - downloads stop at the cap while streaming;
+  - setup and .mcp.json work on Windows.
+  Lint warnings and test-output noise were also cleared, and the README now notes invisible bot replies.
+- Why: the user asked to keep checking and propose improvements before review.
+- Commits: chore: clear lint warnings…; docs: note that Messaging API bot replies…; fix(security) ×2; fix(config);
+  fix(send); fix(search); fix(list); fix(client); fix(attachments); fix(setup).
+- For other lanes: none. Not pushed.

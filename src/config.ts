@@ -27,6 +27,17 @@ export interface Config {
   syncLimits: { maxChats: number; maxMessagesPerChat: number };
 }
 
+/** A positive whole number from the environment, or the default. Anything else is a config error, so a typo
+ * can never switch a safety limit off (Number("abc") is NaN, and every comparison with NaN is false). */
+function positiveInt(env: NodeJS.ProcessEnv, name: string, fallback: number): number {
+  const raw = env[name]?.trim();
+  if (!raw) return fallback;
+  const n = Number(raw);
+  if (!Number.isInteger(n) || n <= 0)
+    throw new LineOAError("CONFIG_ERROR", `${name} must be a positive whole number, got "${raw}".`);
+  return n;
+}
+
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
   // The real console by default; the mock is used only when asked for (LINEOA_MOCK=1 or a mock URL).
   const baseUrl = (env.LINEOA_BASE_URL ?? "https://chat.line.biz").replace(/\/$/, "");
@@ -50,7 +61,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
       (host === "chat.line.biz" ? "https://chat-content.line.biz" : `${baseUrl}/content`)
     ).replace(/\/$/, ""),
     cacheDir: expandHome(env.LINEOA_CACHE_DIR ?? "~/.cache/lineoa-mcp/attachments"),
-    maxAttachmentBytes: Number(env.LINEOA_MAX_ATTACHMENT_MB ?? 32) * 1024 * 1024,
+    maxAttachmentBytes: positiveInt(env, "LINEOA_MAX_ATTACHMENT_MB", 32) * 1024 * 1024,
     botAllowlist: (env.LINEOA_BOT_ALLOWLIST ?? "")
       .split(",")
       .map((s) => s.trim())
@@ -61,12 +72,12 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
       .split(",")
       .map((s) => s.trim())
       .filter(Boolean),
-    sendDailyLimit: Number(env.LINEOA_SEND_DAILY_LIMIT ?? 50),
+    sendDailyLimit: positiveInt(env, "LINEOA_SEND_DAILY_LIMIT", 50),
     auditFile: expandHome(env.LINEOA_AUDIT_FILE ?? "~/.local/share/lineoa-mcp/audit.jsonl"),
     indexFile: expandHome(env.LINEOA_INDEX_FILE ?? "~/.local/share/lineoa-mcp/index.db"),
     syncLimits: {
-      maxChats: Number(env.LINEOA_SYNC_MAX_CHATS ?? 50),
-      maxMessagesPerChat: Number(env.LINEOA_SYNC_MAX_MESSAGES ?? 200),
+      maxChats: positiveInt(env, "LINEOA_SYNC_MAX_CHATS", 50),
+      maxMessagesPerChat: positiveInt(env, "LINEOA_SYNC_MAX_MESSAGES", 200),
     },
   };
 }

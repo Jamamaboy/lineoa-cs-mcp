@@ -1,3 +1,4 @@
+import { hostMatches } from "../auth/session-source.js";
 import { authExpired, LineOAError } from "../domain/errors.js";
 
 /** The web app sends this header; linebiz copies it, so do we. */
@@ -65,7 +66,7 @@ export async function getBytes(
   maxBytes: number,
 ): Promise<{ bytes: Uint8Array; contentType?: string }> {
   const target = new URL(url);
-  const own = target.hostname.endsWith("line.biz") || target.origin === new URL(deps.baseUrl).origin;
+  const own = hostMatches(target.hostname, "line.biz") || target.origin === new URL(deps.baseUrl).origin;
   const cookie = own ? deps.cookie(target.hostname) : undefined;
   if (own && !cookie) throw authExpired();
   const res = await (deps.fetch ?? fetch)(target, { headers: cookie ? { Cookie: cookie } : {} });
@@ -77,8 +78,24 @@ export async function getBytes(
   const tooBig = () =>
     new LineOAError("ATTACHMENT_TOO_LARGE", `The file is larger than ${Math.round(maxBytes / 1048576)} MB.`);
   if (Number(res.headers.get("content-length") ?? 0) > maxBytes) throw tooBig();
-  const bytes = new Uint8Array(await res.arrayBuffer());
-  if (bytes.length > maxBytes) throw tooBig();
+  // Read in chunks and stop at the cap, so a file sent without a length can't fill memory first.
+  const chunks: Uint8Array[] = [];
+  let size = 0;
+  const reader = res.body?.getReader();
+  for (let chunk = await reader?.read(); chunk && !chunk.done; chunk = await reader?.read()) {
+    size += chunk.value.length;
+    if (size > maxBytes) {
+      await reader?.cancel();
+      throw tooBig();
+    }
+    chunks.push(chunk.value);
+  }
+  const bytes = new Uint8Array(size);
+  let offset = 0;
+  for (const c of chunks) {
+    bytes.set(c, offset);
+    offset += c.length;
+  }
   const contentType = res.headers.get("content-type") ?? undefined;
   return { bytes, ...(contentType ? { contentType } : {}) };
 }
