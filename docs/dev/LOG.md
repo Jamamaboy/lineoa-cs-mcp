@@ -271,3 +271,9 @@
 - Why: Tech-lead review: no license file, lint warning, internal note in a public file.
 - Commits: `chore: MIT license, unused import, no internal notes in STATUS` (this commit; the LOG entry ships with the work)
 - For other lanes: none.
+
+## 2026-11-06 19:53 ICT · error + input validation (T3)
+- What: src/client/http.ts, src/tools/search-messages.ts, src/tools/send-message.ts, src/domain/errors.ts
+- Why: QA review: UNEXPECTED fetch failed, impossible dates accepted, blank text accepted, API path in errors.
+- Commits: `fix: network failures and 404s give actionable errors; search dates must be real` (this commit; the LOG entry ships with the work)
+- For other lanes: none.

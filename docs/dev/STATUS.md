@@ -2,6 +2,7 @@
 Last updated: 2026-11-06 19:53 ICT · branch feat/review-fixes
 
 ## Now
+- Done: error + input validation (T3)
 - Done: repo polish (T1)
 - Done: diagram palette
 - Done: plan kit installed
