@@ -1,5 +1,33 @@
 # Changelog
 
+## v0.1.1 · 2026-11-06
+
+Fixes from a fresh-clone dry run and a code review.
+
+### Security
+- Chat and message ids must be plain LINE id characters. Before this, an id like `../../OTHER/chats/X` could
+  reach an OA outside `LINEOA_BOT_ALLOWLIST`.
+- Session cookies go only to `line.biz` and its subdomains. Before this, any host ending in "line.biz" could
+  receive them.
+
+### Fixes
+- Invalid numeric settings (for example `LINEOA_SEND_DAILY_LIMIT=abc`) are now a `CONFIG_ERROR`. Before this,
+  they silently turned the limit off.
+- Sending:
+  - A send whose result is unknown counts toward the daily cap.
+  - The echo is looked up on the event and on its message, up to 3 times.
+  - Only a failed POST is reported as `SEND_UNCERTAIN`.
+  - An audit-log error can no longer turn a delivered message into a reported failure.
+- `search_messages`: `since` and `until` are whole days (YYYY-MM-DD, local time), and only message text
+  matches.
+- `list_chats` with a filter reads up to 125 chats to fill the list, and returns `scanned`. The CLI uses the
+  same filters.
+- A response without its expected list is now `ENDPOINT_CHANGED`.
+- Attachment downloads stop at the size cap while streaming.
+- `npm run setup` and `.mcp.json` work on Windows.
+- Lint warnings and test-output noise are cleared. The README notes that Messaging API bot replies can be
+  invisible in the console.
+
 ## v0.1.0 · 2026-11-06
 
 First release: an MCP server that lets an AI agent work LINE OA Manager (chat.line.biz) like a support person.
