@@ -11,7 +11,7 @@ profile. It must not use the official Messaging API. It is graded on authenticat
 and on attachment handling (images and files). Plan: `docs/PLAN.md` in this worktree.
 
 ## Where you work
-- Worktree root: `/Users/psoongsu/orca/lineoa-cs-mcp-research` (branch `research`)
+- Worktree root: `<research worktree>` (branch `research`)
 - You write only these files, and only for **your own slugs**:
   - `test/research/data/<slug>.json`: one per project, schema below
   - `test/research/shots/<slug>-<n>.png`: screenshots

@@ -143,3 +143,9 @@
 - Why: the four-persona review flagged internal notes in the public repo (plan docs/dev/plans/2026-11-06-review-fixes.html, T2).
 - Commits: `docs(plan): neutral CLAUDE.md and doc map` (this commit)
 - For other lanes: none.
+
+## 2026-11-06 20:30 ICT · no dead link to the assignment file
+- What: PLAN.md, PLAN_thai.md, PLAN.html say the brief is kept out of the repo instead of linking docs/ASSIGNMENT.md.
+- Why: final review — the link 404s in the public repo.
+- Commits: `docs(plan): no dead link to the untracked assignment file` (this commit)
+- For other lanes: none.

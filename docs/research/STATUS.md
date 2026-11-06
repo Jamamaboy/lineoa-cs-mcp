@@ -1,7 +1,8 @@
 # research status
-Last updated: 2026-11-06 04:17 ICT · branch research
+Last updated: 2026-11-06 20:30 ICT · branch research
 
 ## Now
+- Agent briefs no longer contain a local home-folder path.
 - Round 5 done: web search for references similar to ours (EN/TH/JA/ZH). No new open-source MCP for LINE OA exists.
   11 new references profiled, the closest being kakao-channel-chat, facebook-lyr and the Help Scout MCP. Everything
   is merged into one page, `docs/research/refs-comparison.html`: purpose groups, an in-depth comparison of the 8

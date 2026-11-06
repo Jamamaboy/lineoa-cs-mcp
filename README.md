@@ -176,6 +176,38 @@ The picture is in [Architecture](#architecture). In words:
 - Customer messages and files are marked as untrusted input in every tool description.
 - Reading never marks a chat as read, so customers don't see "read" when nobody has answered.
 
+## Assumptions
+
+The brief leaves these open; this is what the code assumes (full list with reasons in [`docs/PLAN.md`](docs/PLAN.md) §2).
+
+- **One server process = one CS staff member's session.** That session may reach several OAs; with more than
+  one and no `LINEOA_DEFAULT_OA`, tools answer `CHOOSE_OA` so the AI asks which one.
+- **"Ongoing chat" = not marked done in the console**, newest first. `needs_reply` = ongoing and the customer
+  spoke last; `unread` and `all` are also offered.
+- **"Search across all chats" = a substring match over recent history**, because the console has no
+  message-search endpoint: the 50 most recent chats and 200 messages each are copied into a local index first.
+- **"Send a message" = a text message.** Sending files is not built.
+- **The server runs next to the CS person** (stdio, started by their AI app), not as a hosted service.
+- **Sends go out as the logged-in staff member**, so a person stays accountable: sending is off by default, the AI
+  app asks first, and every attempt is audit-logged.
+- **Reading never marks a chat as read**; customers don't see "read" when nobody has answered.
+- **The server holds no LLM key.** Summaries, drafts and translation are done by the AI app.
+- During development the live OA was used **read-only** (no sends, no opening unread chats); sending was tested
+  on the mock.
+
+## Stack and why
+
+| Choice | Why |
+|---|---|
+| TypeScript on Node 22.13+ | The MCP SDK is TypeScript-first; one language for the server, the mock and the tests; Node 22 has SQLite built in. |
+| `@modelcontextprotocol/sdk` + zod, stdio | The official SDK; zod schemas are the tool inputs and validate LINE's responses; stdio works with Claude Code and Desktop with no network auth. |
+| `fetch` against the console's JSON API | Fast and deterministic. Driving the page with a browser for every action would be slow and brittle. |
+| `playwright-core` for login only | Opens the browser already installed (Chrome, Edge, …) so the person logs in themselves; no browser download. |
+| `node:sqlite` with substring search | No native module to build, and a substring match works for Thai and Chinese, which have no spaces between words. |
+| `sharp` | Shrinks images before they reach the AI: cheaper and within image limits. |
+| Hono mock on 127.0.0.1 | A small HTTP server that copies the console's paths, cookies and errors, so tests and demos need no LINE account. |
+| vitest, Biome | Fast tests (a real MCP client against the mock) and one tool for lint and format. |
+
 ## Limitations and trade-offs
 
 - **Unofficial API.** chat.line.biz's internal API is undocumented and can change. Endpoints live in one
@@ -193,7 +225,7 @@ The picture is in [Architecture](#architecture). In words:
 - **Bot replies can be invisible.** If an OA also runs a bot through the Messaging API, the bot's replies may
   not appear in the console's history. `needs_reply` then lists chats that a bot already answered. On a live
   OA this showed up as customers who had typed a code that a bot handled.
-- **Not built yet:** sending files, mark as read, a hosted multi-user server, and realtime updates (the
+- **Not built yet** (out of the MVP scope; each needs a test OA or design work first): sending files, mark as read, a hosted multi-user server, and realtime updates (the
   console has an SSE stream).
 - **Live checks.** All read paths were verified against a live OA, read-only. Sending was verified on the
   mock only. A live send needs a test OA and a test chat.
@@ -248,6 +280,7 @@ is in the repo:
 
 | version | date | highlights |
 |---|---|---|
+| [v0.2.2](https://github.com/Jamamaboy/lineoa-cs-mcp/releases/tag/v0.2.2) | 2026-11-06 | README assumptions and stack choices; no stale references |
 | [v0.2.1](https://github.com/Jamamaboy/lineoa-cs-mcp/releases/tag/v0.2.1) | 2026-11-06 | CI green on Windows (LF line endings) |
 | [v0.2.0](https://github.com/Jamamaboy/lineoa-cs-mcp/releases/tag/v0.2.0) | 2026-11-06 | review fixes: CS start page, setup --mock, read by name, clearer errors, response checks, 78 tests |
 | [v0.1.5](https://github.com/Jamamaboy/lineoa-cs-mcp/releases/tag/v0.1.5) | 2026-11-06 | welcome in Claude Code, features page, readable step-by-step diagram |

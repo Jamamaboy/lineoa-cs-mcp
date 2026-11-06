@@ -16,7 +16,7 @@
 - นำคำขอจากทีม research มาใส่ใน §6a แล้ว: markAsRead เป็น PUT, cursor ของการแบ่งหน้ายังไม่ยืนยัน และตัวกรองโฟลเดอร์ทำฝั่ง client
 - §8 ตอนนี้แบ่งเป็นงานคืนนี้กับงานวันศุกร์ §10 แสดง flow ของ support OA
 
-โจทย์ตัวจริงอยู่ที่ [`docs/ASSIGNMENT.md`](ASSIGNMENT.md)
+โจทย์ตัวจริงคือเอกสารโจทย์ (ไม่ได้เก็บไว้ใน repo)
 
 ---
 
@@ -144,7 +144,7 @@ src/
 mock-server/           app.ts  seed/ (เหมือน support OA: rich menu, bot template, flex card, ภาพหน้าจอ, PDF;
                        2 OA ที่มีคนเดียวกันหนึ่งคน, ทำให้ไม่ระบุตัวตนแล้ว)  public/ (console เล็ก ๆ, เป้าหมายของ webUrl)
 test/                  e2e/ (InMemoryTransport)  contract/ (รันกับ LineOAClient ตัวไหนก็ได้)  unit/
-docs/                  ASSIGNMENT.md  PLAN*.md/html (spec ร่วม)  plan/  dev/ (+ dev/plans)  research/  ← แยกโฟลเดอร์ตาม lane
+docs/                  PLAN*.md/html (spec ร่วม)  plan/  dev/ (+ dev/plans)  research/  ← แยกโฟลเดอร์ตาม lane
 .claude/               skill, agent, rule, profile และ agent-strategy/ จาก plan kit
 CLAUDE.md  AGENTS.md  README.md
 ```
