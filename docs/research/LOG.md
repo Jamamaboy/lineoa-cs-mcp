@@ -44,3 +44,9 @@
 - Why: the repo goes public and should describe only what the MCP server does.
 - Commits: this commit.
 - For other lanes: the mock shows "Demo Shop"; tests do not depend on the shop names.
+
+## 2026-11-06 20:30 ICT · no local paths in agent briefs
+- What: test/research/line-api-shapes/_evidence/BRIEF.md and test/research/tools/AGENT_BRIEF.md say <research worktree> instead of a /Users/... path.
+- Why: final review flagged local paths in the public repo.
+- Commits: `research: no local paths in agent briefs` (this commit)
+- For other lanes: none.
