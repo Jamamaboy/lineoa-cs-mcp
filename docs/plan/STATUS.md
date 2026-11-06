@@ -1,7 +1,8 @@
 # plan status
-Last updated: 2026-11-06 19:52 ICT · branch plan
+Last updated: 2026-11-06 20:30 ICT · branch plan
 
 ## Now
+- PLAN.md / PLAN_thai.md / PLAN.html no longer link the untracked assignment file.
 - CLAUDE.md and docs/README.md are company- and deadline-neutral: no take-home/deadline line, no link to an untracked task file, "reviewers" instead of "graders" (review-fixes plan, task T2).
 - `docs/plan/plan-summary.html`: Thai one-page summary (end result, use cases, tools, folder tree + file counts).
 - Docs cleaned up: `docs/README.md` maps every document; the run plan is `docs/plan/run-plan.{md,html}`; the
