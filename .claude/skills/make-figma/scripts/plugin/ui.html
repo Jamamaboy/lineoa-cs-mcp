@@ -1,0 +1,59 @@
+<style>
+  body { font: 13px/1.5 -apple-system, "Segoe UI", sans-serif; margin: 14px; color: #16202B; }
+  h3 { margin: 0 0 8px; font-size: 15px; }
+  button { width: 100%; padding: 10px; margin: 4px 0 10px; border-radius: 8px; border: 0; background: #16202B; color: #fff; font-weight: 600; cursor: pointer; }
+  button:disabled { opacity: .5; cursor: default; }
+  button:focus-visible, input:focus-visible { outline: 2px solid #1D6FD1; outline-offset: 2px; }
+  .box { border: 1px solid #DDE3EA; border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; }
+  .hint { color: #4B5663; font-size: 12px; }
+  #st { margin-top: 8px; font-weight: 600; min-height: 20px; white-space: pre-wrap; }
+</style>
+<h3>Design push</h3>
+<div class="box">
+  <div><b>Version folder</b></div>
+  <div class="hint">Select every file in the version folder (manifest.json + the PNGs), e.g. with Cmd+A.</div>
+  <input id="files" type="file" accept="image/png,application/json" multiple webkitdirectory="false">
+  <button id="go" disabled>Push version</button>
+</div>
+<div id="st"></div>
+<script>
+  const st = document.getElementById("st");
+  const go = document.getElementById("go");
+  const input = document.getElementById("files");
+  let picked = [];
+
+  input.onchange = (e) => {
+    picked = [...e.target.files];
+    go.disabled = picked.length === 0;
+    st.textContent = picked.length ? picked.length + " file(s) selected" : "";
+  };
+
+  go.onclick = async () => {
+    go.disabled = true;
+    st.textContent = "reading files...";
+    const manifestFile = picked.find(f => /(^|\/)manifest\.json$/i.test(f.name));
+    if (!manifestFile) { st.textContent = "error: no manifest.json in the selected files"; go.disabled = false; return; }
+    let manifest;
+    try { manifest = JSON.parse(await manifestFile.text()); }
+    catch (e) { st.textContent = "error: manifest.json is not valid JSON (" + e.message + ")"; go.disabled = false; return; }
+
+    const files = [];
+    for (const f of picked) {
+      if (f === manifestFile) continue;
+      const m = f.name.match(/^(.+?)__(.+?)(?:__p(\d+))?\.png$/i);
+      if (!m) { continue; }
+      const bytes = new Uint8Array(await f.arrayBuffer());
+      files.push({ section: m[1], screen: m[2], part: Number(m[3] || 1), name: f.name, bytes });
+    }
+    if (!files.length) { st.textContent = "error: no PNGs matched <section>__<screen>__p<N>.png"; go.disabled = false; return; }
+
+    st.textContent = "pushing " + files.length + " image(s)...";
+    parent.postMessage({ pluginMessage: Object.assign({ type: "push-version" }, manifest, { files }) }, "*");
+  };
+
+  onmessage = (e) => {
+    const m = e.data && e.data.pluginMessage;
+    if (m && m.text) st.textContent = m.text;
+    if (m && m.done) go.disabled = picked.length === 0;
+  };
+</script>
