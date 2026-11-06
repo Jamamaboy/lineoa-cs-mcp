@@ -2,6 +2,7 @@
 Last updated: 2026-11-06 19:03 ICT · branch feat/fresh-clone-fixes
 
 ## Now
+- Done: send on the mock
 - Done: LINEOA_MOCK for the CLI
 - Done: CLI hints use npm scripts
 - Done: release v0.1.3

@@ -211,3 +211,9 @@
 - Why: A fresh-clone test found that LINEOA_MOCK=1 had no effect on the CLI, which then read the live OA.
 - Commits: `fix(cli): LINEOA_MOCK=1 also switches the terminal command to the mock` (this commit; the LOG entry ships with the work)
 - For other lanes: none.
+
+## 2026-11-06 19:03 ICT · send on the mock
+- What: .mcp.json: lineoa-cs-mock gets LINEOA_ALLOW_SEND=true; README says so. lineoa-cs (live) is unchanged: read-only.
+- Why: Without it a fresh clone could not try the send tool anywhere.
+- Commits: `feat(dx): turn sending on for the mock entry in .mcp.json` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
