@@ -1,0 +1,278 @@
+<!-- Plan page skeleton — copy this whole file as the starting point, then replace every [[ ]]
+     Self-contained token set, so every plan page in a repo shares one look.
+     No CDN of any kind · opens straight from file:// · no decorative emoji -->
+<title>[[ISSUE-ID]] — [[short task name]]</title>
+
+<style>
+:root{
+  --ground:#F7F8FA; --surface:#FFFFFF; --surface-2:#F1F4F9;
+  --line:#E2E7F0; --line-soft:#EDF1F7;
+  --ink:#141A22; --ink-2:#4A5568; --ink-3:#8A94A6;
+  --accent:#2563EB; --accent-soft:#E8EFFE; --accent-ink:#1D4ED8;
+  --ok:#15803D; --ok-soft:#E6F4EA;
+  --warn:#B45309; --warn-soft:#FDF0DC;
+  --crit:#B91C1C; --crit-soft:#FBE9E9;
+  --code-bg:#12161C; --code-ink:#E6EDF3;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --sans:system-ui,-apple-system,"Segoe UI","Noto Sans Thai","Sarabun",sans-serif;
+  --r:10px; --r-lg:14px;
+  --shadow:0 1px 2px rgba(20,26,34,.06),0 1px 3px rgba(20,26,34,.04);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0E1218; --surface:#161C24; --surface-2:#1D242E;
+    --line:#2A323D; --line-soft:#232A34;
+    --ink:#EDF1F6; --ink-2:#A8B3C2; --ink-3:#6D7889;
+    --accent:#5B8DEF; --accent-soft:#1B2740; --accent-ink:#8FB2F5;
+    --ok:#4ADE80; --ok-soft:#16281D;
+    --warn:#FBBF24; --warn-soft:#2C2313;
+    --crit:#F87171; --crit-soft:#2E1717;
+    --code-bg:#0A0D12; --code-ink:#E6EDF3;
+    --shadow:0 1px 2px rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0E1218; --surface:#161C24; --surface-2:#1D242E;
+  --line:#2A323D; --line-soft:#232A34;
+  --ink:#EDF1F6; --ink-2:#A8B3C2; --ink-3:#6D7889;
+  --accent:#5B8DEF; --accent-soft:#1B2740; --accent-ink:#8FB2F5;
+  --ok:#4ADE80; --ok-soft:#16281D;
+  --warn:#FBBF24; --warn-soft:#2C2313;
+  --crit:#F87171; --crit-soft:#2E1717;
+  --code-bg:#0A0D12; --code-ink:#E6EDF3;
+  --shadow:0 1px 2px rgba(0,0,0,.4);
+}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);
+     font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{margin:0;text-wrap:balance;line-height:1.25}
+p{margin:0}
+a{color:var(--accent-ink)}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th{text-align:left;font-size:11.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3);
+   font-weight:600;padding:0 10px 8px;border-bottom:1px solid var(--line)}
+td{padding:9px 10px;border-bottom:1px solid var(--line-soft);font-size:13.5px;vertical-align:top}
+tbody tr:last-child td{border-bottom:0}
+
+.wrap{max-width:960px;margin:0 auto;padding:28px 20px 90px}
+.masthead h1{font-size:27px;letter-spacing:-.02em}
+.masthead .sub{color:var(--ink-2);font-size:14px;margin-top:6px;max-width:70ch}
+
+/* ---- sticky 2-row nav: Part A for humans / Part B for /implement-plan ---- */
+.nav{position:sticky;top:0;z-index:9;background:var(--ground);border-bottom:1px solid var(--line);
+     padding:9px 0;margin:16px 0 26px}
+.navrow{display:flex;gap:6px;align-items:baseline;flex-wrap:wrap;font-size:12.5px}
+.navrow + .navrow{margin-top:5px}
+.navrow b{color:var(--ink-3);font-weight:600;min-width:52px}
+.navrow a{color:var(--ink-2);text-decoration:none;padding:2px 7px;border-radius:6px}
+.navrow a:hover{background:var(--surface-2);color:var(--ink)}
+
+h2{font-size:19px;margin:38px 0 4px;letter-spacing:-.01em;scroll-margin-top:76px}
+h2 + .lede{color:var(--ink-2);font-size:14px;margin-bottom:14px}
+h3{font-size:15px;margin:20px 0 8px}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);
+      box-shadow:var(--shadow);margin-bottom:12px;overflow:hidden}
+.card-h{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+        padding:11px 15px;border-bottom:1px solid var(--line-soft)}
+.card-h h3{font-size:14.5px;font-weight:650;margin:0}
+.card-b{padding:14px 15px}
+.card-b > * + *{margin-top:9px}
+
+.pill{display:inline-flex;align-items:center;font-size:11.5px;font-weight:600;
+      padding:2px 9px;border-radius:99px;white-space:nowrap}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.crit{background:var(--crit-soft);color:var(--crit)}
+.pill.mute{background:var(--surface-2);color:var(--ink-3)}
+.pill.acc{background:var(--accent-soft);color:var(--accent-ink)}
+
+.mono{font-family:var(--mono);font-size:12.5px}
+.dim{color:var(--ink-3)}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+pre{background:var(--code-bg);color:var(--code-ink);border-radius:var(--r);padding:13px 15px;
+    margin:0;overflow-x:auto;font-family:var(--mono);font-size:12.5px;line-height:1.55}
+code{font-family:var(--mono);font-size:.92em;background:var(--surface-2);
+     padding:1px 5px;border-radius:4px}
+pre code{background:none;padding:0;font-size:inherit}
+
+.note{border-left:3px solid var(--warn);background:var(--warn-soft);padding:11px 14px;
+      border-radius:0 var(--r) var(--r) 0;font-size:13.5px}
+.note.crit{border-color:var(--crit);background:var(--crit-soft)}
+.note.ok{border-color:var(--ok);background:var(--ok-soft)}
+
+/* ---- before/after compare: two columns collapsing to one on narrow screens ---- */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:760px){.two{grid-template-columns:1fr}}
+.colhead{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+         color:var(--ink-3);margin-bottom:7px}
+
+/* ---- flow diagram: current and proposed MUST use this exact same class set ---- */
+.flow{display:flex;flex-direction:column;gap:0;font-size:12.5px}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:8px;
+      padding:8px 11px;font-family:var(--mono);font-size:12px}
+.step.new{border-color:var(--accent);background:var(--accent-soft);color:var(--accent-ink)}
+.step.gone{border-style:dashed;color:var(--ink-3);text-decoration:line-through}
+.step.bad{border-color:var(--crit);background:var(--crit-soft);color:var(--crit)}
+.arrow{color:var(--ink-3);text-align:center;font-size:13px;line-height:1;padding:5px 0}
+.branch{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:center;
+        font-family:var(--mono);font-size:11.5px;color:var(--ink-3);padding-left:12px}
+
+/* ---- Impact: 3 cards ---- */
+.impact{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.imp{border-left:3px solid var(--line);background:var(--surface);border-radius:0 var(--r) var(--r) 0;
+     padding:12px 14px}
+.imp.ux{border-color:var(--ok)} .imp.data{border-color:var(--accent)} .imp.risk{border-color:var(--warn)}
+.imp h4{font-size:13.5px;margin-bottom:5px}
+.imp p{font-size:13px;color:var(--ink-2)}
+
+/* ---- Tasks ---- */
+.task{border-left:3px solid var(--ok);background:var(--surface);border:1px solid var(--line);
+      border-left-width:3px;border-radius:0 var(--r) var(--r) 0;padding:13px 15px;margin-bottom:11px}
+.task h4{font-size:14.5px;margin-bottom:6px}
+.task dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:0 0 9px;font-size:13px}
+.task dt{color:var(--ink-3);font-weight:600;white-space:nowrap}
+.task dd{margin:0}
+
+/* ---- stat bar ---- */
+.bar{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin:18px 0 6px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+.stat .n{font-size:24px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.stat .l{font-size:12.5px;color:var(--ink-3);margin-top:2px}
+/* ---- review-rounds table ---- */
+.round td:first-child{white-space:nowrap}
+</style>
+
+<div class="wrap">
+
+<div class="masthead">
+  <h1>[[Task name — written as the outcome people see, not a function name]]</h1>
+  <p class="sub">Plan · [[YYYY-MM-DD]] · <a href="[[issue URL]]">[[ISSUE-ID]]</a> · [[one-line context]]</p>
+</div>
+
+<nav class="nav">
+  <div class="navrow"><b>Part A</b>
+    <a href="#goal">Goal</a><a href="#problem">Problems</a><a href="#now">Current</a>
+    <a href="#proposed">Proposed</a><a href="#compare">Compare</a><a href="#impact">Impact</a>
+  </div>
+  <div class="navrow"><b>Part B</b>
+    <a href="#ac">Acceptance</a><a href="#scope">Scope</a><a href="#edges">Edge cases</a>
+    <a href="#files">File map</a><a href="#tasks">Tasks</a><a href="#tests">Tests</a>
+    <a href="#open">Open Qs</a><a href="#round">Review rounds</a>
+  </div>
+</nav>
+
+<!-- ============ PART A — for the human reviewer ============ -->
+
+<h2 id="goal">Goal</h2>
+<p class="lede">[[What the user gets when this ships — 2–4 lines]]</p>
+
+<h2 id="problem">Current problems</h2>
+<p class="lede">[[Symptom + who is affected, with <code>path/file.ts:123</code>]]</p>
+<div class="note">
+  <b>Concrete break:</b> [[Tell it as a story — who clicked what, when, and hit what. Use real customer data.]]
+</div>
+
+<h2 id="now">Current state</h2>
+<div class="scroll"><pre><code>[[the real schema / code involved — copy the real thing, never paraphrase]]</code></pre></div>
+<h3>Current flow</h3>
+<div class="flow">
+  <div class="step">[[Route POST /api/xxx]]</div>
+  <div class="arrow">&darr;</div>
+  <div class="step">[[function called]]</div>
+  <div class="arrow">&darr;</div>
+  <div class="step bad">[[breaking point]]</div>
+</div>
+
+<h2 id="proposed">Proposed approach</h2>
+<p class="lede">[[What changes, why this path was chosen, what was rejected, and the trade-off]]</p>
+<div class="scroll"><pre><code>[[new schema / code outline]]</code></pre></div>
+<h3>Proposed flow</h3>
+<!-- exact same class structure as the flow above — the eye catches the diff on its own -->
+<div class="flow">
+  <div class="step">[[Route POST /api/xxx]]</div>
+  <div class="arrow">&darr;</div>
+  <div class="step new">[[added step]]</div>
+  <div class="arrow">&darr;</div>
+  <div class="step">[[function called]]</div>
+</div>
+
+<h2 id="compare">Side-by-side</h2>
+<div class="scroll"><table>
+  <thead><tr><th>Case</th><th>Today</th><th>Proposed</th></tr></thead>
+  <tbody>
+    <tr><td>[[case]]</td><td><span class="pill crit">[[result today]]</span></td><td><span class="pill ok">[[new result]]</span></td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="impact">Impact</h2>
+<div class="impact">
+  <div class="imp ux"><h4>UX</h4><p>[[what users see change]]</p></div>
+  <div class="imp data"><h4>Data shape</h4><p>[[rows rewritten? backfill? idempotent if re-run?]]</p></div>
+  <div class="imp risk"><h4>Risk</h4><p>[[what can break, what to audit before deploy]]</p></div>
+</div>
+
+<!-- ============ PART B — the contract for /implement-plan ============ -->
+
+<h2 id="ac">Acceptance criteria</h2>
+<p class="lede">/implement-plan walks these one by one — every item must be checkable; "works correctly" is not allowed</p>
+<div class="card"><div class="card-b">
+  <ol><li>[[click X, get Y]]</li><li>[[every verify command in the profile comes back green]]</li></ol>
+</div></div>
+
+<h2 id="scope">Scope / not doing</h2>
+<div class="two">
+  <div><div class="colhead">In scope</div><ul><li>[[...]]</li></ul></div>
+  <div><div class="colhead">Not this round</div><ul><li>[[... + reason]]</li></ul></div>
+</div>
+
+<h2 id="edges">Edge cases</h2>
+<div class="scroll"><table>
+  <thead><tr><th>Case</th><th>Decision</th></tr></thead>
+  <tbody><tr><td>[[...]]</td><td>[[...]]</td></tr></tbody>
+</table></div>
+
+<h2 id="files">File map</h2>
+<div class="scroll"><table>
+  <thead><tr><th>Action</th><th>Path</th><th>Purpose</th></tr></thead>
+  <tbody>
+    <tr><td><span class="pill ok">Create</span></td><td class="mono">[[path]]</td><td>[[...]]</td></tr>
+    <tr><td><span class="pill warn">Modify</span></td><td class="mono">[[path]]</td><td>[[...]]</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="tasks">Tasks</h2>
+<div class="task">
+  <h4>Task 1 — [[name]]</h4>
+  <dl>
+    <dt>Depends on</dt><dd>none</dd>
+    <dt>Files</dt><dd class="mono">[[path]]</dd>
+    <dt>Tests first</dt><dd>[[cases to write before touching code]]</dd>
+  </dl>
+  <div class="scroll"><pre><code>[[rough code outline — enough that coder never has to guess]]</code></pre></div>
+</div>
+
+<h2 id="tests">Test strategy</h2>
+<div class="scroll"><table>
+  <thead><tr><th>Case</th><th>Expected</th><th>Test file</th></tr></thead>
+  <tbody><tr><td>[[...]]</td><td>[[...]]</td><td class="mono">[[src/lib/__tests__/xxx.test.ts]]</td></tr></tbody>
+</table></div>
+
+<h2 id="open">Open questions</h2>
+<div class="note crit">[[Anything a human must answer before implementation — if nothing, write "none"]]</div>
+
+<!-- ============ proof the review gate actually ran — never remove ============ -->
+
+<h2 id="round">Review rounds</h2>
+<p class="lede">What plan-reviewer and plan-risk-auditor found in the draft, and how each finding was resolved</p>
+<div class="scroll"><table class="round">
+  <thead><tr><th>Found by</th><th>Severity</th><th>Finding</th><th>Resolution</th></tr></thead>
+  <tbody>
+    <tr><td>plan-risk-auditor</td><td><span class="pill crit">CRITICAL</span></td><td>[[...]]</td><td>[[...]]</td></tr>
+    <tr><td>plan-reviewer</td><td><span class="pill warn">IMPORTANT</span></td><td>[[...]]</td><td>[[...]]</td></tr>
+  </tbody>
+</table></div>
+
+</div>

@@ -7,3 +7,5 @@ coverage/
 *.har
 .DS_Store
 docs/ASSIGNMENT.md
+
+.claude/.plan-kit-backup/

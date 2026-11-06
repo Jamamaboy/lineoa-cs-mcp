@@ -253,3 +253,9 @@
 - Why: the user approved pushing and releasing the welcome message, features page and readable diagram.
 - Commits: `chore(release): v0.1.5` (this commit)
 - For other lanes: none.
+
+## 2026-11-06 19:38 ICT · plan kit installed
+- What: install.sh copied the kit under .claude/; the profile is filled in for this repo.
+- Why: The user wants the review fixes planned with /write-plan and built with /implement-plan from their own kit.
+- Commits: `chore(dx): install the plan kit (write-plan / implement-plan) with this repo's profile` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
