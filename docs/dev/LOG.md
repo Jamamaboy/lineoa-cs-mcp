@@ -235,3 +235,9 @@
 - Why: The user wanted one page that says what the system does and what each feature contains in git.
 - Commits: `docs: features page built from git (npm run features)` (this commit; the LOG entry ships with the work)
 - For other lanes: none.
+
+## 2026-11-06 19:19 ICT · readable sequence diagram
+- What: New docs/assets/sequence.svg replaces the README's mermaid sequence diagram.
+- Why: The user found the mermaid diagram hard to read and cut off on GitHub in dark mode.
+- Commits: `docs: draw the step-by-step diagram as an SVG that reads in dark mode` (this commit; the LOG entry ships with the work)
+- For other lanes: none.

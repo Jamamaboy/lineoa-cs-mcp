@@ -1,7 +1,8 @@
 # dev status
-Last updated: 2026-11-06 19:11 ICT · branch feat/welcome
+Last updated: 2026-11-06 19:19 ICT · branch feat/readable-diagrams
 
 ## Now
+- Done: readable sequence diagram
 - Done: features page
 - Done: welcome on session start
 - v0.1.4 released to main (tag v0.1.4, GitHub release). Public repo: github.com/Jamamaboy/lineoa-cs-mcp.
