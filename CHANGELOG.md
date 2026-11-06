@@ -1,5 +1,37 @@
 # Changelog
 
+## v0.2.0 · 2026-11-06
+
+Fixes from a four-persona review (non-technical CS user, maintainer, QA, tech lead), planned with `/write-plan`
+and built with `/implement-plan` (plan: `docs/dev/plans/2026-11-06-review-fixes.html`).
+
+### For CS staff
+- `docs/START.th.md`: a Thai start page for non-developers (Terminal, Node, expected output per step, Claude
+  Desktop vs Code, where data goes and what is safe) and `start-mac.command`, a double-click installer.
+- `npm run setup -- --mock` adds the sample-data server to Claude Desktop or Code, so you can try it without LINE.
+- The terminal command reads a chat by its exact customer name (`read "นก 🌸"`); a partial name only suggests.
+  Dates print as `5 Nov 2026, 12:00`.
+
+### Fixes
+- Network failures and cut-off downloads are `UPSTREAM_ERROR` naming only the host, not `UNEXPECTED`.
+- 404s no longer show internal API paths; an unknown chat says to use `list_chats`.
+- `search_messages` rejects impossible dates and `until` before `since` (`BAD_INPUT`) and blank queries;
+  `send_message` rejects whitespace-only text.
+- A bad setting prints one line (`lineoa-cs: CONFIG_ERROR: …`) instead of a stack trace; so do bad CLI options.
+- LINE's responses are checked: one odd chat is skipped with a warning; a renamed key field is `ENDPOINT_CHANGED`
+  instead of silently wrong values. Checked read-only against a live OA.
+- A corrupt session file means "not logged in"; the session is written atomically with 0600. A bad audit-log
+  line counts as a send instead of blocking all sending.
+- `setup` keeps settings already in the entry, never overwrites a backup, leaves a corrupt config alone, and quotes
+  Windows paths. The cookie goes to LINE only over HTTPS. The mock never touches the real index or audit log.
+- The built output (`dist/`) runs the mock; CI checks Linux, macOS and Windows plus the build.
+
+### Repo
+- MIT `LICENSE`; README opens with a plain pitch and the Thai links; no leftover placeholders.
+- One version source (`package.json`); `tsx` is a runtime dependency because `setup` registers it.
+- The plan kit (write-plan / implement-plan) is installed under `.claude/` with this repo's profile.
+- Tests: 33 → 78.
+
 ## v0.1.5 · 2026-11-06
 
 - Claude Code greets you when it starts in this folder: the next step (install, log in, or ready), example

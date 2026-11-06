@@ -391,3 +391,9 @@
 - Why: Re-review of the orchestrator's own fixes (writer != reviewer) found the order issue.
 - Commits: `fix(setup): check Windows paths before removing the old registration` (this commit; the LOG entry ships with the work)
 - For other lanes: none.
+
+## 2026-11-06 20:08 ICT · release v0.2.0
+- What: version 0.2.0, CHANGELOG, Versions row, features page regenerated, STATUS rewritten, runs.md row for this implement-plan run; dev → main --no-ff, tag v0.2.0, push, GitHub release.
+- Why: the review-fixes plan is done (T1–T8 + review rounds); the user approved releasing it as v0.2.0.
+- Commits: `chore(release): v0.2.0` (this commit)
+- For other lanes: plan lane's neutral CLAUDE.md is merged into dev in the same release.

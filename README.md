@@ -248,6 +248,7 @@ is in the repo:
 
 | version | date | highlights |
 |---|---|---|
+| [v0.2.0](https://github.com/Jamamaboy/lineoa-cs-mcp/releases/tag/v0.2.0) | 2026-11-06 | review fixes: CS start page, setup --mock, read by name, clearer errors, response checks, 78 tests |
 | [v0.1.5](https://github.com/Jamamaboy/lineoa-cs-mcp/releases/tag/v0.1.5) | 2026-11-06 | welcome in Claude Code, features page, readable step-by-step diagram |
 | [v0.1.4](https://github.com/Jamamaboy/lineoa-cs-mcp/releases/tag/v0.1.4) | 2026-11-06 | fresh-clone fixes: CLI hints, mock for the CLI, send on the mock |
 | [v0.1.3](https://github.com/Jamamaboy/lineoa-cs-mcp/releases/tag/v0.1.3) | 2026-11-06 | docs: diagrams, graphics, demo GIF, history guide |
