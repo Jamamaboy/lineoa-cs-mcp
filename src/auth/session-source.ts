@@ -18,6 +18,13 @@ export function envSource(cookie: string | undefined): SessionSource {
   return { name: "env", cookieFor: () => cookie || undefined };
 }
 
+/** True when `host` is `domain` or a subdomain of it ("chat.line.biz" for ".line.biz", not "evilline.biz"). */
+export function hostMatches(host: string, domain: string): boolean {
+  const d = domain.replace(/^\./, "").toLowerCase();
+  const h = host.toLowerCase();
+  return h === d || h.endsWith(`.${d}`);
+}
+
 /** A Playwright storageState file; picks the cookies whose domain matches the host. */
 export function fileSource(path: string): SessionSource {
   return {
@@ -30,7 +37,7 @@ export function fileSource(path: string): SessionSource {
         return undefined;
       }
       const state = JSON.parse(raw) as { cookies?: { name: string; value: string; domain: string }[] };
-      const cookies = (state.cookies ?? []).filter((c) => host.endsWith(c.domain.replace(/^\./, "")));
+      const cookies = (state.cookies ?? []).filter((c) => hostMatches(host, c.domain));
       return cookies.length ? cookies.map((c) => `${c.name}=${c.value}`).join("; ") : undefined;
     },
   };

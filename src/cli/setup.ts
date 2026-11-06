@@ -6,6 +6,8 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const NAME = "lineoa-cs";
+// On Windows the npm-installed `claude` is claude.cmd, which only runs through a shell.
+const WIN = process.platform === "win32";
 
 /** How an AI app should start this server: absolute paths, because GUI apps don't share the shell's PATH. */
 export function serverCommand(): { command: string; args: string[] } {
@@ -54,7 +56,7 @@ export function setup(opts: { dryRun?: boolean; allowSend?: boolean } = {}): Set
 
   let claudeCode = false;
   try {
-    execFileSync("claude", ["--version"], { stdio: "ignore" });
+    execFileSync("claude", ["--version"], { stdio: "ignore", shell: WIN });
     claudeCode = true;
   } catch {}
   if (!claudeCode) {
@@ -74,9 +76,9 @@ export function setup(opts: { dryRun?: boolean; allowSend?: boolean } = {}): Set
     ];
     if (!opts.dryRun) {
       try {
-        execFileSync("claude", ["mcp", "remove", "--scope", "user", NAME], { stdio: "ignore" });
+        execFileSync("claude", ["mcp", "remove", "--scope", "user", NAME], { stdio: "ignore", shell: WIN });
       } catch {}
-      execFileSync("claude", addArgs, { stdio: "ignore" });
+      execFileSync("claude", addArgs, { stdio: "ignore", shell: WIN });
     }
     steps.push({
       target: "Claude Code",

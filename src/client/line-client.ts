@@ -40,15 +40,37 @@ export interface LineOAClient {
   sendText(botId: string, chatId: string, text: string): Promise<{ sendId: string; messageId?: string }>;
 }
 
+/** LINE ids are letters, digits, "_" and "-" (e.g. U4f…, Ca1…, 586900000000000114). */
+export const SAFE_ID = /^[A-Za-z0-9_-]{1,128}$/;
+
 export function createLineClient(cfg: Config, fetchImpl?: typeof fetch): LineOAClient {
   const deps = { baseUrl: cfg.baseUrl, cookie: cfg.cookie, ...(fetchImpl ? { fetch: fetchImpl } : {}) };
+  /** GET a `{ list: [...] }` response. If LINE changed the shape, say so instead of crashing later on `.map`. */
+  const getList = async <B extends { list: unknown[] }>(
+    path: string,
+    query?: Record<string, string | number | undefined>,
+  ): Promise<B> => {
+    const r = await getJson<B>(deps, path, query);
+    if (!Array.isArray(r?.list))
+      throw new LineOAError(
+        "ENDPOINT_CHANGED",
+        `${path} no longer returns a list. The internal API may have changed.`,
+      );
+    return r;
+  };
   const rawMessages = (botId: string, chatId: string, cursor?: string) =>
-    getJson<{ list: RawEvent[]; backward?: string }>(deps, `/api/v3/bots/${botId}/chats/${chatId}/messages`, {
+    getList<{ list: RawEvent[]; backward?: string }>(`/api/v3/bots/${botId}/chats/${chatId}/messages`, {
       limit: 50,
       backward: cursor,
     });
 
-  const assertAllowed = (botId: string) => {
+  // Ids come from the agent (and so, indirectly, from customer text). They go into URL paths, so only plain
+  // id characters are allowed: "../" or "?" could otherwise point a request at another OA or endpoint.
+  const assertAllowed = (botId: string, ...ids: string[]) => {
+    for (const id of [botId, ...ids]) {
+      if (!SAFE_ID.test(id))
+        throw new LineOAError("NOT_FOUND", `Not a valid LINE id: ${JSON.stringify(id).slice(0, 60)}`);
+    }
     if (cfg.botAllowlist.length && !cfg.botAllowlist.includes(botId)) {
       throw new LineOAError("FORBIDDEN", `OA ${botId} is not in LINEOA_BOT_ALLOWLIST.`);
     }
@@ -61,9 +83,9 @@ export function createLineClient(cfg: Config, fetchImpl?: typeof fetch): LineOAC
     },
 
     async bots() {
-      const r = await getJson<{
+      const r = await getList<{
         list: { botId: string; name: string; basicSearchId?: string; userPermissionType?: string }[];
-      }>(deps, "/api/v1/bots", { noFilter: "true", limit: 1000 });
+      }>("/api/v1/bots", { noFilter: "true", limit: 1000 });
       return r.list
         .filter((b) => !cfg.botAllowlist.length || cfg.botAllowlist.includes(b.botId))
         .map((b) => ({
@@ -80,7 +102,7 @@ export function createLineClient(cfg: Config, fetchImpl?: typeof fetch): LineOAC
       const items: Chat[] = [];
       let next = cursor;
       do {
-        const r = await getJson<{ list: RawChat[]; next?: string }>(deps, `/api/v2/bots/${botId}/chats`, {
+        const r = await getList<{ list: RawChat[]; next?: string }>(`/api/v2/bots/${botId}/chats`, {
           folderType: "ALL",
           limit: Math.min(25, limit - items.length),
           next,
@@ -92,15 +114,14 @@ export function createLineClient(cfg: Config, fetchImpl?: typeof fetch): LineOAC
     },
 
     async getChat(botId, chatId) {
-      assertAllowed(botId);
+      assertAllowed(botId, chatId);
       const r = await getJson<RawChat>(deps, `/api/v1/bots/${botId}/chats/${chatId}`);
       return toChat(r, botId, cfg.webBaseUrl);
     },
 
     async listMessages(botId, chatId, { limit, cursor }) {
-      assertAllowed(botId);
-      const r = await getJson<{ list: RawEvent[]; backward?: string }>(
-        deps,
+      assertAllowed(botId, chatId);
+      const r = await getList<{ list: RawEvent[]; backward?: string }>(
         `/api/v3/bots/${botId}/chats/${chatId}/messages`,
         { limit, backward: cursor },
       );
@@ -109,16 +130,15 @@ export function createLineClient(cfg: Config, fetchImpl?: typeof fetch): LineOAC
     },
 
     async getProfile(botId, chatId) {
-      assertAllowed(botId);
+      assertAllowed(botId, chatId);
       const base = `/api/v1/bots/${botId}`;
       const [raw, notes, tags, owners] = await Promise.all([
         getJson<RawChat>(deps, `${base}/chats/${chatId}`),
-        getJson<{ list: { body: string; updatedAt?: number; createdAt?: number }[] }>(
-          deps,
+        getList<{ list: { body: string; updatedAt?: number; createdAt?: number }[] }>(
           `${base}/chats/${chatId}/notes`,
         ),
-        getJson<{ list: { tagId: string; name: string }[] }>(deps, `${base}/tags`),
-        getJson<{ list: { bizId: string; name: string }[] }>(deps, `${base}/owners`),
+        getList<{ list: { tagId: string; name: string }[] }>(`${base}/tags`),
+        getList<{ list: { bizId: string; name: string }[] }>(`${base}/owners`),
       ]);
       const tagName = new Map(tags.list.map((t) => [t.tagId, t.name]));
       const chat = toChat(raw, botId, cfg.webBaseUrl);
@@ -142,7 +162,7 @@ export function createLineClient(cfg: Config, fetchImpl?: typeof fetch): LineOAC
     },
 
     async getAttachment(botId, chatId, messageId) {
-      assertAllowed(botId);
+      assertAllowed(botId, chatId, messageId);
       let cursor: string | undefined;
       for (let page = 0; page < 5; page++) {
         const r = await rawMessages(botId, chatId, cursor);
@@ -156,7 +176,7 @@ export function createLineClient(cfg: Config, fetchImpl?: typeof fetch): LineOAC
           const url =
             ref.provider === "external"
               ? m.contentProvider?.originalContentUrl
-              : `${cfg.contentBaseUrl}/bot/${botId}/${hash}`;
+              : `${cfg.contentBaseUrl}/bot/${botId}/${encodeURIComponent(hash ?? "")}`;
           if (!url || (ref.provider === "line" && !hash))
             throw new LineOAError("NOT_FOUND", "LINE gave no download address for this file.");
           return { ref, ...(await getBytes(deps, url, cfg.maxAttachmentBytes)) };
@@ -171,33 +191,40 @@ export function createLineClient(cfg: Config, fetchImpl?: typeof fetch): LineOAC
     },
 
     async sendText(botId, chatId, text) {
-      assertAllowed(botId);
+      assertAllowed(botId, chatId);
       const sendId = `${chatId}_${Date.now()}_${randomInt(1e7, 1e8)}`;
       const path = `/api/v1/bots/${botId}/chats/${chatId}/messages/send`;
       const token = async () => (await getJson<{ token: string }>(deps, "/api/v1/csrfToken")).token;
+      // The echo can carry the sendId on the event or on its message; LINE may also need a moment.
       const findSent = async () => {
-        const r = await rawMessages(botId, chatId);
-        return r.list.find((e) => (e as { sendId?: string }).sendId === sendId)?.message?.id;
+        for (let attempt = 0; attempt < 3; attempt++) {
+          if (attempt) await new Promise((r) => setTimeout(r, 1000));
+          const r = await rawMessages(botId, chatId).catch(() => undefined);
+          const hit = r?.list.find((e) => {
+            const ev = e as { sendId?: string; message?: { sendId?: string } };
+            return ev.sendId === sendId || ev.message?.sendId === sendId;
+          });
+          if (hit?.message?.id) return hit.message.id;
+        }
+        return undefined;
+      };
+      const body = { id: "", type: "textV2", text, sendId };
+      const post = async (csrf: string) => {
+        try {
+          return (await postJson(deps, path, body, csrf)).status;
+        } catch (err) {
+          if (err instanceof LineOAError) throw err;
+          return 0; // network failure during the POST: the message may or may not have gone out
+        }
       };
 
-      let status: number;
-      try {
-        status = (await postJson(deps, path, { id: "", type: "textV2", text, sendId }, await token())).status;
-        // An expired CSRF token gives 403: fetch a fresh one and try exactly once more.
-        if (status === 403)
-          status = (await postJson(deps, path, { id: "", type: "textV2", text, sendId }, await token()))
-            .status;
-      } catch (err) {
-        if (err instanceof LineOAError) throw err;
-        status = 0; // network failure: the message may or may not have gone out
-      }
+      // Fetching the token happens before anything is posted, so its errors are plain errors, never "uncertain".
+      let status = await post(await token());
+      if (status === 403) status = await post(await token()); // an expired CSRF token: refresh once and retry
       if (status === 403) throw new LineOAError("FORBIDDEN", "This staff account may not send in this chat.");
       if (status === 404) throw new LineOAError("NOT_FOUND", `Chat ${chatId} not found.`);
-      if (status >= 200 && status < 300) {
-        const messageId = await findSent().catch(() => undefined);
-        return { sendId, ...(messageId ? { messageId } : {}) };
-      }
-      const messageId = await findSent().catch(() => undefined);
+      const messageId = await findSent();
+      if (status >= 200 && status < 300) return { sendId, ...(messageId ? { messageId } : {}) };
       if (messageId) return { sendId, messageId };
       throw new LineOAError(
         "SEND_UNCERTAIN",

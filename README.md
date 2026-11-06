@@ -146,6 +146,9 @@ AI app ──stdio──▶ MCP server ── tools ──▶ LineOAClient ─�
 - **Sessions expire**, usually within a day, so the CS person logs in again.
 - **Search freshness.** Search only sees what was copied: the 50 most recent chats and 200 messages each by
   default.
+- **Bot replies can be invisible.** If an OA also runs a bot through the Messaging API, the bot's replies may
+  not appear in the console's history. `needs_reply` then lists chats that a bot already answered. On a live
+  OA this showed up as customers who had typed a code that a bot handled.
 - **Not built yet:** sending files, mark as read, a hosted multi-user server, and realtime updates (the
   console has an SSE stream).
 - **Live checks.** All read paths were verified against a live OA, read-only. Sending was verified on the

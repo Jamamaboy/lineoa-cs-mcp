@@ -16,6 +16,7 @@ import { loadConfig } from "./config.js";
 import { LineOAError } from "./domain/errors.js";
 import { MessageStore } from "./index/store.js";
 import { syncRecent } from "./index/sync.js";
+import { chatFilters } from "./tools/list-chats.js";
 
 const { values: opt, positionals } = parseArgs({
   allowPositionals: true,
@@ -76,15 +77,8 @@ const commands: Record<string, () => Promise<void>> = {
   async chats() {
     const bot = await pickOa();
     const page = await client.listChats(bot.botId, { limit: 50 });
-    const keep = page.items.filter((c) =>
-      opt.all
-        ? true
-        : opt.unread
-          ? c.unread
-          : opt["needs-reply"]
-            ? c.lastMessage?.from === "customer"
-            : c.status === "ongoing",
-    );
+    const filter = opt.all ? "all" : opt.unread ? "unread" : opt["needs-reply"] ? "needs_reply" : "ongoing";
+    const keep = page.items.filter(chatFilters[filter]); // same rules as the list_chats tool
     ui.title(`${bot.name} · ${keep.length} chats`);
     for (const c of keep) {
       const mark = c.unread ? ui.cyan("●") : " ";

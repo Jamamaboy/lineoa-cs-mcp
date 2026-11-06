@@ -144,3 +144,22 @@
 - Why: The assignment needs a public repo, and the owner wants it to describe only what the MCP server does.
 - Commits: chore(release): v0.1.0; release: v0.1.0 (main)
 - For other lanes: none.
+
+## 2026-11-06 07:16 ICT · Grader dry-run and review fixes (feat/polish)
+- What: a fresh clone of the public repo was installed, checked and toured per the README (all passed; build and
+  npm audit clean). A code-review agent then reported 11 defects, and all were fixed in small commits:
+  - ids that could rewrite request paths (bypassing the OA allowlist) are refused;
+  - cookies go only to line.biz and its subdomains;
+  - bad numeric settings are a CONFIG_ERROR instead of switching limits off;
+  - uncertain sends count toward the cap, the echo is checked on the event and its message, only a failed POST
+    is uncertain, and audit errors can't flip a delivered send to a failure;
+  - search dates cover whole days and only message text matches;
+  - filtered lists read more pages;
+  - a missing list in a response is ENDPOINT_CHANGED;
+  - downloads stop at the cap while streaming;
+  - setup and .mcp.json work on Windows.
+  Lint warnings and test-output noise were also cleared, and the README now notes invisible bot replies.
+- Why: the user asked to keep checking and propose improvements before review.
+- Commits: chore: clear lint warnings…; docs: note that Messaging API bot replies…; fix(security) ×2; fix(config);
+  fix(send); fix(search); fix(list); fix(client); fix(attachments); fix(setup).
+- For other lanes: none. Not pushed.

@@ -4,5 +4,7 @@ export default defineConfig({
   test: {
     include: ["tests/**/*.test.ts"],
     testTimeout: 15000,
+    // Node 22 flags its built-in SQLite as experimental; the warning is noise in test output.
+    execArgv: ["--disable-warning=ExperimentalWarning"],
   },
 });

@@ -79,6 +79,16 @@ describe("MCP read core against the mock", () => {
     expect(again.json.indexRefresh.chatsUpdated).toBe(0);
     const staffOnly = await stack.call("search_messages", { query: "สลิป", from: "staff", refresh: false });
     for (const h of staffOnly.json.hits) expect(h.from).toBe("staff");
+    const day = hit.sentAt.slice(0, 10); // the hit's own day must be inside since=until=that day
+    const oneDay = await stack.call("search_messages", {
+      query: "สลิป",
+      since: day,
+      until: day,
+      refresh: false,
+    });
+    expect(oneDay.json.hits.length).toBeGreaterThan(0);
+    const bad = await stack.call("search_messages", { query: "สลิป", until: "5 Nov" });
+    expect(bad.isError).toBe(true);
   });
 
   it("get_attachment shows a slip photo to the model and saves a PDF", async () => {
@@ -105,6 +115,13 @@ describe("MCP read core against the mock", () => {
     const empty = await s.call("list_chats", { oa: "@test-shop2", filter: "all" });
     expect(empty.json.chats).toHaveLength(0);
     await s.stop();
+  });
+
+  it("refuses ids that would rewrite the request path", async () => {
+    for (const chatId of ["../../Ub0700000000000000000000000000002/chats/x", "abc?x=1", "a/b"]) {
+      const r = await stack.call("read_chat", { chatId });
+      expect(r.isError).toBe(true);
+    }
   });
 
   it("turns a missing session into AUTH_EXPIRED with the fix in the message", async () => {
