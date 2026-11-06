@@ -217,3 +217,9 @@
 - Why: Without it a fresh clone could not try the send tool anywhere.
 - Commits: `feat(dx): turn sending on for the mock entry in .mcp.json` (this commit; the LOG entry ships with the work)
 - For other lanes: none.
+
+## 2026-11-06 19:04 ICT · release v0.1.4
+- What: version 0.1.4 (package.json, SERVER_VERSION), CHANGELOG entry, Versions row, STATUS rewritten to match the current state. Then dev to main with --no-ff, tag v0.1.4, push, GitHub release.
+- Why: the user asked to finish the fresh-clone fixes and release them before testing from a git clone.
+- Commits: `chore(release): v0.1.4` (this commit)
+- For other lanes: none.

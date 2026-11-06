@@ -256,6 +256,7 @@ is in the repo:
 
 | version | date | highlights |
 |---|---|---|
+| [v0.1.4](https://github.com/Jamamaboy/lineoa-cs-mcp/releases/tag/v0.1.4) | 2026-11-06 | fresh-clone fixes: CLI hints, mock for the CLI, send on the mock |
 | [v0.1.3](https://github.com/Jamamaboy/lineoa-cs-mcp/releases/tag/v0.1.3) | 2026-11-06 | docs: diagrams, graphics, demo GIF, history guide |
 | [v0.1.1](https://github.com/Jamamaboy/lineoa-cs-mcp/releases/tag/v0.1.1) | 2026-11-06 | security and reliability fixes from a code review |
 | [v0.1.0](https://github.com/Jamamaboy/lineoa-cs-mcp/releases/tag/v0.1.0) | 2026-11-06 | first release: 7 tools, login, CLI, setup, mock |
