@@ -45,8 +45,21 @@ export const SAFE_ID = /^[A-Za-z0-9_-]{1,128}$/;
 
 export function createLineClient(cfg: Config, fetchImpl?: typeof fetch): LineOAClient {
   const deps = { baseUrl: cfg.baseUrl, cookie: cfg.cookie, ...(fetchImpl ? { fetch: fetchImpl } : {}) };
+  /** GET a `{ list: [...] }` response. If LINE changed the shape, say so instead of crashing later on `.map`. */
+  const getList = async <B extends { list: unknown[] }>(
+    path: string,
+    query?: Record<string, string | number | undefined>,
+  ): Promise<B> => {
+    const r = await getJson<B>(deps, path, query);
+    if (!Array.isArray(r?.list))
+      throw new LineOAError(
+        "ENDPOINT_CHANGED",
+        `${path} no longer returns a list. The internal API may have changed.`,
+      );
+    return r;
+  };
   const rawMessages = (botId: string, chatId: string, cursor?: string) =>
-    getJson<{ list: RawEvent[]; backward?: string }>(deps, `/api/v3/bots/${botId}/chats/${chatId}/messages`, {
+    getList<{ list: RawEvent[]; backward?: string }>(`/api/v3/bots/${botId}/chats/${chatId}/messages`, {
       limit: 50,
       backward: cursor,
     });
@@ -70,9 +83,9 @@ export function createLineClient(cfg: Config, fetchImpl?: typeof fetch): LineOAC
     },
 
     async bots() {
-      const r = await getJson<{
+      const r = await getList<{
         list: { botId: string; name: string; basicSearchId?: string; userPermissionType?: string }[];
-      }>(deps, "/api/v1/bots", { noFilter: "true", limit: 1000 });
+      }>("/api/v1/bots", { noFilter: "true", limit: 1000 });
       return r.list
         .filter((b) => !cfg.botAllowlist.length || cfg.botAllowlist.includes(b.botId))
         .map((b) => ({
@@ -89,7 +102,7 @@ export function createLineClient(cfg: Config, fetchImpl?: typeof fetch): LineOAC
       const items: Chat[] = [];
       let next = cursor;
       do {
-        const r = await getJson<{ list: RawChat[]; next?: string }>(deps, `/api/v2/bots/${botId}/chats`, {
+        const r = await getList<{ list: RawChat[]; next?: string }>(`/api/v2/bots/${botId}/chats`, {
           folderType: "ALL",
           limit: Math.min(25, limit - items.length),
           next,
@@ -108,8 +121,7 @@ export function createLineClient(cfg: Config, fetchImpl?: typeof fetch): LineOAC
 
     async listMessages(botId, chatId, { limit, cursor }) {
       assertAllowed(botId, chatId);
-      const r = await getJson<{ list: RawEvent[]; backward?: string }>(
-        deps,
+      const r = await getList<{ list: RawEvent[]; backward?: string }>(
         `/api/v3/bots/${botId}/chats/${chatId}/messages`,
         { limit, backward: cursor },
       );
@@ -122,12 +134,11 @@ export function createLineClient(cfg: Config, fetchImpl?: typeof fetch): LineOAC
       const base = `/api/v1/bots/${botId}`;
       const [raw, notes, tags, owners] = await Promise.all([
         getJson<RawChat>(deps, `${base}/chats/${chatId}`),
-        getJson<{ list: { body: string; updatedAt?: number; createdAt?: number }[] }>(
-          deps,
+        getList<{ list: { body: string; updatedAt?: number; createdAt?: number }[] }>(
           `${base}/chats/${chatId}/notes`,
         ),
-        getJson<{ list: { tagId: string; name: string }[] }>(deps, `${base}/tags`),
-        getJson<{ list: { bizId: string; name: string }[] }>(deps, `${base}/owners`),
+        getList<{ list: { tagId: string; name: string }[] }>(`${base}/tags`),
+        getList<{ list: { bizId: string; name: string }[] }>(`${base}/owners`),
       ]);
       const tagName = new Map(tags.list.map((t) => [t.tagId, t.name]));
       const chat = toChat(raw, botId, cfg.webBaseUrl);
