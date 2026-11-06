@@ -313,3 +313,9 @@
 - Why: Dev review: one bad audit line stopped all sending; a half-written session caused UNEXPECTED.
 - Commits: `fix: corrupt local files no longer break login or sending` (this commit; the LOG entry ships with the work)
 - For other lanes: none.
+
+## 2026-11-06 19:54 ICT · setup (T5b)
+- What: src/cli/setup.ts
+- Why: CS review: no way to try the mock from Desktop, alarming not-installed line; risk review: re-runs dropped settings.
+- Commits: `feat(setup): --mock, merged env, timestamped backups, clear messages` (this commit; the LOG entry ships with the work)
+- For other lanes: none.

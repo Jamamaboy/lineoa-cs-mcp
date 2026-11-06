@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const NAME = "lineoa-cs";
+const MOCK_NAME = "lineoa-cs-mock";
 // On Windows the npm-installed `claude` is claude.cmd, which only runs through a shell.
 const WIN = process.platform === "win32";
 
@@ -29,29 +30,107 @@ export interface SetupStep {
   detail: string;
 }
 
-/** Adds the server to Claude Desktop (config file, backed up first) and to Claude Code (if installed). */
-export function setup(opts: { dryRun?: boolean; allowSend?: boolean } = {}): SetupStep[] {
+interface Entry {
+  command: string;
+  args: string[];
+  env?: Record<string, string>;
+}
+
+/** The Desktop config with `name` set to `entry`; every other server and top-level key stays as it was. */
+export function buildDesktopConfig(existing: Record<string, unknown>, name: string, entry: Entry) {
+  const servers = existing.mcpServers;
+  const others = servers && typeof servers === "object" && !Array.isArray(servers) ? servers : {};
+  return { ...existing, mcpServers: { ...others, [name]: entry } };
+}
+
+/** Arguments for `claude mcp add`: one -e per env key, then the command after `--`. */
+export function claudeAddArgs(name: string, env: Record<string, string>, command: string, args: string[]) {
+  return [
+    "mcp",
+    "add",
+    "--scope",
+    "user",
+    name,
+    ...Object.entries(env).flatMap(([k, v]) => ["-e", `${k}=${v}`]),
+    "--",
+    command,
+    ...args,
+  ];
+}
+
+const pad = (n: number) => String(n).padStart(2, "0");
+/** `<file>.bak-YYYYMMDD-HHMMSS` in local time; a second run in the same second gets a -N suffix, never an overwrite. */
+function backupPath(file: string): string {
+  const d = new Date();
+  const stamp = `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`;
+  const base = `${file}.bak-${stamp}`;
+  let path = base;
+  for (let n = 2; existsSync(path); n++) path = `${base}-${n}`;
+  return path;
+}
+
+/** Reads the Desktop config: `{}` when absent, `undefined` when it is not a JSON object. */
+function readDesktopConfig(file: string): Record<string, unknown> | undefined {
+  if (!existsSync(file)) return {};
+  try {
+    const v: unknown = JSON.parse(readFileSync(file, "utf8"));
+    return v && typeof v === "object" && !Array.isArray(v) ? (v as Record<string, unknown>) : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Adds the server to Claude Desktop (config file, backed up first) and to Claude Code (if installed).
+ * `mock` registers only `lineoa-cs-mock` and never touches the real `lineoa-cs` entry.
+ */
+export function setup(opts: { dryRun?: boolean; allowSend?: boolean; mock?: boolean } = {}): SetupStep[] {
   const { command, args } = serverCommand();
-  const env = { LINEOA_ALLOW_SEND: opts.allowSend ? "true" : "false" };
+  const name = opts.mock ? MOCK_NAME : NAME;
   const steps: SetupStep[] = [];
 
   const file = desktopConfigPath();
   const desktopInstalled = existsSync(dirname(file));
+  // The mock needs no real session: src/mock-env.ts forces the mock URL, cookie and in-memory audit log.
+  const baseEnv = (old?: Record<string, string>): Record<string, string> =>
+    opts.mock
+      ? { LINEOA_MOCK: "1", LINEOA_MOCK_PORT: "0", LINEOA_ALLOW_SEND: "true" }
+      : { ...old, LINEOA_ALLOW_SEND: opts.allowSend ? "true" : "false" };
+
   if (!desktopInstalled) {
-    steps.push({ target: "Claude Desktop", done: false, detail: "not installed (skipped)" });
-  } else {
-    const cfg = existsSync(file) ? JSON.parse(readFileSync(file, "utf8")) : {};
-    cfg.mcpServers = { ...(cfg.mcpServers ?? {}), [NAME]: { command, args, env } };
-    if (!opts.dryRun) {
-      if (existsSync(file)) copyFileSync(file, `${file}.bak`);
-      mkdirSync(dirname(file), { recursive: true });
-      writeFileSync(file, JSON.stringify(cfg, null, 2));
-    }
     steps.push({
       target: "Claude Desktop",
-      done: !opts.dryRun,
-      detail: `${file} (backup: .bak) · restart the app`,
+      done: false,
+      detail:
+        "not found. Install Claude Desktop from https://claude.ai/download, then run npm run setup again (skip this if you use Claude Code).",
     });
+  } else {
+    const cfg = readDesktopConfig(file);
+    if (!cfg) {
+      steps.push({
+        target: "Claude Desktop",
+        done: false,
+        detail: `${file} is not valid JSON; left it unchanged. Fix or remove it, then run setup again.`,
+      });
+    } else {
+      const servers = cfg.mcpServers as Record<string, Entry> | undefined;
+      const old = opts.mock ? undefined : servers?.[name]?.env;
+      const entry: Entry = { command, args, env: baseEnv(old) };
+      let backup = "";
+      if (!opts.dryRun) {
+        if (existsSync(file)) {
+          backup = backupPath(file);
+          copyFileSync(file, backup);
+        }
+        mkdirSync(dirname(file), { recursive: true });
+        writeFileSync(file, JSON.stringify(buildDesktopConfig(cfg, name, entry), null, 2));
+      }
+      steps.push({
+        target: "Claude Desktop",
+        done: !opts.dryRun,
+        detail: `${file} (${name}${backup ? `, backup: ${backup}` : ""}) · restart the app`,
+      });
+    }
   }
 
   let claudeCode = false;
@@ -62,21 +141,11 @@ export function setup(opts: { dryRun?: boolean; allowSend?: boolean } = {}): Set
   if (!claudeCode) {
     steps.push({ target: "Claude Code", done: false, detail: "not installed (skipped)" });
   } else {
-    const addArgs = [
-      "mcp",
-      "add",
-      "--scope",
-      "user",
-      NAME,
-      "-e",
-      `LINEOA_ALLOW_SEND=${env.LINEOA_ALLOW_SEND}`,
-      "--",
-      command,
-      ...args,
-    ];
+    // `claude mcp` can't show the old env, so a live re-run passes only the env we have.
+    const addArgs = claudeAddArgs(name, baseEnv(), command, args);
     if (!opts.dryRun) {
       try {
-        execFileSync("claude", ["mcp", "remove", "--scope", "user", NAME], { stdio: "ignore", shell: WIN });
+        execFileSync("claude", ["mcp", "remove", "--scope", "user", name], { stdio: "ignore", shell: WIN });
       } catch {}
       execFileSync("claude", addArgs, { stdio: "ignore", shell: WIN });
     }
