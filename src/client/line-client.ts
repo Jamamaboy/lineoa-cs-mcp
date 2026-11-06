@@ -40,6 +40,9 @@ export interface LineOAClient {
   sendText(botId: string, chatId: string, text: string): Promise<{ sendId: string; messageId?: string }>;
 }
 
+/** LINE ids are letters, digits, "_" and "-" (e.g. U4f…, Ca1…, 586900000000000114). */
+export const SAFE_ID = /^[A-Za-z0-9_-]{1,128}$/;
+
 export function createLineClient(cfg: Config, fetchImpl?: typeof fetch): LineOAClient {
   const deps = { baseUrl: cfg.baseUrl, cookie: cfg.cookie, ...(fetchImpl ? { fetch: fetchImpl } : {}) };
   const rawMessages = (botId: string, chatId: string, cursor?: string) =>
@@ -48,7 +51,13 @@ export function createLineClient(cfg: Config, fetchImpl?: typeof fetch): LineOAC
       backward: cursor,
     });
 
-  const assertAllowed = (botId: string) => {
+  // Ids come from the agent (and so, indirectly, from customer text). They go into URL paths, so only plain
+  // id characters are allowed: "../" or "?" could otherwise point a request at another OA or endpoint.
+  const assertAllowed = (botId: string, ...ids: string[]) => {
+    for (const id of [botId, ...ids]) {
+      if (!SAFE_ID.test(id))
+        throw new LineOAError("NOT_FOUND", `Not a valid LINE id: ${JSON.stringify(id).slice(0, 60)}`);
+    }
     if (cfg.botAllowlist.length && !cfg.botAllowlist.includes(botId)) {
       throw new LineOAError("FORBIDDEN", `OA ${botId} is not in LINEOA_BOT_ALLOWLIST.`);
     }
@@ -92,13 +101,13 @@ export function createLineClient(cfg: Config, fetchImpl?: typeof fetch): LineOAC
     },
 
     async getChat(botId, chatId) {
-      assertAllowed(botId);
+      assertAllowed(botId, chatId);
       const r = await getJson<RawChat>(deps, `/api/v1/bots/${botId}/chats/${chatId}`);
       return toChat(r, botId, cfg.webBaseUrl);
     },
 
     async listMessages(botId, chatId, { limit, cursor }) {
-      assertAllowed(botId);
+      assertAllowed(botId, chatId);
       const r = await getJson<{ list: RawEvent[]; backward?: string }>(
         deps,
         `/api/v3/bots/${botId}/chats/${chatId}/messages`,
@@ -109,7 +118,7 @@ export function createLineClient(cfg: Config, fetchImpl?: typeof fetch): LineOAC
     },
 
     async getProfile(botId, chatId) {
-      assertAllowed(botId);
+      assertAllowed(botId, chatId);
       const base = `/api/v1/bots/${botId}`;
       const [raw, notes, tags, owners] = await Promise.all([
         getJson<RawChat>(deps, `${base}/chats/${chatId}`),
@@ -142,7 +151,7 @@ export function createLineClient(cfg: Config, fetchImpl?: typeof fetch): LineOAC
     },
 
     async getAttachment(botId, chatId, messageId) {
-      assertAllowed(botId);
+      assertAllowed(botId, chatId, messageId);
       let cursor: string | undefined;
       for (let page = 0; page < 5; page++) {
         const r = await rawMessages(botId, chatId, cursor);
@@ -156,7 +165,7 @@ export function createLineClient(cfg: Config, fetchImpl?: typeof fetch): LineOAC
           const url =
             ref.provider === "external"
               ? m.contentProvider?.originalContentUrl
-              : `${cfg.contentBaseUrl}/bot/${botId}/${hash}`;
+              : `${cfg.contentBaseUrl}/bot/${botId}/${encodeURIComponent(hash ?? "")}`;
           if (!url || (ref.provider === "line" && !hash))
             throw new LineOAError("NOT_FOUND", "LINE gave no download address for this file.");
           return { ref, ...(await getBytes(deps, url, cfg.maxAttachmentBytes)) };
@@ -171,7 +180,7 @@ export function createLineClient(cfg: Config, fetchImpl?: typeof fetch): LineOAC
     },
 
     async sendText(botId, chatId, text) {
-      assertAllowed(botId);
+      assertAllowed(botId, chatId);
       const sendId = `${chatId}_${Date.now()}_${randomInt(1e7, 1e8)}`;
       const path = `/api/v1/bots/${botId}/chats/${chatId}/messages/send`;
       const token = async () => (await getJson<{ token: string }>(deps, "/api/v1/csrfToken")).token;

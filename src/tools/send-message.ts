@@ -1,7 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { LineOAError } from "../domain/errors.js";
-import { oaInput, resolveBotId, run, type ToolContext } from "./shared.js";
+import { idInput, oaInput, resolveBotId, run, type ToolContext } from "./shared.js";
 
 /**
  * The only tool that changes anything. It is registered only when LINEOA_ALLOW_SEND=true, so in the
@@ -18,7 +18,7 @@ export function registerSendMessage(server: McpServer, ctx: ToolContext) {
         "Always show the human the exact text and get their OK first, or call with dryRun=true to preview. " +
         "If the result is SEND_UNCERTAIN, read the chat before trying again; never resend blindly.",
       inputSchema: {
-        chatId: z.string(),
+        chatId: idInput,
         text: z.string().min(1).max(2000),
         oa: oaInput,
         dryRun: z

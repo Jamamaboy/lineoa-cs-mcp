@@ -107,6 +107,13 @@ describe("MCP read core against the mock", () => {
     await s.stop();
   });
 
+  it("refuses ids that would rewrite the request path", async () => {
+    for (const chatId of ["../../Ub0700000000000000000000000000002/chats/x", "abc?x=1", "a/b"]) {
+      const r = await stack.call("read_chat", { chatId });
+      expect(r.isError).toBe(true);
+    }
+  });
+
   it("turns a missing session into AUTH_EXPIRED with the fix in the message", async () => {
     const bad = await startStack({ LINEOA_COOKIE: "__Host-chat-ses=wrong" });
     const r = await bad.call("list_chats");

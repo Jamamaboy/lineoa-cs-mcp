@@ -2,7 +2,7 @@ import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
 import type { AuditLog } from "../audit/audit-log.js";
 import { chooseOa } from "../client/choose-oa.js";
-import type { LineOAClient } from "../client/line-client.js";
+import { type LineOAClient, SAFE_ID } from "../client/line-client.js";
 import type { Config } from "../config.js";
 import { LineOAError } from "../domain/errors.js";
 import type { MessageStore } from "../index/store.js";
@@ -40,6 +40,9 @@ export async function run(fn: () => Promise<unknown>): Promise<CallToolResult> {
 export async function resolveBotId(ctx: ToolContext, oa?: string): Promise<string> {
   return chooseOa(await ctx.client.bots(), oa, ctx.config.defaultOa).botId;
 }
+
+/** Chat and message ids: plain id characters only, so they can't rewrite the request path. */
+export const idInput = z.string().regex(SAFE_ID, "not a LINE id");
 
 /** The shared `oa` input every tool takes. */
 export const oaInput = z

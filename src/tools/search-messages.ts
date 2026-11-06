@@ -2,7 +2,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { webUrl } from "../domain/normalize.js";
 import { syncRecent } from "../index/sync.js";
-import { oaInput, resolveBotId, run, type ToolContext } from "./shared.js";
+import { idInput, oaInput, resolveBotId, run, type ToolContext } from "./shared.js";
 
 export function registerSearchMessages(server: McpServer, ctx: ToolContext) {
   server.registerTool(
@@ -17,7 +17,7 @@ export function registerSearchMessages(server: McpServer, ctx: ToolContext) {
       inputSchema: {
         query: z.string().min(1).describe("Text to find, e.g. an order number or a word"),
         oa: oaInput,
-        chatId: z.string().optional().describe("Only search this chat"),
+        chatId: idInput.optional().describe("Only search this chat"),
         from: z.enum(["customer", "staff"]).optional().describe("Only messages from this side"),
         since: z.string().optional().describe("ISO date, e.g. 2026-11-01"),
         until: z.string().optional().describe("ISO date"),
