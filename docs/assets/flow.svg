@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1520" height="610" viewBox="0 0 1520 610" font-family="-apple-system,Segoe UI,Helvetica,Arial,sans-serif">
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="3.6" markerHeight="3.6" orient="auto"><path d="M0,0L10,5L0,10z" fill="#3d4450"/></marker>
+<marker id="g" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="3.6" markerHeight="3.6" orient="auto"><path d="M0,0L10,5L0,10z" fill="#4cc764"/></marker>
+<marker id="p" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0L10,5L0,10z" fill="#6f4ef2"/></marker>
+</defs>
+<style>.t{font-size:30px;font-weight:800;fill:#1f2328}.b{font-size:15px;font-weight:700;fill:#1f2328}.s{font-size:13px;fill:#3d4450}
+.m{font-size:11.5px;fill:#9198a1}.lb{font-size:13px;font-weight:700;fill:#3d4450}.bl{font-size:15px;font-weight:800}
+.pl{font-size:13.5px;font-weight:700;fill:#fff}.step{font-size:15px;font-weight:800;fill:#fff}
+.ln{stroke:#3d4450;stroke-width:5;fill:none}.lg{stroke:#4cc764;stroke-width:5;fill:none}</style>
+<rect width="1520" height="610" fill="#fff"/>
+<text class="t" x="40" y="54">How a support chat flows through lineoa-cs</text>
+<text class="s" x="40" y="80">Left to right. Top row: read and draft (1–4). Bottom row: send, only after the human says OK (5–8).</text>
+<rect x="50" y="222" width="790" height="250" rx="22" fill="#f3f0ff" stroke="#c9bdf7" stroke-width="2"/>
+<rect x="930" y="222" width="550" height="250" rx="22" fill="#e8f8ee" stroke="#06c755" stroke-width="2"/>
+<text class="bl" x="74" y="458" text-anchor="start" fill="#5b3fd1">The CS person's computer</text>
+<text class="bl" x="954" y="458" text-anchor="start" fill="#06a148">LINE: the OA and its customers</text>
+<g transform="translate(140,300) scale(1)">
+<clipPath id="c140300"><circle r="54"/></clipPath><circle r="56" fill="#fff"/>
+<g clip-path="url(#c140300)"><path d="M-42 64 Q-42 24 0 24 Q42 24 42 64 Z" fill="#6f4ef2" stroke="#111" stroke-width="3"/>
+<circle cy="-6" r="21" fill="#fff" stroke="#111" stroke-width="3"/>
+<path d="M-21 -8 Q-22 -30 0 -30 Q22 -30 21 -8 Q14 -20 -2 -19 Q-14 -18 -21 -8Z" fill="#111"/>
+<circle cx="-7" cy="-4" r="2" fill="#111"/><circle cx="7" cy="-4" r="2" fill="#111"/><path d="M-6 5 Q0 10 6 5" stroke="#111" stroke-width="2" fill="none"/></g>
+<circle r="56" fill="none" stroke="#111" stroke-width="3"/>
+<rect x="26" y="4" width="22" height="36" rx="4" fill="#06c755" stroke="#111" stroke-width="2.5"/><text x="37" y="25" font-size="6.5" font-weight="800" fill="#fff" text-anchor="middle">LINE</text>
+</g>
+<rect x="90.0" y="376" width="100" height="26" rx="8" fill="#3d4450"/><text class="pl" x="140" y="394" text-anchor="middle">CS person</text>
+<text class="s" x="140" y="424" text-anchor="middle">asks · reads · approves</text>
+<rect x="380" y="240" width="120" height="120" rx="26" fill="#6f4ef2"/><text x="440" y="322" font-size="58" fill="#fff" text-anchor="middle">✦</text>
+<rect x="402.0" y="376" width="76" height="26" rx="8" fill="#3d4450"/><text class="pl" x="440" y="394" text-anchor="middle">AI app</text>
+<text class="s" x="440" y="424" text-anchor="middle">Claude Code · Desktop · any MCP client</text>
+<rect x="680" y="240" width="120" height="120" rx="26" fill="#24292f"/>
+<g transform="translate(740,300) scale(1.45)" fill="none" stroke="#6df24a" stroke-width="5"><circle r="14"/><path d="M0 -24 V-16 M0 16 V24 M-24 0 H-16 M16 0 H24 M-17 -17 L-11 -11 M11 11 L17 17 M-17 17 L-11 11 M11 -11 L17 -17"/></g>
+<rect x="690.0" y="376" width="100" height="26" rx="8" fill="#3d4450"/><text class="pl" x="740" y="394" text-anchor="middle">lineoa-cs</text>
+<text class="s" x="740" y="424" text-anchor="middle">list · read · search · profile · attachment</text>
+<circle cx="1040" cy="300" r="60" fill="#fff" stroke="#06c755" stroke-width="4"/><rect x="1006" y="266" width="68" height="68" rx="18" fill="#06c755"/>
+<g transform="translate(1023,277) scale(.355)"><path d="M0 0 H96 V64 Q96 104 48 124 Q0 104 0 64 Z" fill="#fff"/><text x="48" y="80" font-size="66" font-weight="800" fill="#06c755" text-anchor="middle">L</text></g>
+<rect x="966.0" y="376" width="148" height="26" rx="8" fill="#3d4450"/><text class="pl" x="1040" y="394" text-anchor="middle">LINE OA Manager</text>
+<text class="s" x="1040" y="424" text-anchor="middle">chat.line.biz</text>
+<g transform="translate(1340,256) scale(0.48)">
+<clipPath id="c1340256"><circle r="54"/></clipPath><circle r="56" fill="#fff"/>
+<g clip-path="url(#c1340256)"><path d="M-42 64 Q-42 24 0 24 Q42 24 42 64 Z" fill="#7cb8f7" stroke="#111" stroke-width="3"/>
+<circle cy="-6" r="21" fill="#fff" stroke="#111" stroke-width="3"/>
+<path d="M-21 -8 Q-22 -30 0 -30 Q22 -30 21 -8 Q14 -20 -2 -19 Q-14 -18 -21 -8Z" fill="#111"/>
+<circle cx="-7" cy="-4" r="2" fill="#111"/><circle cx="7" cy="-4" r="2" fill="#111"/><path d="M-6 5 Q0 10 6 5" stroke="#111" stroke-width="2" fill="none"/></g>
+<circle r="56" fill="none" stroke="#111" stroke-width="3"/>
+</g>
+<g transform="translate(1418,256) scale(0.48)">
+<clipPath id="c1418256"><circle r="54"/></clipPath><circle r="56" fill="#fff"/>
+<g clip-path="url(#c1418256)"><path d="M-42 64 Q-42 24 0 24 Q42 24 42 64 Z" fill="#7cb8f7" stroke="#111" stroke-width="3"/>
+<circle cy="-6" r="21" fill="#fff" stroke="#111" stroke-width="3"/>
+<path d="M-21 -8 Q-22 -30 0 -30 Q22 -30 21 -8 Q14 -20 -2 -19 Q-14 -18 -21 -8Z" fill="#111"/>
+<circle cx="-7" cy="-4" r="2" fill="#111"/><circle cx="7" cy="-4" r="2" fill="#111"/><path d="M-6 5 Q0 10 6 5" stroke="#111" stroke-width="2" fill="none"/></g>
+<circle r="56" fill="none" stroke="#111" stroke-width="3"/>
+</g>
+<g transform="translate(1376,326) scale(0.6)">
+<clipPath id="c1376326"><circle r="54"/></clipPath><circle r="56" fill="#fff"/>
+<g clip-path="url(#c1376326)"><path d="M-42 64 Q-42 24 0 24 Q42 24 42 64 Z" fill="#6df24a" stroke="#111" stroke-width="3"/>
+<circle cy="-6" r="21" fill="#fff" stroke="#111" stroke-width="3"/>
+<path d="M-21 -8 Q-22 -30 0 -30 Q22 -30 21 -8 Q14 -20 -2 -19 Q-14 -18 -21 -8Z" fill="#111"/>
+<circle cx="-7" cy="-4" r="2" fill="#111"/><circle cx="7" cy="-4" r="2" fill="#111"/><path d="M-6 5 Q0 10 6 5" stroke="#111" stroke-width="2" fill="none"/></g>
+<circle r="56" fill="none" stroke="#111" stroke-width="3"/>
+<rect x="26" y="4" width="22" height="36" rx="4" fill="#06c755" stroke="#111" stroke-width="2.5"/><text x="37" y="25" font-size="6.5" font-weight="800" fill="#fff" text-anchor="middle">LINE</text>
+</g>
+<rect x="1326.0" y="376" width="100" height="26" rx="8" fill="#3d4450"/><text class="pl" x="1376" y="394" text-anchor="middle">Customers</text>
+<text class="s" x="1376" y="424" text-anchor="middle">LINE users</text>
+<path class="ln" d="M198 274 H374" marker-end="url(#a)"/>
+<circle cx="288.0" cy="274" r="17" fill="#111" stroke="#fff" stroke-width="4"/><text class="step" x="288.0" y="279" text-anchor="middle">1</text>
+<text class="lb" x="288.0" y="248" text-anchor="middle">asks</text>
+<path class="ln" d="M502 274 H674" marker-end="url(#a)"/>
+<circle cx="590.0" cy="274" r="17" fill="#111" stroke="#fff" stroke-width="4"/><text class="step" x="590.0" y="279" text-anchor="middle">2</text>
+<text class="lb" x="590.0" y="248" text-anchor="middle">tool calls</text>
+<path class="ln" d="M802 274 H982" marker-end="url(#a)"/>
+<circle cx="894.0" cy="274" r="17" fill="#111" stroke="#fff" stroke-width="4"/><text class="step" x="894.0" y="279" text-anchor="middle">3</text>
+<text class="lb" x="894.0" y="248" text-anchor="middle">reads (HTTPS)</text>
+<path class="ln" d="M1290 274 H1106" marker-end="url(#a)"/>
+<text class="lb" x="1196.0" y="248" text-anchor="middle">customers message the OA</text>
+<path class="lg" d="M198 326 H374" marker-end="url(#g)"/>
+<circle cx="288.0" cy="326" r="17" fill="#111" stroke="#fff" stroke-width="4"/><text class="step" x="288.0" y="331" text-anchor="middle">5</text>
+<text class="lb" x="288.0" y="366" text-anchor="middle" fill="#06a148">OK, send it</text>
+<path class="lg" d="M502 326 H674" marker-end="url(#g)"/>
+<circle cx="590.0" cy="326" r="17" fill="#111" stroke="#fff" stroke-width="4"/><text class="step" x="590.0" y="331" text-anchor="middle">6</text>
+<text class="lb" x="590.0" y="366" text-anchor="middle" fill="#06a148">send_message</text>
+<path class="lg" d="M802 326 H982" marker-end="url(#g)"/>
+<circle cx="894.0" cy="326" r="17" fill="#111" stroke="#fff" stroke-width="4"/><text class="step" x="894.0" y="331" text-anchor="middle">7</text>
+<text class="lb" x="894.0" y="366" text-anchor="middle" fill="#06a148">POST + CSRF</text>
+<path class="lg" d="M1102 326 H1286" marker-end="url(#g)"/>
+<circle cx="1196.0" cy="326" r="17" fill="#111" stroke="#fff" stroke-width="4"/><text class="step" x="1196.0" y="331" text-anchor="middle">8</text>
+<text class="lb" x="1196.0" y="366" text-anchor="middle" fill="#06a148">reply arrives</text>
+<rect x="290" y="100" width="320" height="104" rx="12" fill="#fff" stroke="#6f4ef2" stroke-width="2"/>
+<circle cx="290" cy="104" r="17" fill="#111" stroke="#fff" stroke-width="4"/><text class="step" x="290" y="109" text-anchor="middle">4</text>
+<text class="b" x="314" y="128" text-anchor="start">2 chats waiting</text>
+<text class="s" x="314" y="150" text-anchor="start">Summary: refund #1250 · receipt</text>
+<text class="s" x="314" y="172" text-anchor="start">Draft: ขอโทษค่ะ เดี๋ยวดำเนินการคืนเงินให้นะคะ</text>
+<text class="m" x="314" y="192" text-anchor="start">shown to the CS person</text>
+<path d="M440 238 V208" stroke="#6f4ef2" stroke-width="2.5" stroke-dasharray="5 4"/>
+<path d="M288 150 C200 150 150 180 148 232" stroke="#6f4ef2" stroke-width="2.5" stroke-dasharray="5 4" fill="none" marker-end="url(#p)"/>
+<path class="ln" d="M50 508 H96" marker-end="url(#a)"/>
+<text class="s" x="108" y="513" text-anchor="start">read path: the default, read-only</text>
+<path class="lg" d="M360 508 H406" marker-end="url(#g)"/>
+<text class="s" x="418" y="513" text-anchor="start">send path: only with LINEOA_ALLOW_SEND=true, after a human OK</text>
+<circle cx="868" cy="508" r="9" fill="#6df24a" stroke="#111" stroke-width="2"/>
+<text class="s" x="886" y="513" text-anchor="start">green = waiting for a reply</text>
+<text class="s" x="50" y="548" text-anchor="start">Before step 1, once per shift: npm run login opens a browser, the person types the password, and lineoa-cs keeps the session (0600).</text>
+<text class="s" x="50" y="574" text-anchor="start">Sends also pass a chat allowlist and a daily cap, never repeat blindly (sendId lookup), and go to the audit log.</text>
+</svg>

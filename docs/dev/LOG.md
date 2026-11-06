@@ -163,3 +163,39 @@
 - Commits: chore: clear lint warnings…; docs: note that Messaging API bot replies…; fix(security) ×2; fix(config);
   fix(send); fix(search); fix(list); fix(client); fix(attachments); fix(setup).
 - For other lanes: none. Not pushed.
+
+## 2026-11-06 09:43 ICT · README showcase
+- What: badges, demo GIF slot (terminal GIF recorded with vhs against the mock), supports.svg (tested / untested / not supported), Mermaid feature map and usage sequence (render-checked), Versions table; intro marked for the owner. A Claude-session recording was made in /tmp only; the owner will record the final GIF.
+- Why: The user asked for a GIF, a what-it-works-with graphic, feature and flow diagrams, and versions in the README.
+- Commits: docs: add a terminal demo GIF…; docs: README badges, showcase…
+- For other lanes: none.
+
+## 2026-11-06 09:51 ICT · README diagrams and badges
+- What: docs/assets/flow.svg (illustrated support-chat flow with numbered steps) and docs/assets/architecture.svg (high-level architecture with data flow), both render-checked; README gets status and stack badge rows (all shields verified to return logos) and the two pictures; 2x PNG + SVG copies exported to ~/Downloads/lineoa-diagrams for Canva.
+- Why: The user wants LINE-docs-style flow pictures, an architecture diagram, and badge rows like the reference repo.
+- Commits: docs: add an illustrated flow and an architecture diagram; docs: README tech badges and the new diagrams
+- For other lanes: none.
+
+## 2026-11-06 10:07 ICT · diagram restyle
+- What: supports.svg became icon cards with tested/untested/unsupported badges; architecture.svg and the README mermaid sequence now use flow.svg's palette (blue, purple, dark, LINE green).
+- Why: The user asked for icons and one visual style across all diagrams.
+- Commits: 0cea395, deffad9, 9e9f7ee
+- For other lanes: none.
+
+## 2026-11-06 10:11 ICT · linear flow diagram
+- What: flow.svg redrawn to read left to right in the style of the LINE docs diagrams the user shared.
+- Why: The user asked for a linear, left-to-right flow.
+- Commits: a99ca13
+- For other lanes: none.
+
+## 2026-11-06 18:35 ICT · history guide in README
+- What: README 'How this was built' now shows three git log commands: releases, features, commits inside a feature. From here on the dev LOG/STATUS update ships in the same commit as the work (as CLAUDE.md says), not as a separate docs(dev) commit.
+- Why: 164 commits looked like a lot; read by first-parent they are about 40 features, each split into small reviewable commits.
+- Commits: `docs: show how to read the git history one level at a time` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
+
+## 2026-11-06 18:38 ICT · release v0.1.3
+- What: Version 0.1.3 in package.json and SERVER_VERSION, a CHANGELOG entry and a Versions row. Then dev to main with --no-ff, tag v0.1.3, push dev, main and the tag.
+- Why: The user asked to push and release the README and diagram work. v0.1.2 was already taken by a stray tag on the v0.1.1 commit.
+- Commits: `chore(release): v0.1.3` (this commit; the LOG entry ships with the work)
+- For other lanes: none.

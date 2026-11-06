@@ -1,7 +1,13 @@
 # dev status
-Last updated: 2026-11-06 07:16 ICT · branch dev
+Last updated: 2026-11-06 18:38 ICT · branch release/v0.1.3
 
 ## Now
+- Done: release v0.1.3
+- Done: history guide in README
+- Done: linear flow diagram
+- Done: diagram restyle
+- Done: README diagrams and badges
+- Done: README showcase
 - v0.1.0 is public at github.com/Jamamaboy/lineoa-cs-mcp (main, dev, plan, research, tag, release; CI green).
 - `feat/polish` (local, NOT pushed): grader dry-run on a fresh clone passed; lint warnings cleared; 11 code-review
   findings fixed (id path traversal, cookie host match, numeric config, send path + audit, search dates, filtered

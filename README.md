@@ -1,5 +1,20 @@
 # lineoa-cs
 
+[![release](https://img.shields.io/github/v/release/Jamamaboy/lineoa-cs-mcp?label=release)](https://github.com/Jamamaboy/lineoa-cs-mcp/releases)
+[![ci](https://github.com/Jamamaboy/lineoa-cs-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/Jamamaboy/lineoa-cs-mcp/actions/workflows/ci.yml)
+![status](https://img.shields.io/badge/status-working%20MVP-2ea44f)
+![sending](https://img.shields.io/badge/sending-off%20by%20default-2da44e)
+
+![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-22.13%2B-339933?logo=nodedotjs&logoColor=white)
+![MCP](https://img.shields.io/badge/MCP%20SDK-1.32-6b4fbb)
+![Playwright](https://img.shields.io/badge/Playwright-login-2EAD33)
+![SQLite](https://img.shields.io/badge/SQLite-built--in-003B57?logo=sqlite&logoColor=white)
+![Hono](https://img.shields.io/badge/Hono-mock-E36002?logo=hono&logoColor=white)
+![Vitest](https://img.shields.io/badge/Vitest-31%20tests-6E9F18?logo=vitest&logoColor=white)
+![Claude Code](https://img.shields.io/badge/built%20with-Claude%20Code-D97757?logo=claude&logoColor=white)
+
+<!-- INTRO: the owner writes this paragraph. Until then, the text below describes the project. -->
 An MCP server that lets an AI agent work a LINE Official Account the way a customer-support person does. It
 can list ongoing chats, read a chat, search messages across chats, send a message, see a customer's profile,
 and open the images and files customers send.
@@ -8,6 +23,54 @@ It works through the same web console a CS person uses (LINE OA Manager, `chat.l
 own login. LINE's Messaging API is built for bots: it can't see existing chats or history, and it can't search.
 
 **Read-only by default.** Sending is off until you turn it on.
+
+<!-- SHOWCASE: replace with the recorded Claude session GIF (docs/assets/demo.gif). -->
+![lineoa in a terminal, against the built-in mock](docs/assets/demo-cli.gif)
+
+<p align="center"><img src="docs/assets/supports.svg" alt="What it works with: AI apps, login browsers, platforms and the LINE side" width="880"></p>
+
+## How it flows
+
+<p align="center"><img src="docs/assets/flow.svg" alt="Left to right: the CS person asks the AI app, which calls lineoa-cs, which reads LINE OA Manager; the AI shows a summary and a draft; after the human says OK the reply goes the same way to the customer" width="100%"></p>
+
+## Architecture
+
+<p align="center"><img src="docs/assets/architecture.svg" alt="High-level architecture with data flow: clients, the MCP server (tools, safety gates, LineOAClient), LINE OA Manager, login, local data and the built-in mock" width="100%"></p>
+
+## How it is used
+
+```mermaid
+%%{init: {'theme':'base','themeVariables':{'fontFamily':'Helvetica,Arial,sans-serif','actorBkg':'#6f4ef2','actorBorder':'#5b3fd1','actorTextColor':'#ffffff','actorLineColor':'#c9bdf7','signalColor':'#3d4450','signalTextColor':'#1f2328','sequenceNumberColor':'#ffffff','noteBkgColor':'#e8f8ee','noteBorderColor':'#06c755','noteTextColor':'#1f2328'}}}%%
+sequenceDiagram
+  autonumber
+  box rgb(243,240,255) The CS person's computer
+  participant CS as CS person
+  participant AI as AI app
+  participant M as lineoa-cs
+  end
+  box rgb(232,248,238) LINE
+  participant L as LINE OA Manager
+  end
+  CS->>M: npm run setup (once)
+  CS->>L: npm run login → logs in in a browser window
+  L-->>M: session cookie saved (0600)
+  CS->>AI: "Which chats are waiting for a reply?"
+  AI->>M: list_chats(needs_reply)
+  M-->>AI: CHOOSE_OA: you can reach "Shop A", "Shop B"
+  AI->>CS: Which OA?
+  CS->>AI: Shop A
+  AI->>M: list_chats(oa: "Shop A", needs_reply)
+  M->>L: GET chats
+  M-->>AI: chats + webUrl
+  AI->>M: read_chat · get_attachment
+  AI->>CS: summary + draft reply
+  rect rgb(232,248,238)
+    CS->>AI: OK, send it
+    AI->>M: send_message (only if sending is on)
+    M->>L: POST message (CSRF, sendId)
+    M-->>AI: sent · audit-logged
+  end
+```
 
 ## What it unblocks
 
@@ -79,11 +142,7 @@ than one OA and the request doesn't say which, the tool answers `CHOOSE_OA` with
 
 ## How it works
 
-```
-AI app ──stdio──▶ MCP server ── tools ──▶ LineOAClient ──HTTPS + session cookie──▶ chat.line.biz
-                                              │                                    (or the mock)
-                                 local SQLite index (search) · file cache · audit log
-```
+The picture is in [Architecture](#architecture). In words:
 
 - **One client for real and mock.** The mock copies the console's paths, cookie, error bodies and cursors,
   so `LineOAClient` is the same code for both, and the e2e tests drive a real MCP client against it.
@@ -180,9 +239,26 @@ is in the repo:
 - The research compared 34 similar projects:
   [`docs/research/refs-comparison.html`](docs/research/refs-comparison.html).
 - Each lane keeps a log in `docs/<lane>/LOG.md`.
-- Each feature is a branch of small commits, each one green on its own.
+- Each feature is a branch of small commits, each one green on its own, merged with `--no-ff`. Read the
+  history one level at a time:
+
+  ```bash
+  git log --first-parent --oneline main   # one commit per release
+  git log --first-parent --oneline dev    # one merge per feature (or plan/research round)
+  git log --oneline <merge>^1..<merge>^2  # the small commits inside one feature
+  ```
 
 [`docs/README.md`](docs/README.md) maps every document. A Thai user guide is in [`docs/USAGE.th.md`](docs/USAGE.th.md).
+
+## Versions
+
+| version | date | highlights |
+|---|---|---|
+| [v0.1.3](https://github.com/Jamamaboy/lineoa-cs-mcp/releases/tag/v0.1.3) | 2026-11-06 | docs: diagrams, graphics, demo GIF, history guide |
+| [v0.1.1](https://github.com/Jamamaboy/lineoa-cs-mcp/releases/tag/v0.1.1) | 2026-11-06 | security and reliability fixes from a code review |
+| [v0.1.0](https://github.com/Jamamaboy/lineoa-cs-mcp/releases/tag/v0.1.0) | 2026-11-06 | first release: 7 tools, login, CLI, setup, mock |
+
+Details are in [CHANGELOG.md](CHANGELOG.md).
 
 ## Develop
 
