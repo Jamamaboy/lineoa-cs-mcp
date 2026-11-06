@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.1.3 · 2026-11-06
+
+Docs only. No code changes since v0.1.1.
+
+- README: status and stack badges, a terminal demo GIF, a "what it works with" graphic, a left-to-right flow
+  diagram, an architecture diagram and a themed sequence diagram, all in one style.
+- README: a Versions table, and how to read the git history one level at a time (releases, features, commits).
+- There is no v0.1.2 release: that tag was created by mistake on the v0.1.1 commit and is left in place so no
+  published tag moves.
+
 ## v0.1.1 · 2026-11-06
 
 Fixes from a fresh-clone dry run and a code review.
