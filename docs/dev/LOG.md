@@ -361,3 +361,9 @@
 - Why: CS persona review scored setup 3/10: no Terminal/Node steps, no safety explanation.
 - Commits: `docs: Thai start page and a double-click installer for CS staff` (this commit; the LOG entry ships with the work)
 - For other lanes: none.
+
+## 2026-11-06 19:58 ICT · README + guides (T8b)
+- What: README.md, docs/USAGE.th.md, scripts/welcome.mjs
+- Why: Tech-lead review: placeholders and process before setup; CS review: Thai guide hard to find.
+- Commits: `docs: README opens with a plain pitch and the Thai links; guides in sync` (this commit; the LOG entry ships with the work)
+- For other lanes: none.

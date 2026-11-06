@@ -3,6 +3,9 @@
 lineoa-cs ให้ AI (เช่น Claude) ดูแลแชท LINE OA แทนพนักงาน CS ได้ ทำงานผ่านหน้า LINE OA Manager
 ด้วยบัญชีของคุณเอง **ค่าเริ่มต้นอ่านอย่างเดียว** ส่งข้อความไม่ได้จนกว่าคุณจะเปิดเอง
 
+> ไม่ใช่สายโปรแกรมเมอร์? เริ่มที่ [START.th.md](START.th.md) (ทีละขั้น พร้อมผลที่ควรเห็น) หรือดับเบิลคลิก
+> `start-mac.command` บน Mac หน้านี้เป็นคู่มือใช้งานต่อจากนั้น
+
 ## 1. ติดตั้งครั้งแรก (ประมาณ 5 นาที)
 
 ต้องมี: Node 22.13 ขึ้นไป · Google Chrome หรือ Microsoft Edge · บัญชีที่เข้า LINE OA Manager ได้
@@ -18,6 +21,10 @@ npm run login     # browser เด้งขึ้นมา ให้ login LINE 
 จากนั้นเปิด Claude Desktop ใหม่ หรือพิมพ์ `claude` ใน terminal ก็ใช้ได้เลย
 
 - `npm run setup -- --dry-run` ดูก่อนว่าจะเปลี่ยนอะไร (ยังไม่เปลี่ยนจริง)
+- `npm run setup -- --mock` ลงทะเบียนเฉพาะ `lineoa-cs-mock` (ข้อมูลตัวอย่าง เปิดการส่งได้ ไม่ถึง LINE จริง) ไว้ลองโดยไม่ต้องมีบัญชี
+- รัน setup ซ้ำได้ ค่าที่ตั้งไว้ใน entry เดิมจะยังอยู่ และไฟล์สำรองคือ `claude_desktop_config.json.bak-YYYYMMDD-HHMMSS`
+- ถ้ายังไม่มี Claude Desktop โปรแกรมจะบอกให้ติดตั้งจาก https://claude.ai/download แล้วรัน setup ใหม่ (ข้ามได้ถ้าใช้ Claude Code)
+- session ของ LINE มักอยู่ได้ราว 1 วัน ต้อง `npm run login` ใหม่ทุกวันหรือทุกกะ โปรแกรมไม่เห็นรหัสผ่านของคุณ
 - `npm run login -- --browser edge` เลือก browser เองได้: `chrome` `edge` `brave` `chromium` `firefox` `webkit`
   - firefox / webkit ต้องติดตั้งครั้งแรกด้วย `npx playwright-core install firefox` (หรือ `webkit`)
   - Safari ตัวจริงใช้ไม่ได้ เพราะ Safari ไม่ยอมให้โปรแกรมควบคุม ให้ใช้ `webkit` (เครื่องยนต์เดียวกับ Safari) แทน
@@ -45,9 +52,12 @@ npm run login     # browser เด้งขึ้นมา ให้ login LINE 
 ```bash
 npm run lineoa -- status                 # ใคร login · เข้า OA ไหนได้ · การส่งเปิดไหม
 npm run lineoa -- chats --needs-reply    # แชทที่รอตอบ  (--unread · --all · --oa "TestOA")
-npm run lineoa -- read <chatId>          # อ่านแชท (chatId ได้จากคำสั่ง chats หรือ webUrl)
+npm run lineoa -- read <chatId หรือชื่อลูกค้าให้ตรงทั้งชื่อ>   # อ่านแชท เช่น read "นก 🌸"
 npm run lineoa -- search คืนเงิน          # ค้นข้อความ
 ```
+
+`read` ด้วยชื่อจะเปิดเฉพาะแชทที่ชื่อตรงทุกตัวอักษร และพิมพ์ `→ ชื่อ (id)` ก่อน ถ้าพิมพ์ชื่อไม่ครบจะแค่แนะนำ
+"Did you mean …?" (ค้นจาก 125 แชทล่าสุด) วันที่แสดงแบบ `5 Nov 2026, 12:00` ใส่ `LINEOA_MOCK=1` นำหน้าเพื่อลองกับข้อมูลตัวอย่าง
 
 ในรายการแชท: `●` = ยังไม่อ่าน · `←` = ลูกค้าพิมพ์ล่าสุด · `→` = ฝั่งเราตอบล่าสุด
 
@@ -64,10 +74,15 @@ npm run setup -- --allow-send            # แล้วเปิด Claude ใ�
 - จำกัดจำนวนต่อวัน: `LINEOA_SEND_DAILY_LIMIT` (ค่าเริ่มต้น 50)
 - ทุกการส่งถูกบันทึกที่ `~/.local/share/lineoa-mcp/audit.jsonl` (เก็บแค่ความยาวกับ hash ไม่เก็บข้อความ)
 - ทดสอบการส่งกับ OA ทดสอบเท่านั้น อย่าทดสอบกับแชทลูกค้าจริง
+- อย่ากด "Always allow" ให้ `send_message` ในแอป AI ไม่งั้นมันจะไม่ถามคุณก่อนส่งอีก
+
+เรื่องข้อมูลไปไหน (ข้อความแชทไปยังผู้ให้บริการแอป AI) และข้อกำหนดของ LINE ดูหัวข้อ "ข้อมูลไปไหน / ปลอดภัยไหม" ใน
+[START.th.md](START.th.md) การอ่านแชทไม่ทำให้แชทกลายเป็น "อ่านแล้ว"
 
 ## 5. ลองโดยไม่ต้องมีบัญชี LINE (mock)
 
 ```bash
+npm run setup -- --mock     # ลงทะเบียน lineoa-cs-mock ใน Claude Desktop / Code แล้วเปิดใหม่ ลองถาม "มีแชทไหนรอตอบบ้าง"
 npm run try                 # ทัวร์ 10 วินาทีใน terminal
 npm run try -- --real       # ทัวร์เดียวกันกับ OA จริง (อ่านอย่างเดียว ไม่เปิดแชทที่ยังไม่อ่าน)
 npm run mock                # หน้าเว็บของ LINE ปลอม: http://127.0.0.1:8787

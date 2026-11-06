@@ -22,6 +22,8 @@ const message = [
   '  Try: "Which LINE chats are waiting for a reply?" · "Summarise the chat with …" · "Search for \'refund\'"',
   "  No LINE account? Ask lineoa-cs-mock the same things (sending works on the mock).",
   "  What it does, and each feature's commits: npm run features",
+  '  ภาษาไทย: เริ่มใช้งานครั้งแรกดู docs/START.th.md · ลองถามว่า "มีแชทไหนรอตอบบ้าง"',
+  "  ยังไม่มีบัญชี LINE? ลองถาม lineoa-cs-mock ด้วยคำถามเดียวกันได้เลย",
 ].join("\n");
 
 const context = [
