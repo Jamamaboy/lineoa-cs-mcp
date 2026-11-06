@@ -295,3 +295,9 @@
 - Why: CS/QA review: 5/11/69 was confusing; read by name needs a safe matcher.
 - Commits: `fix(cli): Gregorian dates and a pure chat-name matcher` (this commit; the LOG entry ships with the work)
 - For other lanes: none.
+
+## 2026-11-06 19:54 ICT · CLI read by name (T4c)
+- What: src/cli.ts
+- Why: CS review: chat ids are long; QA: unknown options printed Node stack traces.
+- Commits: `feat(cli): read a chat by name; option errors are one line` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
