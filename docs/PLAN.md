@@ -13,7 +13,7 @@ What changed in v3 (the details are in the sections below):
   are client-side.
 - §8 is now an ordered list of stages up to the deadline. §10 lists the support-OA flows.
 
-Source of truth for the task: [`docs/ASSIGNMENT.md`](ASSIGNMENT.md).
+Source of truth for the task: the assignment brief (kept out of the repo).
 Thai translation: [`docs/PLAN_thai.md`](PLAN_thai.md) · Thai version with diagrams: [`docs/PLAN.html`](PLAN.html).
 This file wins when the Thai copies differ.
 
@@ -144,7 +144,7 @@ src/
 mock-server/           app.ts  seed/ (support-OA-like: rich menu, bot templates, flex cards, screenshots, PDF;
                        2 OAs with one shared person, anonymized)  public/ (mini console, webUrl target)
 test/                  e2e/ (InMemoryTransport)  contract/ (runs on any LineOAClient)  unit/
-docs/                  ASSIGNMENT.md  PLAN*.md/html (shared spec)  plan/  dev/ (+ dev/plans)  research/  ← one folder per lane
+docs/                  PLAN*.md/html (shared spec)  plan/  dev/ (+ dev/plans)  research/  ← one folder per lane
 .claude/               plan-kit skills, agents, rules, profile, agent-strategy/
 CLAUDE.md  AGENTS.md  README.md
 ```
