@@ -331,3 +331,9 @@
 - Why: Cover the T5 behaviour.
 - Commits: `test: local files, setup and version` (this commit; the LOG entry ships with the work)
 - For other lanes: none.
+
+## 2026-11-06 19:54 ICT · response shapes (T6)
+- What: src/domain/raw-schemas.ts, src/client/line-client.ts
+- Why: Dev review: a renamed field would give silently wrong values.
+- Commits: `fix(client): check LINE's response shapes; clear not-found for chats` (this commit; the LOG entry ships with the work)
+- For other lanes: none.

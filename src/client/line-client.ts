@@ -2,6 +2,7 @@ import { randomInt } from "node:crypto";
 import type { Config } from "../config.js";
 import { LineOAError } from "../domain/errors.js";
 import { type RawChat, type RawEvent, toChat, toMessage } from "../domain/normalize.js";
+import { checkList, checkOne, RawChatSchema, RawEventSchema } from "../domain/raw-schemas.js";
 import type { AttachmentRef, Bot, Chat, Me, Message, UserProfile } from "../domain/types.js";
 import { getBytes, getJson, postJson } from "./http.js";
 
@@ -58,11 +59,21 @@ export function createLineClient(cfg: Config, fetchImpl?: typeof fetch): LineOAC
       );
     return r;
   };
-  const rawMessages = (botId: string, chatId: string, cursor?: string) =>
-    getList<{ list: RawEvent[]; backward?: string }>(`/api/v3/bots/${botId}/chats/${chatId}/messages`, {
-      limit: 50,
-      backward: cursor,
-    });
+  const rawMessages = async (botId: string, chatId: string, cursor?: string) => {
+    const r = await getList<{ list: RawEvent[]; backward?: string }>(
+      `/api/v3/bots/${botId}/chats/${chatId}/messages`,
+      { limit: 50, backward: cursor },
+    );
+    return { ...r, list: checkList<RawEvent>(r.list, RawEventSchema, "messages") };
+  };
+  /** A 404 on a chat path means the chat is not in this OA; the raw "LINE answered 404" text would only confuse. */
+  const chatNotFound =
+    (chatId: string) =>
+    (err: unknown): never => {
+      if (err instanceof LineOAError && err.code === "NOT_FOUND")
+        throw new LineOAError("NOT_FOUND", `Chat ${chatId} is not in this OA. Find it with list_chats.`);
+      throw err;
+    };
 
   // Ids come from the agent (and so, indirectly, from customer text). They go into URL paths, so only plain
   // id characters are allowed: "../" or "?" could otherwise point a request at another OA or endpoint.
@@ -107,7 +118,8 @@ export function createLineClient(cfg: Config, fetchImpl?: typeof fetch): LineOAC
           limit: Math.min(25, limit - items.length),
           next,
         });
-        items.push(...r.list.map((c) => toChat(c, botId, cfg.webBaseUrl)));
+        const chats = checkList<RawChat>(r.list, RawChatSchema, "chats", ["read", "done"]);
+        items.push(...chats.map((c) => toChat(c, botId, cfg.webBaseUrl)));
         next = r.next;
       } while (next && items.length < limit);
       return { items, ...(next ? { cursor: next } : {}) };
@@ -115,8 +127,10 @@ export function createLineClient(cfg: Config, fetchImpl?: typeof fetch): LineOAC
 
     async getChat(botId, chatId) {
       assertAllowed(botId, chatId);
-      const r = await getJson<RawChat>(deps, `/api/v1/bots/${botId}/chats/${chatId}`);
-      return toChat(r, botId, cfg.webBaseUrl);
+      const r = await getJson<RawChat>(deps, `/api/v1/bots/${botId}/chats/${chatId}`).catch(
+        chatNotFound(chatId),
+      );
+      return toChat(checkOne<RawChat>(r, RawChatSchema, "chat"), botId, cfg.webBaseUrl);
     },
 
     async listMessages(botId, chatId, { limit, cursor }) {
@@ -124,8 +138,9 @@ export function createLineClient(cfg: Config, fetchImpl?: typeof fetch): LineOAC
       const r = await getList<{ list: RawEvent[]; backward?: string }>(
         `/api/v3/bots/${botId}/chats/${chatId}/messages`,
         { limit, backward: cursor },
-      );
-      const items = r.list.map(toMessage).filter((m): m is Message => m !== undefined);
+      ).catch(chatNotFound(chatId));
+      const list = checkList<RawEvent>(r.list, RawEventSchema, "messages");
+      const items = list.map(toMessage).filter((m): m is Message => m !== undefined);
       return { items, ...(r.backward ? { cursor: r.backward } : {}) };
     },
 
@@ -133,15 +148,15 @@ export function createLineClient(cfg: Config, fetchImpl?: typeof fetch): LineOAC
       assertAllowed(botId, chatId);
       const base = `/api/v1/bots/${botId}`;
       const [raw, notes, tags, owners] = await Promise.all([
-        getJson<RawChat>(deps, `${base}/chats/${chatId}`),
+        getJson<RawChat>(deps, `${base}/chats/${chatId}`).catch(chatNotFound(chatId)),
         getList<{ list: { body: string; updatedAt?: number; createdAt?: number }[] }>(
           `${base}/chats/${chatId}/notes`,
-        ),
+        ).catch(chatNotFound(chatId)),
         getList<{ list: { tagId: string; name: string }[] }>(`${base}/tags`),
         getList<{ list: { bizId: string; name: string }[] }>(`${base}/owners`),
       ]);
       const tagName = new Map(tags.list.map((t) => [t.tagId, t.name]));
-      const chat = toChat(raw, botId, cfg.webBaseUrl);
+      const chat = toChat(checkOne<RawChat>(raw, RawChatSchema, "chat"), botId, cfg.webBaseUrl);
       const assignee = owners.list.find((o) => o.bizId === raw.assignedBizId)?.name;
       return {
         userId: raw.profile?.userId ?? chatId,
