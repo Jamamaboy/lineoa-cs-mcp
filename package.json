@@ -1,6 +1,6 @@
 {
   "name": "lineoa-cs-mcp",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "MCP server that lets an AI agent work LINE OA Manager chat (chat.line.biz) the way a CS person does",
   "type": "module",
   "private": true,
@@ -23,7 +23,8 @@
     "try": "tsx scripts/try.ts",
     "login": "tsx src/cli.ts login",
     "lineoa": "tsx src/cli.ts",
-    "setup": "tsx src/cli.ts setup"
+    "setup": "tsx src/cli.ts setup",
+    "features": "tsx scripts/features-page.ts"
   },
   "license": "MIT",
   "dependencies": {

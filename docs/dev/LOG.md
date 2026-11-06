@@ -223,3 +223,33 @@
 - Why: the user asked to finish the fresh-clone fixes and release them before testing from a git clone.
 - Commits: `chore(release): v0.1.4` (this commit)
 - For other lanes: none.
+
+## 2026-11-06 19:11 ICT · welcome on session start
+- What: New .claude/settings.json (SessionStart, matcher startup) and scripts/welcome.mjs.
+- Why: A fresh Claude session in the clone opened blank; the user wanted it to say what the system can do.
+- Commits: `feat(dx): welcome message when Claude Code starts in this folder` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
+
+## 2026-11-06 19:11 ICT · features page
+- What: New scripts/features-page.ts, npm run features, generated docs/features.html, README link.
+- Why: The user wanted one page that says what the system does and what each feature contains in git.
+- Commits: `docs: features page built from git (npm run features)` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
+
+## 2026-11-06 19:19 ICT · readable sequence diagram
+- What: New docs/assets/sequence.svg replaces the README's mermaid sequence diagram.
+- Why: The user found the mermaid diagram hard to read and cut off on GitHub in dark mode.
+- Commits: `docs: draw the step-by-step diagram as an SVG that reads in dark mode` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
+
+## 2026-11-06 19:20 ICT · features page pictures
+- What: scripts/features-page.ts gains a See it section; docs/features.html regenerated.
+- Why: The user asked for example pictures on the features page.
+- Commits: `docs: example chat and pictures on the features page` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
+
+## 2026-11-06 19:20 ICT · release v0.1.5
+- What: version 0.1.5, CHANGELOG, Versions row, features page regenerated, STATUS updated; dev to main with --no-ff, tag v0.1.5, push, GitHub release.
+- Why: the user approved pushing and releasing the welcome message, features page and readable diagram.
+- Commits: `chore(release): v0.1.5` (this commit)
+- For other lanes: none.

@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>lineoa-cs features</title>
+<style>
+:root{--bg:#fff;--fg:#1f2328;--mute:#57606a;--line:#d0d7de;--card:#f6f8fa;--purple:#6f4ef2;--green:#06c755;--dark:#24292f}
+@media (prefers-color-scheme:dark){:root{--bg:#0d1117;--fg:#e6edf3;--mute:#9198a1;--line:#30363d;--card:#161b22}}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 -apple-system,Segoe UI,Helvetica,Arial,sans-serif}
+main{max-width:920px;margin:0 auto;padding:32px 16px 64px}h1{margin:0 0 4px}h2{margin-top:40px}
+.lead{color:var(--mute)}a{color:var(--purple)}code{font-size:13px}
+.tools{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.tool{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--card)}
+.tool b{font-family:SFMono-Regular,Menlo,monospace;font-size:14px;color:var(--purple)}
+.card{border:1px solid var(--line);border-radius:12px;margin:10px 0;background:var(--card)}
+.card summary{cursor:pointer;padding:10px 14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.card ol{margin:0;padding:0 18px 12px 46px}.card li{margin:3px 0}
+.meta{color:var(--mute);font-size:13px;margin-left:auto}
+.tag{font-size:12px;font-weight:700;color:#fff;background:var(--dark);border-radius:6px;padding:1px 8px}
+.feature .tag{background:var(--purple)}.release .tag{background:var(--green)}
+.shot{margin:14px 0 22px}.shot img{width:100%;border:1px solid var(--line);border-radius:12px;background:#fff}
+.shot figcaption{color:var(--mute);font-size:13px;margin-top:6px}
+.chat{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:14px 16px}
+.me,.ai{margin:8px 0;padding:10px 12px;border-radius:12px;max-width:85%}.me{background:var(--purple);color:#fff;margin-left:auto}
+.ai{background:var(--bg);border:1px solid var(--line)}.call{font:12px SFMono-Regular,Menlo,monospace;color:var(--mute)}
+</style></head><body><main>
+<h1>lineoa-cs</h1>
+<p class="lead">An MCP server that lets an AI app work LINE OA Manager chats the way a support person does:
+read, search, look at customers and files, and reply only after a human says OK.</p>
+
+<h2>What it can do</h2>
+<div class="tools"><div class="tool"><b>auth_status</b><br>Who is logged in, which OAs they can reach, whether sending is on.</div><div class="tool"><b>list_chats</b><br>Chats that are ongoing, unread or waiting for a reply, with a link to open each one.</div><div class="tool"><b>read_chat</b><br>One chat's messages, newest first, with images and files marked.</div><div class="tool"><b>get_user_profile</b><br>The customer's name, tags, notes and the staff member assigned.</div><div class="tool"><b>search_messages</b><br>Find words in recent chats (Thai, English, Chinese) with dates.</div><div class="tool"><b>get_attachment</b><br>Download an image or file; images come back small enough for the AI to look at.</div><div class="tool"><b>send_message</b><br>Reply as the staff member. Off unless LINEOA_ALLOW_SEND=true; the AI asks the human first.</div></div>
+<p>Ask in plain words, for example: <i>"Which LINE chats are waiting for a reply?"</i>,
+<i>"Summarise the chat with … in English"</i>, <i>"Search for 'receipt' this week"</i>.
+No LINE account? The <code>lineoa-cs-mock</code> server answers the same questions with sample chats.</p>
+
+
+<h2>See it</h2>
+<div class="chat">
+  <div class="me">Which LINE chats are waiting for a reply?</div>
+  <div class="ai"><div class="call">→ list_chats(oa: "Demo Shop", filter: "needs_reply")</div>
+    2 chats are waiting in <b>Demo Shop</b>:<br>• <b>นก 🌸</b>: asks for a refund on order #1250, items missing · <a href="#">open in LINE</a><br>
+    • <b>ทีมตัวแทนขาย</b> (group): asks for yesterday's sales · <a href="#">open in LINE</a></div>
+  <div class="me">Draft a reply to นก</div>
+  <div class="ai"><div class="call">→ read_chat · get_user_profile</div>Draft (not sent): "ขอโทษค่ะ เดี๋ยวตรวจสอบออเดอร์ #1250 และดำเนินการคืนเงินให้นะคะ"<br>
+    Say <b>OK</b> and I will send it with <code>send_message</code>.</div>
+</div>
+<p class="lead">An example with the built-in mock's sample chats. On a live OA sending is off unless you turn it on.</p>
+<figure class="shot"><img src="assets/demo-cli.gif" alt="the terminal command against the mock"><figcaption>The terminal command (<code>npm run lineoa</code>) on the mock.</figcaption></figure>
+<figure class="shot"><img src="assets/flow.svg" alt="flow"><figcaption>How a support chat flows, left to right.</figcaption></figure>
+<figure class="shot"><img src="assets/sequence.svg" alt="step by step"><figcaption>Step by step: set up, read and draft, send after OK.</figcaption></figure>
+<figure class="shot"><img src="assets/architecture.svg" alt="architecture"><figcaption>How it is built.</figcaption></figure>
+<figure class="shot"><img src="assets/supports.svg" alt="what it works with"><figcaption>What it works with, and what was tested.</figcaption></figure>
+
+<h2>How it was built</h2>
+<p class="lead">22 feature branches, 4 releases, and the plan and research
+rounds, each merged with <code>--no-ff</code>. Open one to see its small commits, oldest first.
+Generated from <code>git log --first-parent dev</code>.</p>
+
+  <details class="card research">
+    <summary><span class="tag">research</span><b>research round 2 (test/research)</b>
+      <span class="meta">2026-11-05 · 3 commits ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/3a5a571">3a5a571</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/c5d6368"><code>c5d6368</code></a> chore(research): add agent brief and HTML generator for similar-systems study</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/b82dd10"><code>b82dd10</code></a> research: profile 17 similar systems (data, screenshots, trial logs)</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/10139da"><code>10139da</code></a> research: generate comparison page with diagrams, scores and takeaways</li></ol>
+  </details>
+  <details class="card plan">
+    <summary><span class="tag">plan</span><b>plan (lane rules + context protocol)</b>
+      <span class="meta">2026-11-05 · 1 commit ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/b505b49">b505b49</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/039fc4b"><code>039fc4b</code></a> chore: add lane rules and context protocol for plan/dev/research sessions</li></ol>
+  </details>
+  <details class="card research">
+    <summary><span class="tag">research</span><b>research round 3 (line-api-shapes fixtures)</b>
+      <span class="meta">2026-11-05 · 4 commits ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/aabe44b">aabe44b</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/412f94d"><code>412f94d</code></a> research(line-api): extract chat.line.biz API evidence from 6 source repos</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/2dd5a5a"><code>2dd5a5a</code></a> research(line-api): add fake chat.line.biz fixtures for the mock</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/a66b830"><code>a66b830</code></a> docs(research): explain line-api-shapes fields, conflicts and HAR checklist</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/18b485a"><code>18b485a</code></a> docs(research): record round 3 in research STATUS and LOG</li></ol>
+  </details>
+  <details class="card research">
+    <summary><span class="tag">research</span><b>research round 4 (6 more similar systems)</b>
+      <span class="meta">2026-11-05 · 2 commits ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/7d1ffb3">7d1ffb3</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/4cccc38"><code>4cccc38</code></a> research: profile 6 more systems (Intercom MCP, Zendesk, Freshchat, Trengo, ChatCone, OHO Chat)</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/a80bdad"><code>a80bdad</code></a> research: rebuild comparison page with round 4 and its takeaways</li></ol>
+  </details>
+  <details class="card plan">
+    <summary><span class="tag">plan</span><b>plan v3 (the support OA scope, webUrl, case layer, PII rules)</b>
+      <span class="meta">2026-11-06 · 7 commits ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/65ae811">65ae811</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/7768fd8"><code>7768fd8</code></a> docs(plan): pause dev and record re-scope toward the support OA case handling</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/18e9e25"><code>18e9e25</code></a> docs(plan): log main-OA analysis (usage events, verified email link, proactive alerts)</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/ab00b21"><code>ab00b21</code></a> docs(plan): log UX target and research comparison</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/b4cb23b"><code>b4cb23b</code></a> docs(plan): record live OA findings and read-only rule</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/39d96a1"><code>39d96a1</code></a> docs(plan): add tonight's run plan to 03:00 with swimlane diagram</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/486a05c"><code>486a05c</code></a> docs(plan): v3 — the support OA scope, webUrl, case layer, PII rules, new schedule</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/d30f5d1"><code>d30f5d1</code></a> docs(plan): record v3 decisions and unpause dev</li></ol>
+  </details>
+  <details class="card plan">
+    <summary><span class="tag">plan</span><b>plan (Thai v3 PLAN.html, stage-based schedule)</b>
+      <span class="meta">2026-11-06 · 1 commit ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/5366e2a">5366e2a</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/6151703"><code>6151703</code></a> docs(plan): full Thai v3 PLAN.html with new diagrams; stages instead of clock times</li></ol>
+  </details>
+  <details class="card plan">
+    <summary><span class="tag">plan</span><b>plan (single-session mode)</b>
+      <span class="meta">2026-11-06 · 1 commit ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/3a029cc">3a029cc</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/aad7aba"><code>aad7aba</code></a> chore: allow single-session mode across the three lanes</li></ol>
+  </details>
+  <details class="card research">
+    <summary><span class="tag">research</span><b>research round 5 (refs comparison, research README)</b>
+      <span class="meta">2026-11-06 · 2 commits ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/b15052c">b15052c</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/69f0f6b"><code>69f0f6b</code></a> docs: add doc map, rename run plan, keep worktrees outside ~/orca</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/704e295"><code>704e295</code></a> research: round 5 — compare all references with our design on one page</li></ol>
+  </details>
+  <details class="card plan">
+    <summary><span class="tag">plan</span><b>plan (Thai plan summary)</b>
+      <span class="meta">2026-11-06 · 1 commit ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/ea1293f">ea1293f</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/b16a8e4"><code>b16a8e4</code></a> docs(plan): add Thai one-page plan summary (end result, use cases, folders, file counts)</li></ol>
+  </details>
+  <details class="card plan">
+    <summary><span class="tag">plan</span><b>plan (checkout layout)</b>
+      <span class="meta">2026-11-06 · 1 commit ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/f5a5bff">f5a5bff</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/c8edbb2"><code>c8edbb2</code></a> chore: main checkout follows dev; plan worktree moves to ~/.lineoa-lanes</li></ol>
+  </details>
+  <details class="card feature" open>
+    <summary><span class="tag">feature</span><b>feat/scaffold</b>
+      <span class="meta">2026-11-06 · 3 commits ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/bb30aab">bb30aab</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/4dcf009"><code>4dcf009</code></a> chore: add package.json with MCP SDK, zod and Hono</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/fea043b"><code>fea043b</code></a> chore: configure strict TypeScript, Biome and Vitest</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/b776b57"><code>b776b57</code></a> chore: add gitignore, env example and CI</li></ol>
+  </details>
+  <details class="card feature" open>
+    <summary><span class="tag">feature</span><b>feat/mock-server</b>
+      <span class="meta">2026-11-06 · 3 commits ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/2ce828a">2ce828a</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/2089436"><code>2089436</code></a> feat(mock): load chat.line.biz fixtures into memory</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/516357e"><code>516357e</code></a> feat(mock): serve the internal API with session cookie and cursors</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/b76e859"><code>b76e859</code></a> test(mock): cover auth, paging and login</li></ol>
+  </details>
+  <details class="card feature" open>
+    <summary><span class="tag">feature</span><b>feat/read-core</b>
+      <span class="meta">2026-11-06 · 6 commits ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/b766592">b766592</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/5510ad1"><code>5510ad1</code></a> feat(domain): add tool-facing types and typed errors</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/151ef08"><code>151ef08</code></a> feat(domain): map raw chat.line.biz JSON to chats and messages</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/1aa24a8"><code>1aa24a8</code></a> feat(client): add config and the cookie-based HTTP client</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/42a8486"><code>42a8486</code></a> feat(client): add LineOAClient for the mock and the real console</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/3f0b781"><code>3f0b781</code></a> feat(tools): add auth_status, list_chats and read_chat</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/c8f6a48"><code>c8f6a48</code></a> test(e2e): drive the server with a real MCP client against the mock</li></ol>
+  </details>
+  <details class="card feature" open>
+    <summary><span class="tag">feature</span><b>feat/try-it</b>
+      <span class="meta">2026-11-06 · 3 commits ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/1bb0a79">1bb0a79</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/e4510ab"><code>e4510ab</code></a> feat(mock): add a start helper and a small web console</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/6388e92"><code>6388e92</code></a> feat(dx): LINEOA_MOCK=1 runs the mock inside the server</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/15e7b51"><code>15e7b51</code></a> feat(dx): add npm run try and a project .mcp.json</li></ol>
+  </details>
+  <details class="card plan">
+    <summary><span class="tag">plan</span><b>plan (review rule)</b>
+      <span class="meta">2026-11-06 · 1 commit ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/bfc37f5">bfc37f5</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/47bff4c"><code>47bff4c</code></a> chore: require small reviewable commits and a stop after each feature</li></ol>
+  </details>
+  <details class="card feature" open>
+    <summary><span class="tag">feature</span><b>feat/login</b>
+      <span class="meta">2026-11-06 · 5 commits ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/95b61f3">95b61f3</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/66b67fa"><code>66b67fa</code></a> chore(deps): add playwright-core for the login command</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/458638b"><code>458638b</code></a> feat(auth): npm run login saves a LINE OA session</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/c505029"><code>c505029</code></a> feat(config): talk to the real console by default, read-only</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/8a6cf1d"><code>8a6cf1d</code></a> feat(dx): npm run try -- --real reads the live OA, read-only</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/b453e87"><code>b453e87</code></a> docs(dev): log the login feature</li></ol>
+  </details>
+  <details class="card feature" open>
+    <summary><span class="tag">feature</span><b>feat/profile</b>
+      <span class="meta">2026-11-06 · 4 commits ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/4a49177">4a49177</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/aac58ac"><code>aac58ac</code></a> feat(mock): serve chat notes, tags and owners</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/d2747d1"><code>d2747d1</code></a> feat(client): read a profile with its tags, notes and assignee</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/681a18d"><code>681a18d</code></a> feat(tools): add get_user_profile</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/e1e7bac"><code>e1e7bac</code></a> docs(dev): log get_user_profile</li></ol>
+  </details>
+  <details class="card feature" open>
+    <summary><span class="tag">feature</span><b>feat/needs-reply</b>
+      <span class="meta">2026-11-06 · 3 commits ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/e6f9958">e6f9958</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/14ef929"><code>14ef929</code></a> fix(domain): give non-message events a preview</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/1e47dd8"><code>1e47dd8</code></a> feat(tools): list_chats filter needs_reply finds silent chats</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/3f67b40"><code>3f67b40</code></a> docs(dev): log needs_reply filter</li></ol>
+  </details>
+  <details class="card feature" open>
+    <summary><span class="tag">feature</span><b>feat/search</b>
+      <span class="meta">2026-11-06 · 4 commits ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/b5fb6a7">b5fb6a7</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/591e48b"><code>591e48b</code></a> feat(index): add a local message store with Thai-safe substring search</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/741af89"><code>741af89</code></a> feat(index): sync recent chats into the store before searching</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/47e5301"><code>47e5301</code></a> feat(tools): add search_messages over the local index</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/df8a3b8"><code>df8a3b8</code></a> docs(dev): log search_messages</li></ol>
+  </details>
+  <details class="card feature" open>
+    <summary><span class="tag">feature</span><b>feat/attachments</b>
+      <span class="meta">2026-11-06 · 6 commits ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/ff407c3">ff407c3</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/5fe843b"><code>5fe843b</code></a> chore(deps): add sharp to shrink images for the model</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/b840d13"><code>b840d13</code></a> feat(mock): serve attachment bytes behind the session cookie</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/119889c"><code>119889c</code></a> feat(attachments): sniff types, shrink images and cache files safely</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/158946f"><code>158946f</code></a> feat(client): download a message's image or file</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/1adc142"><code>1adc142</code></a> feat(tools): add get_attachment</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/8f9ff4d"><code>8f9ff4d</code></a> docs(dev): log get_attachment</li></ol>
+  </details>
+  <details class="card feature" open>
+    <summary><span class="tag">feature</span><b>feat/send</b>
+      <span class="meta">2026-11-06 · 5 commits ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/e97164d">e97164d</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/1fadcfc"><code>1fadcfc</code></a> feat(mock): add the CSRF token and the send endpoint</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/0c45e22"><code>0c45e22</code></a> feat(client): send a text message with CSRF and a sendId</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/3e8d2b5"><code>3e8d2b5</code></a> feat(audit): log every send attempt and count today's sends</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/786af6e"><code>786af6e</code></a> feat(tools): add send_message, off unless LINEOA_ALLOW_SEND=true</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/c8845a0"><code>c8845a0</code></a> docs(dev): log send_message (off by default)</li></ol>
+  </details>
+  <details class="card feature" open>
+    <summary><span class="tag">feature</span><b>feat/cli</b>
+      <span class="meta">2026-11-06 · 6 commits ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/bb2c529">bb2c529</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/5de6647"><code>5de6647</code></a> feat(auth): log in with Chrome, Edge, Brave, Chromium, Firefox or WebKit</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/e6ba9e7"><code>e6ba9e7</code></a> fix(client): fetch chats 25 at a time</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/bd39385"><code>bd39385</code></a> fix(mock): reject chat pages over 25 like the real console</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/95b75b7"><code>95b75b7</code></a> feat(cli): add the lineoa terminal command with colored output</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/761beb4"><code>761beb4</code></a> feat(cli): lineoa setup adds the server to Claude Desktop and Claude Code</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/d3eceb0"><code>d3eceb0</code></a> docs(dev): log CLI, browser choice and one-step setup</li></ol>
+  </details>
+  <details class="card feature" open>
+    <summary><span class="tag">feature</span><b>feat/extend</b>
+      <span class="meta">2026-11-06 · 5 commits ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/4a69094">4a69094</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/7706604"><code>7706604</code></a> refactor(auth): pluggable session sources</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/76bf76c"><code>76bf76c</code></a> docs: add a guide for building on the server</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/e15ba80"><code>e15ba80</code></a> docs: write the README</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/b9eb635"><code>b9eb635</code></a> docs: add a Thai user guide</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/a815cb6"><code>a815cb6</code></a> docs(dev): log extension points, README and guides</li></ol>
+  </details>
+  <details class="card plan">
+    <summary><span class="tag">plan</span><b>plan (doc map)</b>
+      <span class="meta">2026-11-06 · 1 commit ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/9c5cee0">9c5cee0</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/3e6ab4c"><code>3e6ab4c</code></a> docs(plan): point the doc map at the README, Thai guide and CONTRIBUTING</li></ol>
+  </details>
+  <details class="card feature" open>
+    <summary><span class="tag">feature</span><b>feat/neutral-readme</b>
+      <span class="meta">2026-11-06 · 1 commit ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/2785985">2785985</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/4830c87"><code>4830c87</code></a> docs: make the README product-neutral</li></ol>
+  </details>
+  <details class="card plan">
+    <summary><span class="tag">plan</span><b>plan (neutral CLAUDE.md)</b>
+      <span class="meta">2026-11-06 · 1 commit ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/7ef417d">7ef417d</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/3f2e053"><code>3f2e053</code></a> chore: describe the project without a company name</li></ol>
+  </details>
+  <details class="card research">
+    <summary><span class="tag">research</span><b>research (company-neutral fixtures)</b>
+      <span class="meta">2026-11-06 · 1 commit ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/4a15516">4a15516</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/a8ec4ec"><code>a8ec4ec</code></a> research: make fixture shop names company-neutral</li></ol>
+  </details>
+  <details class="card feature" open>
+    <summary><span class="tag">feature</span><b>feat/choose-oa</b>
+      <span class="meta">2026-11-06 · 5 commits ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/1d12fe3">1d12fe3</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/be857a9"><code>be857a9</code></a> feat(client): choose an OA by name, or ask when it is unclear</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/0701b0c"><code>0701b0c</code></a> feat(tools): every tool takes oa by name and asks when it is unclear</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/c7ab71c"><code>c7ab71c</code></a> fix(cli): show a short --oa hint when the OA is unclear</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/02679ef"><code>02679ef</code></a> docs: explain choosing an OA</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/5923b65"><code>5923b65</code></a> docs(dev): log choose an OA, or ask</li></ol>
+  </details>
+  <details class="card plan">
+    <summary><span class="tag">plan</span><b>plan (company-neutral plan docs)</b>
+      <span class="meta">2026-11-06 · 1 commit ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/855b5f2">855b5f2</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/be4a847"><code>be4a847</code></a> docs(plan): describe what the system does, without a company scenario</li></ol>
+  </details>
+  <details class="card release">
+    <summary><span class="tag">release</span><b>release/v0.1.0</b>
+      <span class="meta">2026-11-06 · 1 commit ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/b2c5a01">b2c5a01</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/0705342"><code>0705342</code></a> chore(release): v0.1.0</li></ol>
+  </details>
+  <details class="card feature" open>
+    <summary><span class="tag">feature</span><b>feat/polish</b>
+      <span class="meta">2026-11-06 · 12 commits ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/692bf0c">692bf0c</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/708d4b8"><code>708d4b8</code></a> chore: clear lint warnings and test-output noise</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/ca64af6"><code>ca64af6</code></a> docs: note that Messaging API bot replies can be invisible</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/67e8ac0"><code>67e8ac0</code></a> fix(security): refuse ids that could rewrite the request path</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/07a3a2e"><code>07a3a2e</code></a> fix(security): send LINE cookies only to line.biz and its subdomains</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/aeca107"><code>aeca107</code></a> fix(config): reject bad numbers instead of disabling limits</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/000b3f2"><code>000b3f2</code></a> fix(send): count uncertain sends, look harder for the echo, keep audit failures apart</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/741e127"><code>741e127</code></a> fix(search): whole-day date range, text-only matches</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/6f4d784"><code>6f4d784</code></a> fix(list): filtered lists read more pages; CLI uses the same filters</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/72722b9"><code>72722b9</code></a> fix(client): a missing list in a response is ENDPOINT_CHANGED</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/9052d8b"><code>9052d8b</code></a> fix(attachments): stop downloads at the size cap while streaming</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/c338b7b"><code>c338b7b</code></a> fix(setup): work on Windows</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/a479d09"><code>a479d09</code></a> docs(dev): log the grader dry-run and review fixes</li></ol>
+  </details>
+  <details class="card release">
+    <summary><span class="tag">release</span><b>release/v0.1.1</b>
+      <span class="meta">2026-11-06 · 1 commit ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/c042b91">c042b91</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/744e878"><code>744e878</code></a> chore(release): v0.1.1</li></ol>
+  </details>
+  <details class="card feature" open>
+    <summary><span class="tag">feature</span><b>feat/readme-showcase</b>
+      <span class="meta">2026-11-06 · 3 commits ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/18aa41e">18aa41e</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/84a577e"><code>84a577e</code></a> docs: add a terminal demo GIF and a what-it-works-with graphic</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/4038d37"><code>4038d37</code></a> docs: README badges, showcase, feature and usage diagrams, versions</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/f95375b"><code>f95375b</code></a> docs(dev): log README showcase</li></ol>
+  </details>
+  <details class="card feature" open>
+    <summary><span class="tag">feature</span><b>feat/diagram-style</b>
+      <span class="meta">2026-11-06 · 4 commits ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/f549e3e">f549e3e</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/0cea395"><code>0cea395</code></a> docs: icon cards for the what-it-works-with graphic</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/deffad9"><code>deffad9</code></a> docs: restyle the architecture diagram to match the flow diagram</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/9e9f7ee"><code>9e9f7ee</code></a> docs: theme the README sequence diagram in the same colours</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/ca9dcd8"><code>ca9dcd8</code></a> docs(dev): log diagram restyle</li></ol>
+  </details>
+  <details class="card feature" open>
+    <summary><span class="tag">feature</span><b>feat/flow-linear</b>
+      <span class="meta">2026-11-06 · 2 commits ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/0406f53">0406f53</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/a99ca13"><code>a99ca13</code></a> docs: redraw the flow diagram left to right</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/fdbb3c3"><code>fdbb3c3</code></a> docs(dev): log linear flow diagram</li></ol>
+  </details>
+  <details class="card feature" open>
+    <summary><span class="tag">feature</span><b>feat/history-guide</b>
+      <span class="meta">2026-11-06 · 1 commit ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/ffa4c18">ffa4c18</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/fdf7d68"><code>fdf7d68</code></a> docs: show how to read the git history one level at a time</li></ol>
+  </details>
+  <details class="card release">
+    <summary><span class="tag">release</span><b>release/v0.1.3</b>
+      <span class="meta">2026-11-06 · 1 commit ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/5abd790">5abd790</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/cd4e12f"><code>cd4e12f</code></a> chore(release): v0.1.3</li></ol>
+  </details>
+  <details class="card feature" open>
+    <summary><span class="tag">feature</span><b>feat/fresh-clone-fixes</b>
+      <span class="meta">2026-11-06 · 3 commits ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/bb1ab7b">bb1ab7b</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/d1c052a"><code>d1c052a</code></a> fix(cli): point hints at npm scripts a fresh clone can run</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/d245759"><code>d245759</code></a> fix(cli): LINEOA_MOCK=1 also switches the terminal command to the mock</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/0e2fdd2"><code>0e2fdd2</code></a> feat(dx): turn sending on for the mock entry in .mcp.json</li></ol>
+  </details>
+  <details class="card release">
+    <summary><span class="tag">release</span><b>release/v0.1.4</b>
+      <span class="meta">2026-11-06 · 1 commit ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/0ffd1d9">0ffd1d9</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/2f4341a"><code>2f4341a</code></a> chore(release): v0.1.4</li></ol>
+  </details>
+  <details class="card feature" open>
+    <summary><span class="tag">feature</span><b>feat/welcome</b>
+      <span class="meta">2026-11-06 · 2 commits ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/80715ec">80715ec</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/63d99ba"><code>63d99ba</code></a> feat(dx): welcome message when Claude Code starts in this folder</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/e43d2fd"><code>e43d2fd</code></a> docs: features page built from git (npm run features)</li></ol>
+  </details>
+  <details class="card feature" open>
+    <summary><span class="tag">feature</span><b>feat/readable-diagrams</b>
+      <span class="meta">2026-11-06 · 2 commits ·
+      <a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/ab1f55b">ab1f55b</a></span></summary>
+    <ol><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/1d88512"><code>1d88512</code></a> docs: draw the step-by-step diagram as an SVG that reads in dark mode</li><li><a href="https://github.com/Jamamaboy/lineoa-cs-mcp/commit/5652ba4"><code>5652ba4</code></a> docs: example chat and pictures on the features page</li></ol>
+  </details>
+</main></body></html>
