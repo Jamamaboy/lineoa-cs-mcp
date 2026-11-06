@@ -277,3 +277,9 @@
 - Why: QA review: UNEXPECTED fetch failed, impossible dates accepted, blank text accepted, API path in errors.
 - Commits: `fix: network failures and 404s give actionable errors; search dates must be real` (this commit; the LOG entry ships with the work)
 - For other lanes: none.
+
+## 2026-11-06 19:53 ICT · tests for T3
+- What: tests/unit/http-errors.test.ts, tests/e2e/input-validation.test.ts
+- Why: Cover the T3 behaviour.
+- Commits: `test: http error mapping and tool input validation` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
