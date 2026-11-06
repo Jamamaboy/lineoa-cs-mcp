@@ -265,3 +265,9 @@
 - Why: The user asked for light blue, green and orange in every diagram.
 - Commits: `docs: diagrams in light blue, green and orange` (this commit; the LOG entry ships with the work)
 - For other lanes: none.
+
+## 2026-11-06 19:53 ICT · repo polish (T1)
+- What: LICENSE, src/tools/get-user-profile.ts, docs/dev/STATUS.md
+- Why: Tech-lead review: no license file, lint warning, internal note in a public file.
+- Commits: `chore: MIT license, unused import, no internal notes in STATUS` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
