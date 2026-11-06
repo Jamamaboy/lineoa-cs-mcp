@@ -1,7 +1,8 @@
 # dev status
-Last updated: 2026-11-06 19:53 ICT · branch feat/review-fixes
+Last updated: 2026-11-06 19:54 ICT · branch feat/review-fixes
 
 ## Now
+- Done: server start-up errors (T4a)
 - Done: tests for T3
 - Done: error + input validation (T3)
 - Done: repo polish (T1)

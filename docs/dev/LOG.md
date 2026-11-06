@@ -283,3 +283,9 @@
 - Why: Cover the T3 behaviour.
 - Commits: `test: http error mapping and tool input validation` (this commit; the LOG entry ships with the work)
 - For other lanes: none.
+
+## 2026-11-06 19:54 ICT · server start-up errors (T4a)
+- What: src/index.ts
+- Why: QA review: LINEOA_SEND_DAILY_LIMIT=abc showed only Connection closed.
+- Commits: `fix(server): a bad setting is one stderr line, not a stack trace` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
