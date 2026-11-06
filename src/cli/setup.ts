@@ -154,11 +154,13 @@ export function setup(opts: { dryRun?: boolean; allowSend?: boolean; mock?: bool
   } else {
     // `claude mcp` can't show the old env, so a live re-run passes only the env we have.
     const addArgs = claudeAddArgs(name, baseEnv(), command, args);
+    // Quote (or refuse) before removing anything, so a bad path never leaves the user with no server.
+    const finalArgs = WIN ? addArgs.map(winQuote) : addArgs;
     if (!opts.dryRun) {
       try {
         execFileSync("claude", ["mcp", "remove", "--scope", "user", name], { stdio: "ignore", shell: WIN });
       } catch {}
-      execFileSync("claude", WIN ? addArgs.map(winQuote) : addArgs, { stdio: "ignore", shell: WIN });
+      execFileSync("claude", finalArgs, { stdio: "ignore", shell: WIN });
     }
     steps.push({
       target: "Claude Code",

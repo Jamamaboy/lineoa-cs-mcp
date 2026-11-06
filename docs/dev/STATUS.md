@@ -1,7 +1,8 @@
 # dev status
-Last updated: 2026-11-06 20:06 ICT · branch feat/review-fixes
+Last updated: 2026-11-06 20:07 ICT · branch feat/review-fixes
 
 ## Now
+- Done: re-review follow-up
 - Done: simplify pass
 - Done: review fix round (UX)
 - Done: review fix round (code + security)

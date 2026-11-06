@@ -84,6 +84,7 @@ export class AuditLog {
           if (isPlainObject(v)) return v as Partial<SendRecord>;
         } catch {}
         // Unreadable line: assume a message may have gone out, so the daily cap errs on the safe side.
+        // Dated by the file mtime, so while the log keeps growing it counts toward today (one extra per bad line).
         if (!this.warned) {
           this.warned = true;
           process.stderr.write(`audit log ${this.file} has a bad line; counting it as a send\n`);

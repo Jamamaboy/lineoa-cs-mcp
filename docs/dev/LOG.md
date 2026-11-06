@@ -385,3 +385,9 @@
 - Why: /simplify (4 agents) found duplicated guards and a whole-file read per send. Skipped: NOT_FOUND rewrite via http options (invasive in a high-risk file), shared atomic-write helper (different safeguards), cli resolveChat extraction.
 - Commits: `refactor: simplify pass on the review fixes` (this commit; the LOG entry ships with the work)
 - For other lanes: none.
+
+## 2026-11-06 20:07 ICT · re-review follow-up
+- What: src/cli/setup.ts, src/audit/audit-log.ts
+- Why: Re-review of the orchestrator's own fixes (writer != reviewer) found the order issue.
+- Commits: `fix(setup): check Windows paths before removing the old registration` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
