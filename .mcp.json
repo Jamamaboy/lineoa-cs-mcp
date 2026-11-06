@@ -12,6 +12,7 @@
       "args": ["--import", "tsx", "src/index.ts"],
       "env": {
         "LINEOA_MOCK": "1",
+        "LINEOA_MOCK_PORT": "0",
         "LINEOA_ALLOW_SEND": "true"
       }
     }

@@ -319,3 +319,9 @@
 - Why: CS review: no way to try the mock from Desktop, alarming not-installed line; risk review: re-runs dropped settings.
 - Commits: `feat(setup): --mock, merged env, timestamped backups, clear messages` (this commit; the LOG entry ships with the work)
 - For other lanes: none.
+
+## 2026-11-06 19:54 ICT · version + deps (T5c)
+- What: src/version.ts, src/server.ts, package.json, package-lock.json, .mcp.json
+- Why: Dev review: duplicated version, setup relied on a devDependency.
+- Commits: `chore: one version source, tsx at runtime, mock on a free port` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
