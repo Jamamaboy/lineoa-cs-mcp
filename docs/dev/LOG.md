@@ -187,3 +187,9 @@
 - Why: The user asked for a linear, left-to-right flow.
 - Commits: a99ca13
 - For other lanes: none.
+
+## 2026-11-06 18:35 ICT · history guide in README
+- What: README 'How this was built' now shows three git log commands: releases, features, commits inside a feature. From here on the dev LOG/STATUS update ships in the same commit as the work (as CLAUDE.md says), not as a separate docs(dev) commit.
+- Why: 164 commits looked like a lot; read by first-parent they are about 40 features, each split into small reviewable commits.
+- Commits: `docs: show how to read the git history one level at a time` (this commit; the LOG entry ships with the work)
+- For other lanes: none.

@@ -239,7 +239,14 @@ is in the repo:
 - The research compared 34 similar projects:
   [`docs/research/refs-comparison.html`](docs/research/refs-comparison.html).
 - Each lane keeps a log in `docs/<lane>/LOG.md`.
-- Each feature is a branch of small commits, each one green on its own.
+- Each feature is a branch of small commits, each one green on its own, merged with `--no-ff`. Read the
+  history one level at a time:
+
+  ```bash
+  git log --first-parent --oneline main   # one commit per release
+  git log --first-parent --oneline dev    # one merge per feature (or plan/research round)
+  git log --oneline <merge>^1..<merge>^2  # the small commits inside one feature
+  ```
 
 [`docs/README.md`](docs/README.md) maps every document. A Thai user guide is in [`docs/USAGE.th.md`](docs/USAGE.th.md).
 
