@@ -1,3 +1,4 @@
+import { hostMatches } from "../auth/session-source.js";
 import { authExpired, LineOAError } from "../domain/errors.js";
 
 /** The web app sends this header; linebiz copies it, so do we. */
@@ -65,7 +66,7 @@ export async function getBytes(
   maxBytes: number,
 ): Promise<{ bytes: Uint8Array; contentType?: string }> {
   const target = new URL(url);
-  const own = target.hostname.endsWith("line.biz") || target.origin === new URL(deps.baseUrl).origin;
+  const own = hostMatches(target.hostname, "line.biz") || target.origin === new URL(deps.baseUrl).origin;
   const cookie = own ? deps.cookie(target.hostname) : undefined;
   if (own && !cookie) throw authExpired();
   const res = await (deps.fetch ?? fetch)(target, { headers: cookie ? { Cookie: cookie } : {} });
