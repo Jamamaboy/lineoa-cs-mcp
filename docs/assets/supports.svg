@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="300" viewBox="0 0 880 300" font-family="-apple-system,Segoe UI,Helvetica,Arial,sans-serif">
+  <style>
+    .t{font-size:15px;font-weight:700;fill:#1f2328}.c{font-size:13px;fill:#1f2328}.m{font-size:11.5px;fill:#59636e}
+    .box{fill:#f6f8fa;stroke:#d1d9e0;stroke-width:1.2}.ok{fill:#1a7f37}.so{fill:#9a6700}.no{fill:#cf222e}
+    @media (prefers-color-scheme:dark){.t,.c{fill:#e6edf3}.m{fill:#9198a1}.box{fill:#151b23;stroke:#3d444d}}
+  </style>
+  <rect class="box" x="1" y="1" width="878" height="298" rx="12"/>
+  <!-- column 1: AI apps -->
+  <text class="t" x="24" y="38">AI apps (MCP over stdio)</text>
+  <text class="c" x="24" y="68"><tspan class="ok">●</tspan> Claude Code</text>
+  <text class="c" x="24" y="94"><tspan class="so">●</tspan> Claude Desktop <tspan class="m">· npm run setup</tspan></text>
+  <text class="c" x="24" y="120"><tspan class="so">●</tspan> Cursor, Windsurf, any MCP client</text>
+  <text class="c" x="24" y="146"><tspan class="ok">●</tspan> Terminal: <tspan class="m">lineoa CLI</tspan></text>
+  <!-- column 2: login browsers -->
+  <text class="t" x="320" y="38">Login browser</text>
+  <text class="c" x="320" y="68"><tspan class="ok">●</tspan> Google Chrome</text>
+  <text class="c" x="320" y="94"><tspan class="so">●</tspan> Microsoft Edge · Brave · Chromium</text>
+  <text class="c" x="320" y="120"><tspan class="so">●</tspan> Firefox · WebKit <tspan class="m">· one-time install</tspan></text>
+  <text class="c" x="320" y="146"><tspan class="no">●</tspan> Safari app <tspan class="m">· not automatable</tspan></text>
+  <!-- column 3: platform -->
+  <text class="t" x="620" y="38">Platform</text>
+  <text class="c" x="620" y="68"><tspan class="ok">●</tspan> macOS</text>
+  <text class="c" x="620" y="94"><tspan class="so">●</tspan> Linux · Windows</text>
+  <text class="c" x="620" y="120"><tspan class="ok">●</tspan> Node.js 22.13+</text>
+  <!-- bottom: LINE -->
+  <line x1="24" y1="176" x2="856" y2="176" stroke="#d1d9e0"/>
+  <text class="t" x="24" y="208">LINE side</text>
+  <text class="c" x="24" y="236"><tspan class="ok">●</tspan> LINE Official Account Manager (chat.line.biz): chats, history, profiles, tags, notes, images and files · read paths verified live</text>
+  <text class="c" x="24" y="262"><tspan class="so">●</tspan> Sending text <tspan class="m">· verified on the mock; off by default</tspan>    <tspan class="no">●</tspan> Messaging API bots <tspan class="m">· not used (no history, no search)</tspan></text>
+  <text class="m" x="24" y="288"><tspan class="ok">●</tspan> tested   <tspan class="so">●</tspan> supported, not tested here   <tspan class="no">●</tspan> not supported</text>
+</svg>
