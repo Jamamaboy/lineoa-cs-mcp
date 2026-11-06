@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.1.5 · 2026-11-06
+
+- Claude Code greets you when it starts in this folder: the next step (install, log in, or ready), example
+  questions, and where to read more. A SessionStart hook in `.claude/settings.json` runs `scripts/welcome.mjs`,
+  which reads local files only.
+- `npm run features` opens `docs/features.html`: what each tool does, an example chat, the diagrams, and every
+  feature branch with its commits, read from git.
+- The README's step-by-step diagram is now an SVG (`docs/assets/sequence.svg`). The mermaid version lost
+  labels in GitHub's dark theme.
+
 ## v0.1.4 · 2026-11-06
 
 Fixes from walking through the README on a fresh clone.

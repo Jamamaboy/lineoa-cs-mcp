@@ -228,6 +228,7 @@ is in the repo:
 
 | version | date | highlights |
 |---|---|---|
+| [v0.1.5](https://github.com/Jamamaboy/lineoa-cs-mcp/releases/tag/v0.1.5) | 2026-11-06 | welcome in Claude Code, features page, readable step-by-step diagram |
 | [v0.1.4](https://github.com/Jamamaboy/lineoa-cs-mcp/releases/tag/v0.1.4) | 2026-11-06 | fresh-clone fixes: CLI hints, mock for the CLI, send on the mock |
 | [v0.1.3](https://github.com/Jamamaboy/lineoa-cs-mcp/releases/tag/v0.1.3) | 2026-11-06 | docs: diagrams, graphics, demo GIF, history guide |
 | [v0.1.1](https://github.com/Jamamaboy/lineoa-cs-mcp/releases/tag/v0.1.1) | 2026-11-06 | security and reliability fixes from a code review |

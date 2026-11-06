@@ -1,12 +1,8 @@
 # dev status
-Last updated: 2026-11-06 19:20 ICT · branch feat/readable-diagrams
+Last updated: 2026-11-06 19:20 ICT · branch release/v0.1.5
 
 ## Now
-- Done: features page pictures
-- Done: readable sequence diagram
-- Done: features page
-- Done: welcome on session start
-- v0.1.4 released to main (tag v0.1.4, GitHub release). Public repo: github.com/Jamamaboy/lineoa-cs-mcp.
+- v0.1.5 released to main (tag v0.1.5, GitHub release): welcome hook, features page, SVG sequence diagram. Public repo: github.com/Jamamaboy/lineoa-cs-mcp.
 - All 5 required actions, auth, attachments and the README sections are done. 33 tests green, CI green.
 - Live OA checks are read-only and pass. Sending is verified on the mock only.
 - The user is testing from a fresh `git clone` with a new Claude session.

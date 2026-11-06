@@ -247,3 +247,9 @@
 - Why: The user asked for example pictures on the features page.
 - Commits: `docs: example chat and pictures on the features page` (this commit; the LOG entry ships with the work)
 - For other lanes: none.
+
+## 2026-11-06 19:20 ICT · release v0.1.5
+- What: version 0.1.5, CHANGELOG, Versions row, features page regenerated, STATUS updated; dev to main with --no-ff, tag v0.1.5, push, GitHub release.
+- Why: the user approved pushing and releasing the welcome message, features page and readable diagram.
+- Commits: `chore(release): v0.1.5` (this commit)
+- For other lanes: none.
