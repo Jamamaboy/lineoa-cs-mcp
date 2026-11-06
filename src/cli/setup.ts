@@ -3,6 +3,7 @@ import { copyFileSync, existsSync, mkdirSync, readFileSync, renameSync, writeFil
 import { homedir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { isPlainObject } from "../domain/json.js";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const NAME = "lineoa-cs";
@@ -47,7 +48,7 @@ interface Entry {
 /** The Desktop config with `name` set to `entry`; every other server and top-level key stays as it was. */
 export function buildDesktopConfig(existing: Record<string, unknown>, name: string, entry: Entry) {
   const servers = existing.mcpServers;
-  const others = servers && typeof servers === "object" && !Array.isArray(servers) ? servers : {};
+  const others = isPlainObject(servers) ? servers : {};
   return { ...existing, mcpServers: { ...others, [name]: entry } };
 }
 
@@ -82,7 +83,7 @@ function readDesktopConfig(file: string): Record<string, unknown> | undefined {
   if (!existsSync(file)) return {};
   try {
     const v: unknown = JSON.parse(readFileSync(file, "utf8"));
-    return v && typeof v === "object" && !Array.isArray(v) ? (v as Record<string, unknown>) : undefined;
+    return isPlainObject(v) ? v : undefined;
   } catch {
     return undefined;
   }

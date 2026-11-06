@@ -379,3 +379,9 @@
 - Why: uxui-reviewer 7 should-fix.
 - Commits: `docs: honest send wording and consistent guides; tidier CLI rows` (this commit; the LOG entry ships with the work)
 - For other lanes: none.
+
+## 2026-11-06 20:06 ICT · simplify pass
+- What: src/domain/json.ts, src/audit/audit-log.ts, src/cli/setup.ts, src/client/http.ts, src/domain/raw-schemas.ts, src/version.ts, mock-server/fixtures.ts
+- Why: /simplify (4 agents) found duplicated guards and a whole-file read per send. Skipped: NOT_FOUND rewrite via http options (invasive in a high-risk file), shared atomic-write helper (different safeguards), cli resolveChat extraction.
+- Commits: `refactor: simplify pass on the review fixes` (this commit; the LOG entry ships with the work)
+- For other lanes: none.

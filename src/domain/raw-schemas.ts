@@ -19,11 +19,13 @@ export const RawChatSchema = z.looseObject({
   latestEvent: RawEventSchema.nullish(),
 });
 
-const changed = (where: string, issue: z.core.$ZodIssue | undefined) =>
+const changed = (where: string, path: string, message: string) =>
   new LineOAError(
     "ENDPOINT_CHANGED",
-    `${where}: ${issue?.path.join(".") || "(item)"} ${issue?.message ?? "has an unexpected shape"}. The internal API may have changed.`,
+    `${where}: ${path || "(item)"} ${message}. The internal API may have changed.`,
   );
+const fromIssue = (where: string, issue: z.core.$ZodIssue | undefined) =>
+  changed(where, issue?.path.join(".") ?? "", issue?.message ?? "has an unexpected shape");
 
 /**
  * Validates each item. One odd item is skipped (with a warning that never includes message text), so it can't break
@@ -46,15 +48,11 @@ export function checkList<T>(
       firstIssue ??= r.error.issues[0];
     }
   }
-  if (bad * 2 > items.length) throw changed(where, firstIssue);
+  if (bad * 2 > items.length) throw fromIssue(where, firstIssue);
   if (items.length > 0) {
     for (const key of keyFields) {
       if (items.every((i) => (i as Record<string, unknown> | null)?.[key] === undefined))
-        throw changed(where, {
-          code: "custom",
-          path: [key],
-          message: "is missing from every item",
-        } as z.core.$ZodIssue);
+        throw changed(where, key, "is missing from every item");
     }
   }
   if (bad)
@@ -66,6 +64,6 @@ export function checkList<T>(
 
 export function checkOne<T>(value: unknown, schema: z.ZodType, where: string): T {
   const r = schema.safeParse(value);
-  if (!r.success) throw changed(where, r.error.issues[0]);
+  if (!r.success) throw fromIssue(where, r.error.issues[0]);
   return value as T;
 }

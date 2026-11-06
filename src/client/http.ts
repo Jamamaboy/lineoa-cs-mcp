@@ -1,6 +1,8 @@
 import { hostMatches } from "../auth/session-source.js";
 import { authExpired, LineOAError } from "../domain/errors.js";
 
+const UNREACHABLE = "Could not reach chat.line.biz (network error). Check the connection and retry.";
+
 /** The web app sends this header; linebiz copies it, so do we. */
 const CLIENT_VERSION = "20240513144702";
 
@@ -37,10 +39,7 @@ export async function getJson<T>(
       redirect: "manual",
     });
   } catch {
-    throw new LineOAError(
-      "UPSTREAM_ERROR",
-      "Could not reach chat.line.biz (network error). Check the connection and retry.",
-    );
+    throw new LineOAError("UPSTREAM_ERROR", UNREACHABLE);
   }
 
   if (res.status >= 300 && res.status < 400) throw authExpired();
@@ -97,7 +96,7 @@ export async function getBytes(
     throw new LineOAError(
       "UPSTREAM_ERROR",
       own
-        ? "Could not reach chat.line.biz (network error). Check the connection and retry."
+        ? UNREACHABLE
         : `Could not download the file from ${target.hostname} (network error). Open the chat's webUrl to see it in LINE OA Manager.`,
     );
   }
