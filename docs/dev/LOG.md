@@ -163,3 +163,9 @@
 - Commits: chore: clear lint warnings…; docs: note that Messaging API bot replies…; fix(security) ×2; fix(config);
   fix(send); fix(search); fix(list); fix(client); fix(attachments); fix(setup).
 - For other lanes: none. Not pushed.
+
+## 2026-11-06 09:43 ICT · README showcase
+- What: badges, demo GIF slot (terminal GIF recorded with vhs against the mock), supports.svg (tested / untested / not supported), Mermaid feature map and usage sequence (render-checked), Versions table; intro marked for the owner. A Claude-session recording was made in /tmp only; the owner will record the final GIF.
+- Why: The user asked for a GIF, a what-it-works-with graphic, feature and flow diagrams, and versions in the README.
+- Commits: docs: add a terminal demo GIF…; docs: README badges, showcase…
+- For other lanes: none.
