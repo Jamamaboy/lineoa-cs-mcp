@@ -301,3 +301,9 @@
 - Why: CS review: chat ids are long; QA: unknown options printed Node stack traces.
 - Commits: `feat(cli): read a chat by name; option errors are one line` (this commit; the LOG entry ships with the work)
 - For other lanes: none.
+
+## 2026-11-06 19:54 ICT · tests for T4
+- What: tests/unit/cli-errors.test.ts
+- Why: Cover the T4 behaviour.
+- Commits: `test: CLI and server start-up errors, read by name` (this commit; the LOG entry ships with the work)
+- For other lanes: none.

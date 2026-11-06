@@ -2,6 +2,7 @@
 Last updated: 2026-11-06 19:54 ICT · branch feat/review-fixes
 
 ## Now
+- Done: tests for T4
 - Done: CLI read by name (T4c)
 - Done: CLI dates + matcher (T4b)
 - Done: server start-up errors (T4a)
