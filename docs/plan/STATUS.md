@@ -1,7 +1,8 @@
 # plan status
-Last updated: 2026-11-06 02:30 ICT · branch plan
+Last updated: 2026-11-06 19:52 ICT · branch plan
 
 ## Now
+- CLAUDE.md and docs/README.md are company- and deadline-neutral: no take-home/deadline line, no link to an untracked task file, "reviewers" instead of "graders" (review-fixes plan, task T2).
 - `docs/plan/plan-summary.html`: Thai one-page summary (end result, use cases, tools, folder tree + file counts).
 - Docs cleaned up: `docs/README.md` maps every document; the run plan is `docs/plan/run-plan.{md,html}`; the
   how-CS-uses-it page is `docs/plan/how-cs-uses-it.html`. The dev/research worktree folders in `~/orca` were removed

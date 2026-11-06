@@ -137,3 +137,9 @@
 - Why: the user reviews every commit, and the first read-core commit (703 lines) was too big.
 - Commits: this commit plus the merge into `dev`.
 - For other lanes: dev history was split the same way (see docs/dev/LOG.md).
+
+## 2026-11-06 19:52 ICT · neutral CLAUDE.md and doc map
+- What: removed the take-home/deadline sentence and the docs/ASSIGNMENT.md references from CLAUDE.md and docs/README.md; "graders" → "reviewers".
+- Why: the four-persona review flagged internal notes in the public repo (plan docs/dev/plans/2026-11-06-review-fixes.html, T2).
+- Commits: `docs(plan): neutral CLAUDE.md and doc map` (this commit)
+- For other lanes: none.
