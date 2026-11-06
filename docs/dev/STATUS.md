@@ -1,9 +1,9 @@
 # dev status
-Last updated: 2026-11-06 20:10 ICT · branch feat/windows-ci
+Last updated: 2026-11-06 20:13 ICT · branch release/v0.2.1
 
 ## Now
 - Done: Windows CI line endings
-- v0.2.0 released to main (tag v0.2.0, GitHub release): the four-persona review fixes (plan
+- v0.2.1 released to main (CI green on Linux/macOS/Windows). v0.2.0 (tag, GitHub release): the four-persona review fixes (plan
   docs/dev/plans/2026-11-06-review-fixes.html, T1–T9). 78 tests, CI on Linux/macOS/Windows.
 - Live OA checks (read-only) pass, including the new response-shape checks. Sending is verified on the mock only.
 - /update-skill proposal for the agent strategy is at docs/agent-strategy/2026-11-proposal.html (not committed;
