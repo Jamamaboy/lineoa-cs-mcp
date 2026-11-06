@@ -175,3 +175,9 @@
 - Why: The user wants LINE-docs-style flow pictures, an architecture diagram, and badge rows like the reference repo.
 - Commits: docs: add an illustrated flow and an architecture diagram; docs: README tech badges and the new diagrams
 - For other lanes: none.
+
+## 2026-11-06 10:07 ICT · diagram restyle
+- What: supports.svg became icon cards with tested/untested/unsupported badges; architecture.svg and the README mermaid sequence now use flow.svg's palette (blue, purple, dark, LINE green).
+- Why: The user asked for icons and one visual style across all diagrams.
+- Commits: 0cea395, deffad9, 9e9f7ee
+- For other lanes: none.

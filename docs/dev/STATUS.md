@@ -1,7 +1,8 @@
 # dev status
-Last updated: 2026-11-06 09:51 ICT · branch dev
+Last updated: 2026-11-06 10:07 ICT · branch dev
 
 ## Now
+- Done: diagram restyle
 - Done: README diagrams and badges
 - Done: README showcase
 - v0.1.0 is public at github.com/Jamamaboy/lineoa-cs-mcp (main, dev, plan, research, tag, release; CI green).
