@@ -39,38 +39,7 @@ own login. LINE's Messaging API is built for bots: it can't see existing chats o
 
 ## How it is used
 
-```mermaid
-%%{init: {'theme':'base','themeVariables':{'fontFamily':'Helvetica,Arial,sans-serif','actorBkg':'#6f4ef2','actorBorder':'#5b3fd1','actorTextColor':'#ffffff','actorLineColor':'#c9bdf7','signalColor':'#3d4450','signalTextColor':'#1f2328','sequenceNumberColor':'#ffffff','noteBkgColor':'#e8f8ee','noteBorderColor':'#06c755','noteTextColor':'#1f2328'}}}%%
-sequenceDiagram
-  autonumber
-  box rgb(243,240,255) The CS person's computer
-  participant CS as CS person
-  participant AI as AI app
-  participant M as lineoa-cs
-  end
-  box rgb(232,248,238) LINE
-  participant L as LINE OA Manager
-  end
-  CS->>M: npm run setup (once)
-  CS->>L: npm run login → logs in in a browser window
-  L-->>M: session cookie saved (0600)
-  CS->>AI: "Which chats are waiting for a reply?"
-  AI->>M: list_chats(needs_reply)
-  M-->>AI: CHOOSE_OA: you can reach "Shop A", "Shop B"
-  AI->>CS: Which OA?
-  CS->>AI: Shop A
-  AI->>M: list_chats(oa: "Shop A", needs_reply)
-  M->>L: GET chats
-  M-->>AI: chats + webUrl
-  AI->>M: read_chat · get_attachment
-  AI->>CS: summary + draft reply
-  rect rgb(232,248,238)
-    CS->>AI: OK, send it
-    AI->>M: send_message (only if sending is on)
-    M->>L: POST message (CSRF, sendId)
-    M-->>AI: sent · audit-logged
-  end
-```
+<p align="center"><img src="docs/assets/sequence.svg" alt="Step by step: set up once and log in; the CS person asks, the AI app calls lineoa-cs, which asks which OA and reads LINE; the AI shows a summary and a draft; after the human says OK, send_message posts the reply and logs it" width="80%"></p>
 
 ## What it unblocks
 
