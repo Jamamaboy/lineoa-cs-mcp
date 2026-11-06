@@ -1,10 +1,10 @@
 # dev status
-Last updated: 2026-11-06 20:30 ICT · branch feat/submission-polish
+Last updated: 2026-11-06 20:31 ICT · branch release/v0.2.2
 
 ## Now
 - Done: submission polish (dev)
 - Done: Windows CI line endings
-- v0.2.1 released to main (CI green on Linux/macOS/Windows). v0.2.0 (tag, GitHub release): the four-persona review fixes (plan
+- v0.2.2 released to main (README assumptions + stack, no stale references). v0.2.1 (CI green on Linux/macOS/Windows). v0.2.0 (tag, GitHub release): the four-persona review fixes (plan
   docs/dev/plans/2026-11-06-review-fixes.html, T1–T9). 78 tests, CI on Linux/macOS/Windows.
 - Live OA checks (read-only) pass, including the new response-shape checks. Sending is verified on the mock only.
 

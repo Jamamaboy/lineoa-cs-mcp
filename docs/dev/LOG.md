@@ -415,3 +415,9 @@
 - Why: Final Fable review against the brief: assumptions and stack reasons were asked for by name; stale comment and local path could mislead a grader.
 - Commits: `docs: README assumptions and stack choices; no stale or local references` (this commit; the LOG entry ships with the work)
 - For other lanes: none.
+
+## 2026-11-06 20:31 ICT · release v0.2.2
+- What: version 0.2.2, CHANGELOG, Versions row, features page; plan and research lanes merged; dev → main, tag, push, GitHub release.
+- Why: final Fable review against the brief listed five doc fixes; the user approved fixing and releasing.
+- Commits: `chore(release): v0.2.2` (this commit)
+- For other lanes: none.

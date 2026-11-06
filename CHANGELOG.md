@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.2.2 · 2026-11-06
+
+Docs only, from a final review against the brief.
+
+- README: new **Assumptions** section (what the brief left open and what the code assumes) and **Stack and why**; "Not built yet" says why.
+- `.env.example` no longer says sending is a later feature.
+- No links to the assignment file kept out of the repo, and no local paths in the plan, research briefs or kit files.
+
 ## v0.2.1 · 2026-11-06
 
 - CI: `.gitattributes` pins LF line endings, so the Windows job checks out the same files as Linux and macOS. v0.2.0's Windows job failed in lint on CRLF; lint, typecheck, tests, build and smoke now pass on all three.
