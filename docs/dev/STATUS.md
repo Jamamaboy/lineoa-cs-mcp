@@ -1,7 +1,8 @@
 # dev status
-Last updated: 2026-11-06 10:11 ICT · branch dev
+Last updated: 2026-11-06 18:35 ICT · branch feat/history-guide
 
 ## Now
+- Done: history guide in README
 - Done: linear flow diagram
 - Done: diagram restyle
 - Done: README diagrams and badges
