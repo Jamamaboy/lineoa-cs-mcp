@@ -16,6 +16,7 @@ import { loadConfig } from "./config.js";
 import { LineOAError } from "./domain/errors.js";
 import { MessageStore } from "./index/store.js";
 import { syncRecent } from "./index/sync.js";
+import { withMockIfAsked } from "./mock-env.js";
 import { chatFilters } from "./tools/list-chats.js";
 
 const { values: opt, positionals } = parseArgs({
@@ -31,7 +32,9 @@ const { values: opt, positionals } = parseArgs({
   },
 });
 const [cmd = "help", ...rest] = positionals;
-const config = loadConfig();
+// LINEOA_MOCK=1 runs the commands against the built-in mock, like the MCP server.
+const mock = await withMockIfAsked({ ...process.env });
+const config = loadConfig(mock.env);
 const client = createLineClient(config);
 
 async function pickOa() {
@@ -152,4 +155,6 @@ try {
         : msg,
   );
   process.exitCode = 1;
+} finally {
+  await mock.close();
 }

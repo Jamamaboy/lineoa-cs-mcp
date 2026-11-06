@@ -205,3 +205,9 @@
 - Why: A fresh-clone test showed 'Run: lineoa login', which a new user cannot run.
 - Commits: `fix(cli): point hints at npm scripts a fresh clone can run` (this commit; the LOG entry ships with the work)
 - For other lanes: none.
+
+## 2026-11-06 19:03 ICT · LINEOA_MOCK for the CLI
+- What: New src/mock-env.ts (withMockIfAsked) used by index.ts and cli.ts; the CLI stops the mock when done. Test: tests/unit/mock-env.test.ts. README shows the CLI on the mock.
+- Why: A fresh-clone test found that LINEOA_MOCK=1 had no effect on the CLI, which then read the live OA.
+- Commits: `fix(cli): LINEOA_MOCK=1 also switches the terminal command to the mock` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
