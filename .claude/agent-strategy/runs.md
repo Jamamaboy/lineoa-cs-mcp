@@ -15,3 +15,4 @@ Columns:
 
 | date | skill | plan / issue | strategy | case | agents | findings | fix rounds | agent tokens | wall-clock | notes |
 |---|---|---|---|---|---|---|---|---|---|---|
+| 2026-11-06 | write-plan | docs/dev/plans/2026-11-06-review-fixes.html | 2026-10 (stale: 2026-11) | W1 | plan-reviewer · plan-risk-auditor (run as general-purpose, kit agents installed mid-session) | plan-rev 0/8/6 · risk 1/5/3 | 0 · orchestrator closed all findings | 211934 | ~1m45s (parallel) | Explore 0: files named by the 4 persona review reports |
