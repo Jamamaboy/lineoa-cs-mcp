@@ -1,7 +1,8 @@
 # dev status
-Last updated: 2026-11-06 19:54 ICT · branch feat/review-fixes
+Last updated: 2026-11-06 19:58 ICT · branch feat/review-fixes
 
 ## Now
+- Done: dist + CI (T7a)
 - Done: tests for T6
 - Done: response shapes (T6)
 - Done: tests for T5

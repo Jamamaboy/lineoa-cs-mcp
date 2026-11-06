@@ -17,7 +17,8 @@ describe("attachment files", () => {
     const dir = mkdtempSync(join(tmpdir(), "att-"));
     const path = saveToCache(dir, new TextEncoder().encode("hello"), "txt");
     expect(readFileSync(path, "utf8")).toBe("hello");
-    expect(statSync(path).mode & 0o777).toBe(0o600);
+    // NTFS has no POSIX modes; Windows relies on the profile folder's permissions.
+    if (process.platform !== "win32") expect(statSync(path).mode & 0o777).toBe(0o600);
   });
 
   it("shrinks a big image to the long-edge limit", async () => {

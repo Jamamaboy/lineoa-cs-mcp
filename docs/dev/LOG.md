@@ -343,3 +343,9 @@
 - Why: Cover the T6 behaviour.
 - Commits: `test: response-shape checks, normalize, not-found wording` (this commit; the LOG entry ships with the work)
 - For other lanes: none.
+
+## 2026-11-06 19:58 ICT · dist + CI (T7a)
+- What: mock-server/fixtures.ts, scripts/smoke-dist.mjs, .github/workflows/ci.yml, tests/unit/files.test.ts
+- Why: Dev review: LINEOA_MOCK=1 node dist/src/index.js crashed; CI only ran Linux and never the build.
+- Commits: `fix(build): the built server finds its mock data; CI checks 3 OSes and the build` (this commit; the LOG entry ships with the work)
+- For other lanes: none.

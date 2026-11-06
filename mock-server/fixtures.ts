@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -33,7 +33,12 @@ export interface RawBot {
 }
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-export const DEFAULT_FIXTURES_DIR = join(HERE, "..", "test", "research", "line-api-shapes");
+// From src (mock-server/) the fixtures are one level up; from the build (dist/mock-server/) two.
+const CANDIDATES = [
+  join(HERE, "..", "test", "research", "line-api-shapes"),
+  join(HERE, "..", "..", "test", "research", "line-api-shapes"),
+];
+export const DEFAULT_FIXTURES_DIR = CANDIDATES.find((d) => existsSync(d)) ?? (CANDIDATES[0] as string);
 
 function load<T>(dir: string, name: string): T {
   const raw = JSON.parse(readFileSync(join(dir, `${name}.json`), "utf8")) as Fixture<T>;

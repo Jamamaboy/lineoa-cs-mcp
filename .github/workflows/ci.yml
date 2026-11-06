@@ -5,7 +5,12 @@ on:
   pull_request:
 jobs:
   check:
-    runs-on: ubuntu-latest
+    # Windows and macOS check build + tests only; setup and login are not exercised in CI.
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -16,3 +21,6 @@ jobs:
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
+      - run: npm run build
+      # The built terminal command must run against the mock (catches files tsc does not copy).
+      - run: npm run smoke
