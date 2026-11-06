@@ -184,29 +184,36 @@ export function createLineClient(cfg: Config, fetchImpl?: typeof fetch): LineOAC
       const sendId = `${chatId}_${Date.now()}_${randomInt(1e7, 1e8)}`;
       const path = `/api/v1/bots/${botId}/chats/${chatId}/messages/send`;
       const token = async () => (await getJson<{ token: string }>(deps, "/api/v1/csrfToken")).token;
+      // The echo can carry the sendId on the event or on its message; LINE may also need a moment.
       const findSent = async () => {
-        const r = await rawMessages(botId, chatId);
-        return r.list.find((e) => (e as { sendId?: string }).sendId === sendId)?.message?.id;
+        for (let attempt = 0; attempt < 3; attempt++) {
+          if (attempt) await new Promise((r) => setTimeout(r, 1000));
+          const r = await rawMessages(botId, chatId).catch(() => undefined);
+          const hit = r?.list.find((e) => {
+            const ev = e as { sendId?: string; message?: { sendId?: string } };
+            return ev.sendId === sendId || ev.message?.sendId === sendId;
+          });
+          if (hit?.message?.id) return hit.message.id;
+        }
+        return undefined;
+      };
+      const body = { id: "", type: "textV2", text, sendId };
+      const post = async (csrf: string) => {
+        try {
+          return (await postJson(deps, path, body, csrf)).status;
+        } catch (err) {
+          if (err instanceof LineOAError) throw err;
+          return 0; // network failure during the POST: the message may or may not have gone out
+        }
       };
 
-      let status: number;
-      try {
-        status = (await postJson(deps, path, { id: "", type: "textV2", text, sendId }, await token())).status;
-        // An expired CSRF token gives 403: fetch a fresh one and try exactly once more.
-        if (status === 403)
-          status = (await postJson(deps, path, { id: "", type: "textV2", text, sendId }, await token()))
-            .status;
-      } catch (err) {
-        if (err instanceof LineOAError) throw err;
-        status = 0; // network failure: the message may or may not have gone out
-      }
+      // Fetching the token happens before anything is posted, so its errors are plain errors, never "uncertain".
+      let status = await post(await token());
+      if (status === 403) status = await post(await token()); // an expired CSRF token: refresh once and retry
       if (status === 403) throw new LineOAError("FORBIDDEN", "This staff account may not send in this chat.");
       if (status === 404) throw new LineOAError("NOT_FOUND", `Chat ${chatId} not found.`);
-      if (status >= 200 && status < 300) {
-        const messageId = await findSent().catch(() => undefined);
-        return { sendId, ...(messageId ? { messageId } : {}) };
-      }
-      const messageId = await findSent().catch(() => undefined);
+      const messageId = await findSent();
+      if (status >= 200 && status < 300) return { sendId, ...(messageId ? { messageId } : {}) };
       if (messageId) return { sendId, messageId };
       throw new LineOAError(
         "SEND_UNCERTAIN",

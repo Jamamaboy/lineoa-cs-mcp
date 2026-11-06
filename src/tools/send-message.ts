@@ -31,10 +31,15 @@ export function registerSendMessage(server: McpServer, ctx: ToolContext) {
     ({ chatId, text, oa, dryRun }) =>
       run(async () => {
         const bot = await resolveBotId(ctx, oa);
-        const log = (
-          outcome: "sent" | "dry_run" | "refused" | "failed",
-          extra: Record<string, string> = {},
-        ) => ctx.audit.record({ botId: bot, chatId, dryRun, outcome, text, ...extra });
+        type Outcome = "sent" | "uncertain" | "dry_run" | "refused" | "failed";
+        const log = (outcome: Outcome, extra: Record<string, string> = {}) => {
+          try {
+            ctx.audit.record({ botId: bot, chatId, dryRun, outcome, text, ...extra });
+          } catch (err) {
+            // A broken log must never turn a delivered message into a reported failure (the agent would resend).
+            console.error(`audit log write failed: ${err instanceof Error ? err.message : err}`);
+          }
+        };
         const refuse = (reason: string) => {
           log("refused", { reason });
           return new LineOAError("SEND_DISABLED", reason);
@@ -52,14 +57,18 @@ export function registerSendMessage(server: McpServer, ctx: ToolContext) {
           log("dry_run");
           return { dryRun: true, wouldSendTo: chat.name, text, webUrl: chat.webUrl };
         }
+        let sent: { sendId: string; messageId?: string };
         try {
-          const sent = await ctx.client.sendText(bot, chatId, text);
-          log("sent", { sendId: sent.sendId });
-          return { sent: true, to: chat.name, ...sent, webUrl: chat.webUrl };
+          sent = await ctx.client.sendText(bot, chatId, text);
         } catch (err) {
-          log("failed", { reason: err instanceof Error ? err.message : String(err) });
+          const uncertain = err instanceof LineOAError && err.code === "SEND_UNCERTAIN";
+          log(uncertain ? "uncertain" : "failed", {
+            reason: err instanceof Error ? err.message : String(err),
+          });
           throw err;
         }
+        log("sent", { sendId: sent.sendId });
+        return { sent: true, to: chat.name, ...sent, webUrl: chat.webUrl };
       }),
   );
 }

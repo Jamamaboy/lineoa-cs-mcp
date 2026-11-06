@@ -8,7 +8,7 @@ export interface SendRecord {
   chatId: string;
   sendId?: string;
   dryRun: boolean;
-  outcome: "sent" | "dry_run" | "refused" | "failed";
+  outcome: "sent" | "uncertain" | "dry_run" | "refused" | "failed";
   reason?: string;
   /** The text itself is not logged: only its length and a hash, so the log holds no customer data. */
   textLength: number;
@@ -32,10 +32,12 @@ export class AuditLog {
     appendFileSync(this.file, `${JSON.stringify(line)}\n`, { mode: 0o600 });
   }
 
-  /** How many messages were really sent today (local time), for the daily cap. */
+  /** How many messages may have gone out today (local time), for the daily cap. Uncertain sends count. */
   sentToday(): number {
     const today = new Date().toDateString();
-    return this.lines().filter((l) => l.outcome === "sent" && new Date(l.at).toDateString() === today).length;
+    return this.lines().filter(
+      (l) => (l.outcome === "sent" || l.outcome === "uncertain") && new Date(l.at).toDateString() === today,
+    ).length;
   }
 
   private memory: SendRecord[] = [];
