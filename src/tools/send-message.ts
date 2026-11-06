@@ -19,7 +19,11 @@ export function registerSendMessage(server: McpServer, ctx: ToolContext) {
         "If the result is SEND_UNCERTAIN, read the chat before trying again; never resend blindly.",
       inputSchema: {
         chatId: idInput,
-        text: z.string().min(1).max(2000),
+        text: z
+          .string()
+          .min(1)
+          .max(2000)
+          .refine((t) => t.trim().length > 0, "text is only spaces"),
         oa: oaInput,
         dryRun: z
           .boolean()

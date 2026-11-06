@@ -1,7 +1,28 @@
 # dev status
-Last updated: 2026-11-06 19:48 ICT · branch feat/diagram-palette
+Last updated: 2026-11-06 20:07 ICT · branch feat/review-fixes
 
 ## Now
+- Done: re-review follow-up
+- Done: simplify pass
+- Done: review fix round (UX)
+- Done: review fix round (code + security)
+- Done: README + guides (T8b)
+- Done: CS start page (T8a)
+- Done: setup --mock flag (T7b)
+- Done: dist + CI (T7a)
+- Done: tests for T6
+- Done: response shapes (T6)
+- Done: tests for T5
+- Done: version + deps (T5c)
+- Done: setup (T5b)
+- Done: robust local files (T5a)
+- Done: tests for T4
+- Done: CLI read by name (T4c)
+- Done: CLI dates + matcher (T4b)
+- Done: server start-up errors (T4a)
+- Done: tests for T3
+- Done: error + input validation (T3)
+- Done: repo polish (T1)
 - Done: diagram palette
 - Done: plan kit installed
 - v0.1.5 released to main (tag v0.1.5, GitHub release): welcome hook, features page, SVG sequence diagram. Public repo: github.com/Jamamaboy/lineoa-cs-mcp.
@@ -13,7 +34,6 @@ Last updated: 2026-11-06 19:48 ICT · branch feat/diagram-palette
 - Waiting on the user: the recorded Claude GIF (docs/assets/demo.gif) and a Thai intro paragraph to translate.
 - Before 1.0.0: one live send on a test OA, and a run on Claude Desktop and Windows.
 - Optional: restyle architecture.svg and supports.svg like the left-to-right flow.svg; case layer; file sending.
-- After submission: delete ~/lineoa-backup-before-scrub.bundle and the old private repo.
 
 ## Blocked
 - A live send needs a test OA and chat from the user.

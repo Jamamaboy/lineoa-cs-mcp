@@ -1,5 +1,4 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { z } from "zod";
 import { idInput, oaInput, resolveBotId, run, type ToolContext } from "./shared.js";
 
 export function registerGetUserProfile(server: McpServer, ctx: ToolContext) {

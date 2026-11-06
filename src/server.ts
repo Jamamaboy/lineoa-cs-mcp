@@ -7,9 +7,10 @@ import { registerReadChat } from "./tools/read-chat.js";
 import { registerSearchMessages } from "./tools/search-messages.js";
 import { registerSendMessage } from "./tools/send-message.js";
 import type { ToolContext } from "./tools/shared.js";
+import { VERSION } from "./version.js";
 
 export const SERVER_NAME = "lineoa-cs";
-export const SERVER_VERSION = "0.1.5";
+export const SERVER_VERSION = VERSION;
 
 export function createServer(ctx: ToolContext): McpServer {
   const server = new McpServer({ name: SERVER_NAME, version: SERVER_VERSION });

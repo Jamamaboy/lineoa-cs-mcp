@@ -16,9 +16,26 @@ export const ui = {
   line: (s = "") => console.log(s),
 };
 
+// en-GB keeps the Gregorian year ("5 Nov 2026, 12:00"); th-TH would print the Buddhist era (69).
+const dateTime = new Intl.DateTimeFormat("en-GB", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+});
+
 export function when(iso?: string): string {
   if (!iso) return "";
-  return new Date(iso).toLocaleString("th-TH", { dateStyle: "short", timeStyle: "short" });
+  return dateTime.format(new Date(iso));
+}
+
+/** Find chats by name: exact (ignoring case and edge spaces) first, names that merely contain the query second. */
+export function matchChats<T extends { name: string }>(chats: T[], query: string) {
+  const q = query.trim().toLowerCase();
+  const exact = chats.filter((c) => c.name.trim().toLowerCase() === q);
+  const partial = exact.length ? [] : chats.filter((c) => c.name.toLowerCase().includes(q));
+  return { exact, partial };
 }
 
 export const cut = (s: string, n: number) => (s.length > n ? `${s.slice(0, n - 1)}…` : s);

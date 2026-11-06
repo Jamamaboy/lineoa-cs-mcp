@@ -15,8 +15,9 @@ export async function withMockIfAsked(env: Env): Promise<{ env: Env; close: () =
       ...env,
       LINEOA_BASE_URL: mock.baseUrl,
       LINEOA_COOKIE: mock.cookie,
-      LINEOA_INDEX_FILE: env.LINEOA_INDEX_FILE ?? ":memory:",
-      LINEOA_AUDIT_FILE: env.LINEOA_AUDIT_FILE ?? ":memory:",
+      // Always in memory: fake chats and fake sends must never reach the real index or audit log.
+      LINEOA_INDEX_FILE: ":memory:",
+      LINEOA_AUDIT_FILE: ":memory:",
     },
     close: mock.close,
   };

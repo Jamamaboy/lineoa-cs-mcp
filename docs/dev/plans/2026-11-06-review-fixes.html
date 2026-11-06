@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2026-11-06 — review fixes (v0.2.0)</title>
+<style>
+:root{
+  --ground:#F7F8FA; --surface:#FFFFFF; --surface-2:#F1F4F9;
+  --line:#E2E7F0; --line-soft:#EDF1F7;
+  --ink:#141A22; --ink-2:#4A5568; --ink-3:#8A94A6;
+  --accent:#2563EB; --accent-soft:#E8EFFE; --accent-ink:#1D4ED8;
+  --ok:#15803D; --ok-soft:#E6F4EA;
+  --warn:#B45309; --warn-soft:#FDF0DC;
+  --crit:#B91C1C; --crit-soft:#FBE9E9;
+  --code-bg:#12161C; --code-ink:#E6EDF3;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --sans:system-ui,-apple-system,"Segoe UI","Noto Sans Thai","Sarabun",sans-serif;
+  --r:10px; --r-lg:14px;
+  --shadow:0 1px 2px rgba(20,26,34,.06),0 1px 3px rgba(20,26,34,.04);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0E1218; --surface:#161C24; --surface-2:#1D242E;
+    --line:#2A323D; --line-soft:#232A34;
+    --ink:#EDF1F6; --ink-2:#A8B3C2; --ink-3:#6D7889;
+    --accent:#5B8DEF; --accent-soft:#1B2740; --accent-ink:#8FB2F5;
+    --ok:#4ADE80; --ok-soft:#16281D;
+    --warn:#FBBF24; --warn-soft:#2C2313;
+    --crit:#F87171; --crit-soft:#2E1717;
+    --code-bg:#0A0D12; --code-ink:#E6EDF3;
+    --shadow:0 1px 2px rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0E1218; --surface:#161C24; --surface-2:#1D242E;
+  --line:#2A323D; --line-soft:#232A34;
+  --ink:#EDF1F6; --ink-2:#A8B3C2; --ink-3:#6D7889;
+  --accent:#5B8DEF; --accent-soft:#1B2740; --accent-ink:#8FB2F5;
+  --ok:#4ADE80; --ok-soft:#16281D;
+  --warn:#FBBF24; --warn-soft:#2C2313;
+  --crit:#F87171; --crit-soft:#2E1717;
+  --code-bg:#0A0D12; --code-ink:#E6EDF3;
+  --shadow:0 1px 2px rgba(0,0,0,.4);
+}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);
+     font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{margin:0;text-wrap:balance;line-height:1.25}
+p{margin:0}
+a{color:var(--accent-ink)}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th{text-align:left;font-size:11.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3);
+   font-weight:600;padding:0 10px 8px;border-bottom:1px solid var(--line)}
+td{padding:9px 10px;border-bottom:1px solid var(--line-soft);font-size:13.5px;vertical-align:top}
+tbody tr:last-child td{border-bottom:0}
+
+.wrap{max-width:960px;margin:0 auto;padding:28px 20px 90px}
+.masthead h1{font-size:27px;letter-spacing:-.02em}
+.masthead .sub{color:var(--ink-2);font-size:14px;margin-top:6px;max-width:70ch}
+
+/* ---- sticky 2-row nav: Part A for humans / Part B for /implement-plan ---- */
+.nav{position:sticky;top:0;z-index:9;background:var(--ground);border-bottom:1px solid var(--line);
+     padding:9px 0;margin:16px 0 26px}
+.navrow{display:flex;gap:6px;align-items:baseline;flex-wrap:wrap;font-size:12.5px}
+.navrow + .navrow{margin-top:5px}
+.navrow b{color:var(--ink-3);font-weight:600;min-width:52px}
+.navrow a{color:var(--ink-2);text-decoration:none;padding:2px 7px;border-radius:6px}
+.navrow a:hover{background:var(--surface-2);color:var(--ink)}
+
+h2{font-size:19px;margin:38px 0 4px;letter-spacing:-.01em;scroll-margin-top:76px}
+h2 + .lede{color:var(--ink-2);font-size:14px;margin-bottom:14px}
+h3{font-size:15px;margin:20px 0 8px}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);
+      box-shadow:var(--shadow);margin-bottom:12px;overflow:hidden}
+.card-h{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+        padding:11px 15px;border-bottom:1px solid var(--line-soft)}
+.card-h h3{font-size:14.5px;font-weight:650;margin:0}
+.card-b{padding:14px 15px}
+.card-b > * + *{margin-top:9px}
+
+.pill{display:inline-flex;align-items:center;font-size:11.5px;font-weight:600;
+      padding:2px 9px;border-radius:99px;white-space:nowrap}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.crit{background:var(--crit-soft);color:var(--crit)}
+.pill.mute{background:var(--surface-2);color:var(--ink-3)}
+.pill.acc{background:var(--accent-soft);color:var(--accent-ink)}
+
+.mono{font-family:var(--mono);font-size:12.5px}
+.dim{color:var(--ink-3)}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+pre{background:var(--code-bg);color:var(--code-ink);border-radius:var(--r);padding:13px 15px;
+    margin:0;overflow-x:auto;font-family:var(--mono);font-size:12.5px;line-height:1.55}
+code{font-family:var(--mono);font-size:.92em;background:var(--surface-2);
+     padding:1px 5px;border-radius:4px}
+pre code{background:none;padding:0;font-size:inherit}
+
+.note{border-left:3px solid var(--warn);background:var(--warn-soft);padding:11px 14px;
+      border-radius:0 var(--r) var(--r) 0;font-size:13.5px}
+.note.crit{border-color:var(--crit);background:var(--crit-soft)}
+.note.ok{border-color:var(--ok);background:var(--ok-soft)}
+
+/* ---- before/after compare: two columns collapsing to one on narrow screens ---- */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:760px){.two{grid-template-columns:1fr}}
+.colhead{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+         color:var(--ink-3);margin-bottom:7px}
+
+/* ---- flow diagram: current and proposed MUST use this exact same class set ---- */
+.flow{display:flex;flex-direction:column;gap:0;font-size:12.5px}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:8px;
+      padding:8px 11px;font-family:var(--mono);font-size:12px}
+.step.new{border-color:var(--accent);background:var(--accent-soft);color:var(--accent-ink)}
+.step.gone{border-style:dashed;color:var(--ink-3);text-decoration:line-through}
+.step.bad{border-color:var(--crit);background:var(--crit-soft);color:var(--crit)}
+.arrow{color:var(--ink-3);text-align:center;font-size:13px;line-height:1;padding:5px 0}
+.branch{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:center;
+        font-family:var(--mono);font-size:11.5px;color:var(--ink-3);padding-left:12px}
+
+/* ---- Impact: 3 cards ---- */
+.impact{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.imp{border-left:3px solid var(--line);background:var(--surface);border-radius:0 var(--r) var(--r) 0;
+     padding:12px 14px}
+.imp.ux{border-color:var(--ok)} .imp.data{border-color:var(--accent)} .imp.risk{border-color:var(--warn)}
+.imp h4{font-size:13.5px;margin-bottom:5px}
+.imp p{font-size:13px;color:var(--ink-2)}
+
+/* ---- Tasks ---- */
+.task{border-left:3px solid var(--ok);background:var(--surface);border:1px solid var(--line);
+      border-left-width:3px;border-radius:0 var(--r) var(--r) 0;padding:13px 15px;margin-bottom:11px}
+.task h4{font-size:14.5px;margin-bottom:6px}
+.task dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:0 0 9px;font-size:13px}
+.task dt{color:var(--ink-3);font-weight:600;white-space:nowrap}
+.task dd{margin:0}
+
+/* ---- stat bar ---- */
+.bar{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin:18px 0 6px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+.stat .n{font-size:24px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.stat .l{font-size:12.5px;color:var(--ink-3);margin-top:2px}
+/* ---- review-rounds table ---- */
+.round td:first-child{white-space:nowrap}
+</style>
+</head><body>
+<div class="wrap">
+
+<div class="masthead">
+  <h1>2026-11-06 — แก้ตามผลรีวิว 4 มุม (CS · dev · QA · tech lead) → v0.2.0</h1>
+  <p class="sub">แผนเดียวครอบคลุมส่วนที่ 1–4 ของผลรีวิว: ความเรียบร้อยของ repo, บั๊ก 6 ข้อ, หน้าเริ่มต้นและความปลอดภัยสำหรับคน CS, และความทนทานฝั่ง dev ไม่มี issue tracker (profile: <code>Tool: none</code>) แหล่งที่มาคือรายงานของ agent รีวิว 4 ตัวที่รันบน clone ใหม่ของ v0.1.5</p>
+</div>
+
+<div class="nav">
+  <div class="navrow"><b>Part A</b><a href="#goal">Goal</a><a href="#problems">Current problems</a><a href="#current">Current state</a><a href="#proposed">Proposed</a><a href="#compare">Side-by-side</a><a href="#impact">Impact</a></div>
+  <div class="navrow"><b>Part B</b><a href="#ac">Acceptance criteria</a><a href="#scope">Scope</a><a href="#edges">Edge cases</a><a href="#files">File map</a><a href="#tasks">Tasks</a><a href="#tests">Test strategy</a><a href="#open">Open questions</a><a href="#rounds">Review rounds</a></div>
+</div>
+
+<div class="bar">
+  <div class="stat"><div class="n">4</div><div class="l">มุมรีวิว (CS 3/10 · dev 7 · QA 8 · lead 8)</div></div>
+  <div class="stat"><div class="n">24</div><div class="l">acceptance criteria</div></div>
+  <div class="stat"><div class="n">9</div><div class="l">tasks · 3 waves</div></div>
+  <div class="stat"><div class="n">v0.2.0</div><div class="l">release เมื่อผ่านทุกข้อ</div></div>
+</div>
+
+<!-- ================= PART A ================= -->
+<h2 id="goal">Goal</h2>
+<p class="lede">สิ่งที่ได้เมื่องานนี้ขึ้น</p>
+<div class="card"><div class="card-b">
+<p>1. คนตรวจเปิด repo แล้วไม่เจอร่องรอยงานค้างหรือโน้ตภายใน มี LICENSE และ <code>npm run check</code> สะอาด ไม่มี warning</p>
+<p>2. คน CS ที่ไม่ใช่สายเทคเริ่มใช้เองได้จากหน้าภาษาไทยหน้าเดียว (หรือดับเบิลคลิกไฟล์เดียวบน Mac) รู้ว่าข้อมูลไปไหน และลองกับข้อมูลจำลองใน Claude Desktop ได้</p>
+<p>3. ทุกความผิดพลาดที่ AI หรือคนเจอ บอกว่าทำอะไรต่อ ไม่มี stack trace, <code>UNEXPECTED</code> หรือ path ภายในของ API</p>
+<p>4. ถ้า LINE เปลี่ยนรูปแบบข้อมูล ระบบตอบ <code>ENDPOINT_CHANGED</code> แทนคืนค่าผิดแบบเงียบ ๆ และไฟล์ในเครื่องที่เสียไม่ทำให้ทั้งระบบล่ม</p>
+</div></div>
+
+<h2 id="problems">Current problems</h2>
+<p class="lede">อาการ + ตำแหน่งในโค้ด + เคสที่พังจริง (ทุกข้อยืนยันจากรายงานรีวิวหรือรันซ้ำแล้ว)</p>
+<div class="scroll"><table>
+<thead><tr><th>#</th><th>อาการ</th><th>ตำแหน่ง</th><th>เคสที่พัง</th></tr></thead>
+<tbody>
+<tr><td>P1</td><td>ไม่มี LICENSE แม้ <code>package.json</code> บอก MIT</td><td class="mono">/ (root)</td><td>คนอยากเอาไปใช้ต่อ ตามกฎหมายถือว่าห้ามใช้</td></tr>
+<tr><td>P2</td><td>README มี comment ค้าง และ badge นับเทสต์ผิด</td><td class="mono">README.md:14,17,27</td><td>badge บอก 31 tests จริงมี 33 · <code>&lt;!-- INTRO: the owner writes this paragraph --&gt;</code> ดูเหมือนงานไม่เสร็จ</td></tr>
+<tr><td>P3</td><td>lint มี warning</td><td class="mono">src/tools/get-user-profile.ts:2</td><td>import <code>z</code> ที่ไม่ได้ใช้ ทำให้ <code>npm run check</code> ไม่สะอาด</td></tr>
+<tr><td>P4</td><td>โน้ตภายในใน repo public</td><td class="mono">CLAUDE.md:4 · docs/dev/STATUS.md:15</td><td>บอก deadline + ลิงก์ <code>docs/ASSIGNMENT.md</code> ที่ไม่มี · พูดถึงลบ backup bundle กับ repo เก่า ทำให้สงสัยว่าลบอะไรออกจาก history</td></tr>
+<tr><td>P5</td><td>build แล้วรันโหมด mock ไม่ได้</td><td class="mono">mock-server/fixtures.ts:36</td><td><code>LINEOA_MOCK=1 node dist/src/index.js</code> → <code>ENOENT … dist/test/research/…</code> เพราะ path อ้างจากโฟลเดอร์ของไฟล์</td></tr>
+<tr><td>P6</td><td>โหลดไฟล์จาก host ภายนอกไม่ได้ → <code>UNEXPECTED: fetch failed</code></td><td class="mono">src/client/http.ts:72 (getBytes) · :28 (getJson)</td><td>QA เรียก <code>get_attachment</code> ที่ message <code>586900000000000113</code> (provider external) AI ไม่รู้ว่าควรลองใหม่หรือเปิดเว็บ</td></tr>
+<tr><td>P7</td><td>วันที่ผิดผ่านได้ และ until ก่อน since ไม่เตือน</td><td class="mono">src/tools/search-messages.ts:7,10</td><td><code>since:"2026-13-45"</code> กลายเป็น ก.พ. 2027 · <code>2026-02-30</code> กลายเป็น 2 มี.ค. · until &lt; since ได้ผลว่างเงียบ ๆ</td></tr>
+<tr><td>P8</td><td>config ผิดหรือ option ผิด → stack trace</td><td class="mono">src/index.ts:14 · src/cli.ts:22,37</td><td><code>LINEOA_SEND_DAILY_LIMIT=abc</code>: AI เห็นแค่ <code>Connection closed</code> · <code>npm run lineoa -- chats --bogus</code> พ่น <code>ERR_PARSE_ARGS_UNKNOWN_OPTION … at node:internal</code></td></tr>
+<tr><td>P9</td><td>ข้อความว่าง (มีแต่ช่องว่าง) ผ่าน</td><td class="mono">src/tools/send-message.ts:22 · search-messages.ts:27</td><td><code>send_message {text:"   "}</code> ผ่าน dryRun · <code>search_messages {query:" "}</code> เจอทุกข้อความที่มีช่องว่าง</td></tr>
+<tr><td>P10</td><td>NOT_FOUND โชว์ path ภายใน</td><td class="mono">src/client/http.ts:43</td><td><code>read_chat {chatId:"nonexist"}</code> → <code>Not found: /api/v1/bots/Ub07…/chats/nonexist</code> ไม่บอกให้ใช้ list_chats</td></tr>
+<tr><td>P11</td><td>ข้อมูลจาก LINE ไม่ถูกตรวจรูปแบบ</td><td class="mono">src/client/http.ts:56 · src/domain/normalize.ts:3-42</td><td>ถ้า LINE เปลี่ยนชื่อ <code>read</code> → <code>unread</code> ทุกแชทกลายเป็นอ่านแล้ว โดยไม่มี error</td></tr>
+<tr><td>P12</td><td>ไฟล์ JSON ในเครื่องเสีย → ระบบล่ม</td><td class="mono">src/auth/session-source.ts:39 · src/audit/audit-log.ts:50 · src/cli/setup.ts:43</td><td>audit log มีบรรทัดเสีย 1 บรรทัด → <code>sentToday()</code> throw → ส่งข้อความไม่ได้เลย · config ของ Claude Desktop เสีย → setup พ่น stack trace</td></tr>
+<tr><td>P13</td><td>setup ผูกกับ <code>tsx</code> ที่เป็น devDependency และเวอร์ชันเขียนซ้ำ</td><td class="mono">src/cli/setup.ts:12-15 · package.json:41 · src/server.ts:12</td><td><code>npm ci --omit=dev</code> แล้ว server ที่ลงทะเบียนไว้เปิดไม่ขึ้น · <code>SERVER_VERSION</code> ต้องแก้มือทุก release</td></tr>
+<tr><td>P14</td><td>คน CS ติดตั้งเองไม่ได้ / ไม่รู้ข้อมูลไปไหน</td><td class="mono">README.md:1-31 · docs/USAGE.th.md:6</td><td>เริ่มที่ <code>git clone</code> โดยไม่บอกวิธีเปิด Terminal/ติดตั้ง Node · mock ใช้ได้แค่ใน Claude Code · <code>! Claude Desktop: not installed</code> ดูเหมือน error · ไม่บอกว่าข้อความแชทถูกส่งให้ AI อ่าน</td></tr>
+<tr><td>P15</td><td>CLI ต้องใช้ chatId ยาว ๆ และวันที่เป็น พ.ศ.</td><td class="mono">src/cli.ts:96 · src/cli/ui.ts (when)</td><td>คนพิมพ์ <code>read "นก"</code> ไม่ได้ · <code>5/11/69</code> สับสนกับ ค.ศ.</td></tr>
+<tr><td>P16</td><td>CI รันแค่ Linux ไม่ build ไม่ทดสอบไฟล์ที่ build</td><td class="mono">.github/workflows/ci.yml:8</td><td>P5 หลุดมาถึง v0.1.5 เพราะไม่มีขั้นตอนไหนรัน <code>dist/</code></td></tr>
+</tbody></table></div>
+
+<h2 id="current">Current state</h2>
+<p class="lede">เส้นทางของ error วันนี้ (ตัวอย่าง: config ผิด, ไฟล์ภายนอกโหลดไม่ได้, LINE เปลี่ยน field)</p>
+<div class="two">
+<div><div class="colhead">วันนี้</div><div class="flow">
+<div class="step">env: LINEOA_SEND_DAILY_LIMIT=abc</div><div class="arrow">↓</div>
+<div class="step">src/index.ts:14 loadConfig() นอก try</div><div class="arrow">↓</div>
+<div class="step bad">uncaught LineOAError + Node stack → exit 1</div><div class="arrow">↓</div>
+<div class="step bad">AI: "MCP error -32000: Connection closed"</div>
+</div></div>
+<div><div class="colhead">วันนี้ (ข้อมูลจาก LINE)</div><div class="flow">
+<div class="step">GET /api/v2/bots/{oa}/chats</div><div class="arrow">↓</div>
+<div class="step">getJson → res.json() as T (ไม่ตรวจ)</div><div class="arrow">↓</div>
+<div class="step">toChat(): unread = raw.read === false</div><div class="arrow">↓</div>
+<div class="step bad">field หาย → unread=false ทุกแชท (เงียบ)</div>
+</div></div>
+</div>
+
+<h2 id="proposed">Proposed</h2>
+<p class="lede">เปลี่ยนให้ทุกเส้นทางจบที่ error ที่มี code และบอกว่าทำอะไรต่อ (layout เดียวกับด้านบน)</p>
+<div class="two">
+<div><div class="colhead">ใหม่</div><div class="flow">
+<div class="step">env: LINEOA_SEND_DAILY_LIMIT=abc</div><div class="arrow">↓</div>
+<div class="step new">src/index.ts: try { loadConfig } catch → stderr 1 บรรทัด</div><div class="arrow">↓</div>
+<div class="step new">"lineoa-cs: CONFIG_ERROR: LINEOA_SEND_DAILY_LIMIT must be …" exit 1</div><div class="arrow">↓</div>
+<div class="step new">Claude แสดง stderr ของ server ใน /mcp → คนเห็นสาเหตุ</div>
+</div></div>
+<div><div class="colhead">ใหม่ (ข้อมูลจาก LINE)</div><div class="flow">
+<div class="step">GET /api/v2/bots/{oa}/chats</div><div class="arrow">↓</div>
+<div class="step new">zod: RawChatSchema.passthrough() ตรวจ field หลัก</div><div class="arrow">↓</div>
+<div class="step">toChat()</div><div class="arrow">↓</div>
+<div class="step new">ผิดรูป → ENDPOINT_CHANGED "chats[3].read: expected boolean"</div>
+</div></div>
+</div>
+
+<h2 id="compare">Side-by-side</h2>
+<div class="scroll"><table>
+<thead><tr><th>เคส</th><th>วันนี้</th><th>หลังแก้</th></tr></thead>
+<tbody>
+<tr><td>search since=2026-02-30</td><td><span class="pill crit">ได้ผลของ 2 มี.ค.</span></td><td><span class="pill ok">error: not a real date</span></td></tr>
+<tr><td>search until &lt; since</td><td><span class="pill crit">hits:[] เงียบ</span></td><td><span class="pill ok">error: until is before since</span></td></tr>
+<tr><td>send_message text "   "</td><td><span class="pill crit">ผ่าน</span></td><td><span class="pill ok">ถูกปฏิเสธ (มีแต่ช่องว่าง)</span></td></tr>
+<tr><td>get_attachment จาก host ภายนอกที่ล่ม</td><td><span class="pill crit">UNEXPECTED: fetch failed</span></td><td><span class="pill ok">UPSTREAM_ERROR + ให้เปิด webUrl</span></td></tr>
+<tr><td>read_chat id ไม่มีจริง</td><td><span class="pill warn">NOT_FOUND + path ภายใน</span></td><td><span class="pill ok">NOT_FOUND: Chat X is not in this OA. Find it with list_chats.</span></td></tr>
+<tr><td>audit log มีบรรทัดเสีย</td><td><span class="pill crit">ส่งไม่ได้เลย</span></td><td><span class="pill ok">ข้ามบรรทัดเสีย นับเป็น 1 การส่ง (ปลอดภัยไว้ก่อน)</span></td></tr>
+<tr><td>session.json เสีย</td><td><span class="pill crit">UNEXPECTED ทุก tool</span></td><td><span class="pill ok">AUTH_EXPIRED: run npm run login</span></td></tr>
+<tr><td><code>LINEOA_MOCK=1 node dist/src/index.js</code></td><td><span class="pill crit">ENOENT</span></td><td><span class="pill ok">รันได้ + CI ทดสอบทุก push</span></td></tr>
+<tr><td>CLI <code>read นก</code></td><td><span class="pill warn">ต้องใช้ chatId</span></td><td><span class="pill ok">หาจากชื่อ (ซ้ำ → ให้เลือก)</span></td></tr>
+<tr><td>คน CS ใช้ Claude Desktop อยากลอง mock</td><td><span class="pill crit">ทำไม่ได้</span></td><td><span class="pill ok"><code>npm run setup -- --mock</code></span></td></tr>
+</tbody></table></div>
+
+<h2 id="impact">Impact</h2>
+<div class="impact">
+<div class="imp ux"><h4>UX</h4><p>คน CS มีหน้าเริ่มต้นภาษาไทย + ไฟล์ดับเบิลคลิก · error ทุกตัวบอกขั้นต่อไป · CLI หาแชทจากชื่อ · วันที่เป็น ค.ศ.</p></div>
+<div class="imp data"><h4>Data shape</h4><p>ผลลัพธ์ของ tool ไม่เปลี่ยน · input เข้มขึ้น (วันที่จริง, ข้อความไม่ว่าง) · error ใหม่ที่เป็นไปได้: ENDPOINT_CHANGED จาก schema, UPSTREAM_ERROR จาก network</p></div>
+<div class="imp risk"><h4>Risk</h4><p>schema เข้มเกิน → แชทจริงพัง (กันด้วย passthrough + ตรวจเฉพาะ field ที่ใช้ + เทสต์กับ fixture จริง) · แตะ <code>send-message.ts</code>/<code>line-client.ts</code>/<code>http.ts</code> (high-risk) · CI บน Windows อาจแดงจากเรื่องที่ไม่เกี่ยว</p></div>
+</div>
+
+<!-- ================= PART B ================= -->
+<h2 id="ac">Acceptance criteria</h2>
+<p class="lede">ทุกข้อตรวจได้ด้วยคำสั่ง</p>
+<div class="scroll"><table>
+<thead><tr><th>#</th><th>ทำ</th><th>ต้องได้</th></tr></thead>
+<tbody>
+<tr><td>AC1</td><td><code>ls LICENSE</code></td><td>มีไฟล์ MIT, ชื่อเจ้าของ Putthipong Soongsuwan, ปี 2026</td></tr>
+<tr><td>AC2</td><td><code>grep -c 'INTRO:\|SHOWCASE:\|31%20tests' README.md</code></td><td>0</td></tr>
+<tr><td>AC3</td><td><code>npm run check</code></td><td>lint 0 warning 0 error, typecheck ผ่าน, เทสต์ผ่านทั้งหมด</td></tr>
+<tr><td>AC4</td><td><code>grep -n '23:59\|ASSIGNMENT\|take-home' CLAUDE.md docs/README.md</code> · <code>grep -n 'bundle\|private repo' docs/dev/STATUS.md</code></td><td>ไม่เจอทั้งหมด</td></tr>
+<tr><td>AC5</td><td><code>npm run build &amp;&amp; node scripts/smoke-dist.mjs</code></td><td>exit 0 และพิมพ์ <code>Demo Shop</code> (รัน <code>dist/src/cli.js status</code> ด้วย LINEOA_MOCK=1)</td></tr>
+<tr><td>AC6</td><td>get_attachment บน mock message <code>586900000000000113</code></td><td>isError, ขึ้นต้น <code>UPSTREAM_ERROR:</code>, มีคำว่า webUrl, ไม่มี <code>UNEXPECTED</code></td></tr>
+<tr><td>AC7</td><td>search_messages since <code>2026-02-30</code> / <code>2026-13-45</code></td><td>ถูกปฏิเสธพร้อมข้อความว่าไม่ใช่วันที่จริง · <code>2028-02-29</code> ผ่าน</td></tr>
+<tr><td>AC8</td><td>search_messages since 2026-11-05 until 2026-11-01</td><td>error ว่า until อยู่ก่อน since · since = until ผ่าน</td></tr>
+<tr><td>AC9</td><td>send_message text <code>"   "</code> (dryRun) · search query <code>" "</code></td><td>ทั้งสองถูกปฏิเสธ</td></tr>
+<tr><td>AC10</td><td>read_chat / get_user_profile chatId <code>nonexist</code></td><td><code>NOT_FOUND</code> ไม่มี <code>/api/</code> ในข้อความ และบอกให้ใช้ list_chats</td></tr>
+<tr><td>AC11</td><td>เริ่ม server ด้วย <code>LINEOA_SEND_DAILY_LIMIT=abc</code></td><td>stderr บรรทัดเดียวขึ้นต้น <code>lineoa-cs: CONFIG_ERROR:</code>, ไม่มี <code>at </code> (stack), exit 1</td></tr>
+<tr><td>AC12</td><td><code>npm run lineoa -- chats --bogus</code> · <code>npm run lineoa -- --oa</code> · CLI กับ config ผิด</td><td>บรรทัด <code>✗ …</code> เดียว + บอกให้ดู help, exit 1, ไม่มี stack</td></tr>
+<tr><td>AC13</td><td>session.json เป็น JSON เสีย แล้วเรียก auth_status</td><td><code>AUTH_EXPIRED</code> (ไม่ใช่ UNEXPECTED)</td></tr>
+<tr><td>AC14</td><td>audit log มีบรรทัดเสีย + 1 บรรทัด sent วันนี้, DAILY_LIMIT=2</td><td>ส่งได้อีก 0 ครั้ง (บรรทัดเสียนับเป็น 1) และไม่ throw · บรรทัด <code>null</code>/<code>5</code> ก็นับเป็นบรรทัดเสีย · stderr เตือนพร้อม path ของ log</td></tr>
+<tr><td>AC15</td><td>setup กับ Claude Desktop config ที่เป็น JSON เสีย (HOME ชั่วคราว)</td><td>step ไม่ done, ข้อความบอกว่าไฟล์เสียและไม่ได้แก้อะไร, ไฟล์เดิมไม่เปลี่ยน · config ที่ดี: env เดิมของ <code>lineoa-cs</code> (เช่น LINEOA_BOT_ALLOWLIST) ยังอยู่หลัง setup และ backup เก่าไม่ถูกเขียนทับ (<code>.bak-YYYYMMDD-HHMMSS</code>)</td></tr>
+<tr><td>AC16</td><td><code>npm run setup -- --mock --dry-run</code></td><td>แสดงว่าจะลงทะเบียนเฉพาะ <code>lineoa-cs-mock</code> (LINEOA_MOCK=1, LINEOA_MOCK_PORT=0, LINEOA_ALLOW_SEND=true) และไม่เขียนอะไร · entry <code>lineoa-cs</code> ไม่เปลี่ยน · Desktop ที่ไม่ได้ติดตั้ง แสดงวิธีติดตั้งแทน "not installed (skipped)" · ตรวจโดย T7 (ต่อ flag ใน cli.ts)</td></tr>
+<tr><td>AC17</td><td>เทสต์ด้วย fetch ปลอม: (a) ไม่มีแชทไหนมี <code>read</code> เลย (b) <code>chatId</code> เป็นตัวเลข ในทุกแชท (c) แชทเดียวมี <code>read:null</code>, <code>latestEvent:null</code>, event ไม่มี timestamp, แชทกลุ่ม/room</td><td>(a)(b) → <code>ENDPOINT_CHANGED</code> ที่ชี้ field · (c) list_chats ยังทำงาน แชทแปลกถูกข้ามพร้อมเตือน stderr · fixture chats/chat/messages/messages.older-page ผ่าน (fixture เป็นข้อมูลสังเคราะห์ ไม่นับเป็นหลักฐานว่าตรงกับ LINE จริง → ดู AC23)</td></tr>
+<tr><td>AC18</td><td><code>LINEOA_MOCK=1 npm run lineoa -- read "นก 🌸" --oa "Demo Shop"</code> และ <code>read "นก"</code></td><td>ชื่อตรงทั้งคำ (ไม่สนตัวพิมพ์) → พิมพ์ชื่อ+id ที่เลือกก่อน แล้วแสดงแชท · "นก" ไม่ตรงทั้งคำกับ "นก 🌸" → แสดง "Did you mean นก 🌸 (&lt;id&gt;)?" และไม่เปิด · ซ้ำ → รายการชื่อ+id · ไม่เจอ → บอกว่าค้นแค่ 125 แชทล่าสุด + ให้ใช้ chats</td></tr>
+<tr><td>AC19</td><td><code>LINEOA_MOCK=1 npm run lineoa -- chats --oa "Demo Shop"</code></td><td>วันที่รูปแบบ <code>5 Nov 2026, 12:00</code> (en-GB, มีปี) ไม่ใช่ <code>/69</code> · คอลัมน์ยังตรงกัน (padEnd 18)</td></tr>
+<tr><td>AC20</td><td>เปิด <code>docs/START.th.md</code> และ README</td><td>README บรรทัดแรก ๆ มีลิงก์ภาษาไทย · START.th.md มี: เปิด Terminal, ติดตั้ง Node, ผลที่ควรเห็นทุกขั้น, เลือก Desktop/Code, ลอง mock ใน Desktop, หัวข้อ "ข้อมูลไปไหน / ปลอดภัยไหม" 5 ข้อ, login ใหม่ทุกวัน · "How this was built" และ "Versions" อยู่หลัง Limitations</td></tr>
+<tr><td>AC21</td><td><code>./start-mac.command</code> (โหมดทดสอบ: Node ไม่พอ)</td><td>ไฟล์ executable (git mode 100755) · ขึ้นต้น <code>cd "$(dirname "$0")"</code> + <code>set -e</code> · ไม่มี Node ≥ 22.13 → บอกภาษาไทยและเปิด nodejs.org · <code>npm ci --ignore-scripts</code> → <code>npm run setup</code> (ไม่มี --allow-send) → ถามก่อน login · ไม่ echo/cat อะไรใน ~/.config/lineoa-mcp · <code>grep -P '[\x{0E00}-\x{0E7F}]' scripts/welcome.mjs</code> เจอ</td></tr>
+<tr><td>AC23</td><td>หลัง T6: <code>npm run lineoa -- status</code> และ <code>npm run lineoa -- chats --oa &lt;OA จริง&gt;</code> กับ session จริง (อ่านอย่างเดียว ไม่เปิดแชท)</td><td>ทำงานเหมือนก่อนแก้ ไม่มี ENDPOINT_CHANGED (หลักฐานว่า schema ไม่เข้มเกินกับ LINE จริง)</td></tr>
+<tr><td>AC24</td><td>หลัง release</td><td>tag v0.2.0 บน main · CHANGELOG + Versions row + package.json + features.html ใหม่ · CI เขียว</td></tr>
+<tr><td>AC22</td><td>CI บน push</td><td>matrix ubuntu/macos/windows: lint, typecheck, test, build, smoke-dist · <code>SERVER_VERSION</code> อ่านจาก package.json · <code>tsx</code> อยู่ใน dependencies</td></tr>
+</tbody></table></div>
+
+<h2 id="scope">Scope / not doing</h2>
+<div class="two">
+<div class="card"><div class="card-h"><h3>ทำ</h3></div><div class="card-b"><p>ส่วนที่ 1–4 ของผลรีวิว ตาม AC1–AC22 · release v0.2.0 (ผู้ใช้อนุมัติแล้วตอนเลือก "Everything, one plan … released as v0.2.0")</p></div></div>
+<div class="card"><div class="card-h"><h3>ไม่ทำ (และเหตุผล)</h3></div><div class="card-b">
+<p>• ไม่เขียน history ใหม่ (repo public + tag แล้ว)</p>
+<p>• ไม่ย้ายโฟลเดอร์ lane (docs/plan, research, dev) — เป็นหลักฐานกระบวนการ ย้ายทีหลังได้</p>
+<p>• ไม่แก้ deadline ใน <code>docs/PLAN.md</code> — เป็นแผนที่ลงวันที่ มี deadline เป็นเรื่องปกติ แก้เฉพาะ CLAUDE.md ที่เป็น config ของ agent</p>
+<p>• ไม่ทดสอบส่งข้อความกับ OA จริง (กฎ: live อ่านอย่างเดียว)</p>
+<p>• <code>start-mac.command</code> ไม่ติดตั้ง Node ให้เอง (ต้องใช้สิทธิ์ admin) — แค่ตรวจแล้วเปิดหน้าดาวน์โหลด · ไม่ทำสคริปต์ Windows</p>
+<p>• ไม่เปลี่ยน setup ไปใช้ <code>dist/</code> — ย้าย <code>tsx</code> ไป dependencies แทน (git pull แล้วใช้ได้ทันทีโดยไม่ต้อง build)</p>
+<p>• คำถามสัมภาษณ์ (ส่วนที่ 5) ทำเป็นโน้ตแยก ไม่อยู่ใน repo</p>
+<p>• mock ไม่ต้องเพิ่มโหมดข้อมูลเสีย — error ใหม่เกิดฝั่ง client เทสต์ด้วย fetch ปลอมแทน</p>
+<p>• CI บน Windows ตรวจแค่ build + test ไม่ได้ทดสอบ setup/login จริงบน Windows</p>
+</div></div>
+</div>
+
+<h2 id="edges">Edge cases</h2>
+<div class="scroll"><table>
+<thead><tr><th>เคส</th><th>ตัดสินใจ</th></tr></thead>
+<tbody>
+<tr><td>network error ระหว่าง POST ส่งข้อความ</td><td><b>ห้าม</b>ห่อ <code>postJson</code> — <code>sendText</code> อาศัยการ throw ที่ไม่ใช่ LineOAError เพื่อรายงาน <code>SEND_UNCERTAIN</code> (line-client.ts:213-217) ห่อแค่ <code>getJson</code>/<code>getBytes</code></td></tr>
+<tr><td>network error ระหว่าง getJson ใน <code>findSent</code> / ดึง CSRF token</td><td>findSent มี <code>.catch(() =&gt; undefined)</code> อยู่แล้ว (line-client.ts:202) · token ดึงก่อน POST → UPSTREAM_ERROR ถูกบันทึกเป็น <code>failed</code> ไม่ใช่ <code>uncertain</code> (ถูกต้อง ยังไม่ได้ส่ง) · wrapper ต้องคง <code>redirect:"manual"</code> และ <code>getBytes</code> ต้องคำนวณ <code>own</code>/cookie ก่อนเรียก wrapper เหมือนเดิม · ข้อความ error ของ host ภายนอกมีแค่ชื่อ host ไม่มี URL/query</td></tr>
+<tr><td>send text มีแต่ช่องว่าง</td><td>ปฏิเสธที่ zod ก่อนเข้า handler จึงไม่ถูกบันทึกใน audit (ยอมรับได้: ยังไม่มีการพยายามส่ง)</td></tr>
+<tr><td>วันที่ 2028-02-29 / 2026-02-29</td><td>ตรวจด้วยการสร้าง Date แล้วเทียบ y/m/d กลับ: 2028 ผ่าน, 2026 ไม่ผ่าน</td></tr>
+<tr><td>since = until</td><td>ผ่าน (ได้ทั้งวันนั้น)</td></tr>
+<tr><td>query มีช่องว่างหน้า/หลัง เช่น " คืนเงิน "</td><td>ตัดช่องว่างหัวท้ายก่อนค้น · ว่างหลังตัด → ปฏิเสธ</td></tr>
+<tr><td>text มีช่องว่างหัวท้ายแต่มีเนื้อหา</td><td>ส่งตามที่พิมพ์ (ไม่ trim ข้อความที่จะส่ง) แค่ต้องมีตัวอักษรที่ไม่ใช่ช่องว่างอย่างน้อย 1 ตัว</td></tr>
+<tr><td>schema: fixture เป็นข้อมูลสังเคราะห์</td><td>schema ผ่อนสุด: บังคับเฉพาะ <code>chatId</code> (แชท) และ <code>message.id</code>/<code>message.type</code> เมื่อมี message · field อื่น <code>.nullish()</code> · <code>.passthrough()</code> · ตรวจทีละรายการ: รายการที่ผิดถูกข้าม + เตือน stderr · ENDPOINT_CHANGED เมื่อ (1) เกินครึ่งของรายการผิด หรือ (2) field หลักที่ normalize ใช้ (<code>read</code>, <code>done</code> ของแชท) ไม่มีในทุกรายการของหน้า (แปลว่าถูกเปลี่ยนชื่อ) · interface ใน normalize.ts คงไว้ schema เป็นตัวตรวจอย่างเดียว · ยืนยันกับ LINE จริงด้วย AC23</td></tr>
+<tr><td>schema: field เพิ่มจาก LINE</td><td><code>.passthrough()</code> ไม่ error</td></tr>
+<tr><td>schema: event type ใหม่ที่ไม่รู้จัก</td><td>ผ่าน (type เป็น string ใด ๆ) normalize จัดการเอง (KNOWN set)</td></tr>
+<tr><td>audit log บรรทัดเสีย</td><td>บรรทัดที่ parse ไม่ได้ หรือ parse ได้แต่ไม่ใช่ object (เช่น <code>null</code>, <code>5</code>) = บรรทัดเสีย นับเป็น <code>uncertain</code> 1 ครั้ง โดยใช้วันที่ mtime ของไฟล์ (ไม่ใช่ "ตอนนี้" ตลอดไป) + เตือน stderr ครั้งเดียวพร้อม path · คืนค่าเป็น <code>Partial&lt;SendRecord&gt;</code></td></tr>
+<tr><td>session.json เสีย / เขียนครึ่งทาง</td><td>อ่านเสีย → ไม่มี session → AUTH_EXPIRED · เขียน: ลบ <code>.tmp</code> เก่าก่อน → เขียน tmp ด้วย flag <code>wx</code> mode 0600 → <code>chmodSync 0600</code> → <code>renameSync</code> · ล้มเหลว → ลบ tmp · Windows: mode ไม่มีผล พึ่งสิทธิ์โฟลเดอร์ผู้ใช้ (เขียนใน Limitations)</td></tr>
+<tr><td>Desktop config เสีย</td><td>ไม่เขียนทับ, ไม่ทำ backup, step done=false พร้อมบอก path · Claude Code ยังทำต่อ</td></tr>
+<tr><td>setup รันซ้ำ (เช่นดับเบิลคลิกหลายรอบ)</td><td>merge env เข้ากับ entry เดิม (เก็บ LINEOA_BOT_ALLOWLIST ฯลฯ) ตั้งแค่ LINEOA_ALLOW_SEND ตาม flag (ไม่มี flag = false) · backup เป็น <code>.bak-YYYYMMDD-HHMMSS</code> ไม่ทับของเดิม · Claude Code: ส่ง <code>-e K=V</code> ทุก key ของ env ที่ merge แล้ว</td></tr>
+<tr><td>setup --mock</td><td>เขียนเฉพาะ <code>lineoa-cs-mock</code> ด้วย env object ของตัวเอง {LINEOA_MOCK:"1", LINEOA_MOCK_PORT:"0", LINEOA_ALLOW_SEND:"true"} ไม่แตะ <code>lineoa-cs</code> · ปลอดภัยเพราะ <code>withMockIfAsked</code> บังคับ base URL/cookie/audit ไปที่ mock เสมอ ไม่มีทางถึง LINE จริง · port 0 กัน Desktop กับ Code ชนกัน</td></tr>
+<tr><td>CLI read ด้วยชื่อ</td><td>เปิดอัตโนมัติเฉพาะชื่อตรงทั้งคำ (ไม่สนตัวพิมพ์) และพิมพ์ชื่อ+id ก่อนเสมอ · ตรงบางส่วน → "Did you mean …?" ไม่เปิด (กันเปิดแชทลูกค้าผิดคน) · ซ้ำ → รายการ · ไม่เจอ → บอกว่าค้นแค่ 125 แชทล่าสุด · arg ที่เป็น id ได้ ลอง id ก่อน fallback ชื่อเมื่อ NOT_FOUND</td></tr>
+<tr><td>CI Windows แดงจากเรื่องเฉพาะแพลตฟอร์ม (เช่น file mode)</td><td>เทสต์ที่ตรวจ mode 0600 (<code>tests/unit/files.test.ts:20</code> และของใหม่) ให้ข้ามบน win32 (T7) · ถ้ายังแดงจากเรื่องที่แก้ไม่ทันคืนนี้ → job windows <code>continue-on-error</code> และเขียนใน Limitations</td></tr>
+<tr><td>fixture path ทั้งจาก src และ dist</td><td>หา <code>test/research/line-api-shapes</code> จาก HERE/.. ก่อน แล้ว HERE/../.. (กรณี dist/mock-server)</td></tr>
+<tr><td>CLAUDE.md / docs/README.md เป็นไฟล์ของ lane plan</td><td>commit แยกบน branch <code>plan</code> ใน worktree plan แล้ว merge plan → dev (กฎ lane)</td></tr>
+<tr><td>spawn เทสต์ที่ใช้ mock ชน port</td><td>ทุก spawn ตั้ง <code>LINEOA_MOCK_PORT=0</code></td></tr>
+</tbody></table></div>
+
+<h2 id="files">File map</h2>
+<div class="scroll"><table>
+<thead><tr><th></th><th>path</th><th>เกิดอะไร</th><th>task</th></tr></thead>
+<tbody>
+<tr><td><span class="pill ok">Create</span></td><td class="mono">LICENSE</td><td>MIT</td><td>T1</td></tr>
+<tr><td><span class="pill acc">Modify</span></td><td class="mono">src/tools/get-user-profile.ts</td><td>ลบ import z</td><td>T1</td></tr>
+<tr><td><span class="pill acc">Modify</span></td><td class="mono">docs/dev/STATUS.md</td><td>ลบบรรทัด bundle / repo เก่า</td><td>T1</td></tr>
+<tr><td><span class="pill acc">Modify</span></td><td class="mono">CLAUDE.md · docs/README.md (plan lane)</td><td>CLAUDE.md บรรทัด 3-5 และ 92 · docs/README.md บรรทัด 4: ไม่มี deadline/take-home/ASSIGNMENT</td><td>T2</td></tr>
+<tr><td><span class="pill acc">Modify</span></td><td class="mono">src/client/http.ts</td><td>ห่อ fetch network error (getJson, getBytes) · NOT_FOUND ไม่มี path</td><td>T3</td></tr>
+<tr><td><span class="pill acc">Modify</span></td><td class="mono">src/tools/search-messages.ts</td><td>วันที่จริง, until ≥ since, query ไม่ว่าง (trim)</td><td>T3</td></tr>
+<tr><td><span class="pill acc">Modify</span></td><td class="mono">src/tools/send-message.ts</td><td>text ต้องมีตัวอักษรที่ไม่ใช่ช่องว่าง</td><td>T3</td></tr>
+<tr><td><span class="pill ok">Create</span></td><td class="mono">tests/unit/http-errors.test.ts · tests/e2e/input-validation.test.ts · src/domain/errors.ts (+BAD_INPUT)</td><td>เทสต์ของ T3 · code ใหม่</td><td>T3</td></tr>
+<tr><td><span class="pill acc">Modify</span></td><td class="mono">src/index.ts</td><td>config error → stderr บรรทัดเดียว, exit 1</td><td>T4</td></tr>
+<tr><td><span class="pill acc">Modify</span></td><td class="mono">src/cli.ts</td><td>parseArgs + loadConfig ใน try · read ด้วยชื่อ · (T7: ต่อ <code>--mock</code> เข้า setup)</td><td>T4, T7</td></tr>
+<tr><td><span class="pill acc">Modify</span></td><td class="mono">src/cli/ui.ts</td><td><code>when()</code> เป็น ค.ศ.</td><td>T4</td></tr>
+<tr><td><span class="pill ok">Create</span></td><td class="mono">tests/unit/cli-errors.test.ts</td><td>spawn CLI/server เช็ก stderr</td><td>T4</td></tr>
+<tr><td><span class="pill acc">Modify</span></td><td class="mono">src/auth/session-source.ts · src/auth/session-file.ts</td><td>JSON เสีย → undefined · เขียน atomic</td><td>T5</td></tr>
+<tr><td><span class="pill acc">Modify</span></td><td class="mono">src/audit/audit-log.ts</td><td>บรรทัดเสียนับเป็นการส่ง + เตือน</td><td>T5</td></tr>
+<tr><td><span class="pill acc">Modify</span></td><td class="mono">src/cli/setup.ts · .mcp.json</td><td>config เสีย, merge env, backup มี timestamp, ข้อความ "ไม่พบ Desktop", option <code>mock</code>, <code>-e</code> ทุก key · .mcp.json: mock entry + LINEOA_MOCK_PORT=0</td><td>T5</td></tr>
+<tr><td><span class="pill ok">Create</span></td><td class="mono">src/version.ts</td><td>อ่าน version จาก package.json (หาขึ้นไปจากไฟล์ จึงใช้ได้ทั้ง src/dist)</td><td>T5</td></tr>
+<tr><td><span class="pill acc">Modify</span></td><td class="mono">src/server.ts · package.json</td><td>SERVER_VERSION จาก version.ts · tsx → dependencies · script <code>smoke</code></td><td>T5</td></tr>
+<tr><td><span class="pill ok">Create</span></td><td class="mono">tests/unit/local-files.test.ts</td><td>session/audit/setup เสีย</td><td>T5</td></tr>
+<tr><td><span class="pill ok">Create</span></td><td class="mono">src/domain/raw-schemas.ts</td><td>zod schema RawChat, RawEvent, ตัวห่อ list</td><td>T6</td></tr>
+<tr><td><span class="pill acc">Modify</span></td><td class="mono">src/client/line-client.ts</td><td>parse ด้วย schema → ENDPOINT_CHANGED · NOT_FOUND ของแชท/ข้อความบอกให้ใช้ list_chats</td><td>T6</td></tr>
+<tr><td><span class="pill ok">Create</span></td><td class="mono">tests/unit/normalize.test.ts · tests/unit/raw-schemas.test.ts · tests/e2e/not-found.test.ts</td><td>fixture + field หาย/null/แชทแปลก + ข้อความ NOT_FOUND</td><td>T6</td></tr>
+<tr><td><span class="pill acc">Modify</span></td><td class="mono">mock-server/fixtures.ts</td><td>หา fixture ได้ทั้งจาก src และ dist</td><td>T7</td></tr>
+<tr><td><span class="pill ok">Create</span></td><td class="mono">scripts/smoke-dist.mjs</td><td>รัน dist/src/cli.js status ด้วย mock</td><td>T7</td></tr>
+<tr><td><span class="pill acc">Modify</span></td><td class="mono">.github/workflows/ci.yml · tests/unit/files.test.ts · src/cli.ts (2 บรรทัด)</td><td>matrix 3 OS + build + smoke · ข้าม mode test บน win32 · ต่อ <code>--mock</code></td><td>T7</td></tr>
+<tr><td><span class="pill acc">Modify</span></td><td class="mono">README.md</td><td>ตัด comment/badge, ลิงก์ไทยบนสุด, pitch 3 บรรทัด, ย้าย 2 หัวข้อลงล่าง, setup --mock, read ด้วยชื่อ</td><td>T8</td></tr>
+<tr><td><span class="pill ok">Create</span></td><td class="mono">docs/START.th.md</td><td>หน้าเริ่มต้นสำหรับคนไม่ใช่ dev + ข้อมูลไปไหน</td><td>T8</td></tr>
+<tr><td><span class="pill acc">Modify</span></td><td class="mono">docs/USAGE.th.md</td><td>ลิงก์ START, read ด้วยชื่อ, setup --mock, ตรงกับ README</td><td>T8</td></tr>
+<tr><td><span class="pill acc">Modify</span></td><td class="mono">scripts/welcome.mjs</td><td>ข้อความไทยคู่อังกฤษ</td><td>T8</td></tr>
+<tr><td><span class="pill acc">Modify</span></td><td class="mono">CHANGELOG.md · package.json(version) · src/version.ts ไม่ต้องแก้ · docs/features.html · docs/dev/STATUS.md/LOG.md</td><td>release v0.2.0</td><td>T9</td></tr>
+<tr><td><span class="pill ok">Create</span></td><td class="mono">start-mac.command</td><td>ดับเบิลคลิก: ตรวจ Node → install → setup → ถามก่อน login (mode 755)</td><td>T8</td></tr>
+</tbody></table></div>
+
+<h2 id="tasks">Tasks</h2>
+<p class="lede">Wave 1: T3, T4, T5, T6 ขนานกัน (coder 4 ตัว ไม่มีไฟล์ซ้อน · แต่ละ task เขียวได้ด้วยตัวเอง) + orchestrator ทำ T1, T2 · Wave 2: T7 (orchestrator) + T8 (coder 1 ตัว) · Wave 3: T9 release (orchestrator, ผู้ใช้อนุมัติแล้ว) · coder ไม่ commit — orchestrator commit ทีละ task (LOG ใน commit เดียวกัน)</p>
+
+<div class="task"><h4>T1 · Repo polish (orchestrator)</h4><dl><dt>Depends on</dt><dd>—</dd><dt>Files</dt><dd class="mono">LICENSE, src/tools/get-user-profile.ts, docs/dev/STATUS.md</dd><dt>Tests</dt><dd>AC1, AC3 (lint), AC4 ส่วน STATUS</dd></dl></div>
+
+<div class="task"><h4>T2 · CLAUDE.md เป็นกลาง (orchestrator, lane plan)</h4><dl><dt>Depends on</dt><dd>—</dd><dt>Files</dt><dd class="mono">CLAUDE.md (บรรทัด 3-5, 92), docs/README.md (บรรทัด 4) — worktree ~/.lineoa-lanes/plan, branch plan</dd><dt>Tests</dt><dd>AC4</dd></dl>
+<pre><code>บรรทัด 3-5 → "MCP server that lets an AI agent work LINE OA Manager's chat (chat.line.biz) the way a human CS
+person does. The spec is in docs/PLAN.md (Thai copies: docs/PLAN_thai.md, docs/PLAN.html)."
+บรรทัด 92 "`docs/ASSIGNMENT.md` stays untracked" → "Local-only task notes are never committed."
+docs/README.md:4 ลบการอ้าง docs/ASSIGNMENT.md
+commit บน plan → merge plan → dev (--no-ff)</code></pre></div>
+
+<div class="task"><h4>T3 · Error + input validation (coder A)</h4><dl><dt>Depends on</dt><dd>—</dd><dt>Files</dt><dd class="mono">src/client/http.ts, src/tools/search-messages.ts, src/tools/send-message.ts, tests/unit/http-errors.test.ts (new), tests/e2e/input-validation.test.ts (new)</dd><dt>Tests first</dt><dd>http-errors (fetch ปลอม): 404 ไม่มี path · fetch throw TypeError → UPSTREAM_ERROR (getJson; getBytes ภายนอกมีแค่ชื่อ host) · getBytes ไป host ภายนอกไม่มี header Cookie · postJson ยัง throw TypeError เดิม · input-validation (e2e บน mock): AC6, AC7, AC8, AC9 — <b>ไม่รวม</b> ข้อความ NOT_FOUND ของแชท (เป็นของ T6)</dd></dl>
+<pre><code>// http.ts
+async function call(deps, url, init /* keeps redirect:"manual" for getJson */, what) {
+  try { return await (deps.fetch ?? fetch)(url, init) }
+  catch (e) { throw new LineOAError("UPSTREAM_ERROR", `Could not reach ${what} (network). Check the connection and retry.`) }
+}
+// getJson: call(..., "chat.line.biz") · getBytes: own ? "chat.line.biz" : `${host}. Open the chat's webUrl to see the file in LINE OA Manager`
+// 404: "LINE answered 404 (not found). Check the id with list_chats or auth_status."
+// search-messages.ts
+function isRealDate(s: string): boolean { const [y,m,d] = s.split("-").map(Number); const t = new Date(y, m - 1, d); return t.getFullYear() === y &amp;&amp; t.getMonth() === m - 1 &amp;&amp; t.getDate() === d }
+const dateInput = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "use YYYY-MM-DD").refine(isRealDate, "not a real date")
+query: z.string().trim().min(1, "query is empty")
+// in the handler: since &amp;&amp; until &amp;&amp; until &lt; since → throw new LineOAError("BAD_INPUT", `until (${until}) is before since (${since}).`)
+// send-message.ts
+text: z.string().min(1).max(2000).refine((t) =&gt; t.trim().length &gt; 0, "text is only spaces")</code></pre>
+<p class="dim">หมายเหตุ: เพิ่ม code <code>BAD_INPUT</code> ใน <code>src/domain/errors.ts</code> (ไฟล์นี้ T3 เป็นเจ้าของคนเดียว)</p></div>
+
+<div class="task"><h4>T4 · CLI + server start-up (coder B1)</h4><dl><dt>Depends on</dt><dd>— (ไม่แตะคำสั่ง setup; การต่อ <code>--mock</code> อยู่ใน T7)</dd><dt>Files</dt><dd class="mono">src/index.ts, src/cli.ts, src/cli/ui.ts, tests/unit/cli-errors.test.ts (new)</dd><dt>Tests first</dt><dd>spawn (ตั้ง LINEOA_MOCK_PORT=0 ทุกครั้ง) <code>node --import tsx src/index.ts</code> กับ DAILY_LIMIT=abc → stderr ขึ้นต้น <code>lineoa-cs: CONFIG_ERROR:</code>, ไม่มี <code>\n    at </code>, code 1 · spawn CLI <code>chats --bogus</code>, <code>--oa</code> ไม่มีค่า → <code>✗</code> + help · read ด้วยชื่อบน mock (ตรงทั้งคำ/ตรงบางส่วน "Did you mean"/ซ้ำ/ไม่เจอ) · when() ไม่มี "/69"</dd></dl>
+<pre><code>// index.ts
+let config; try { config = loadConfig((await withMockIfAsked({...process.env})).env) }
+catch (e) { console.error(`lineoa-cs: ${e instanceof LineOAError ? e.code + ": " : ""}${e.message}`); process.exit(1) }
+// cli.ts โครงใหม่:
+//   let mock = { close: async () =&gt; {} }
+//   try { const { values: opt, positionals } = parseArgs(...)        // ย้ายเข้า try
+//         mock = await withMockIfAsked({ ...process.env }); const config = loadConfig(mock.env); const client = createLineClient(config)
+//         const commands = makeCommands({ opt, rest, client, config }) // เดิมเป็น object ระดับ module → เป็น function
+//         await (commands[cmd] ?? unknown)() }
+//   catch (err) { ui.fail(friendly(err)); process.exitCode = 1 }   // ERR_PARSE_ARGS_* → `${err.message}. Run \`npm run lineoa -- help\`.`
+//   finally { await mock.close() }
+// read: SAFE_ID.test(arg) → ลอง getChat; NOT_FOUND หรือไม่ใช่ id → listChats(limit 125): exact (toLowerCase) → เปิด + พิมพ์ "name (id)" ก่อน ·
+//   contains → "Did you mean …?" ไม่เปิด · ซ้ำ → รายการ · ไม่เจอ → "searched the latest 125 chats"
+// ui.ts when(): new Intl.DateTimeFormat("en-GB", {day:"numeric", month:"short", year:"numeric", hour:"2-digit", minute:"2-digit"}) → "5 Nov 2026, 12:00"
+//   cli.ts: padEnd(14) → padEnd(18) ทุกที่ (บรรทัด chats, read, search)</code></pre></div>
+
+<div class="task"><h4>T5 · Local files, setup, version (coder B2)</h4><dl><dt>Depends on</dt><dd>—</dd><dt>Files</dt><dd class="mono">src/auth/session-source.ts, src/auth/session-file.ts, src/audit/audit-log.ts, src/cli/setup.ts, src/version.ts (new), src/server.ts, package.json, .mcp.json, tests/unit/local-files.test.ts (new)</dd><dt>Tests first</dt><dd>AC13, AC14, AC15, AC16 ระดับ function (setup ใช้ HOME ชั่วคราว): --mock เขียนเฉพาะ lineoa-cs-mock · --mock --dry-run ไม่เขียนอะไร · env เดิมของ lineoa-cs คงอยู่ · backup ไม่ทับ · Claude Code args มี -e ทุก key · session tmp เก่าที่ mode 0644 ถูกแทนด้วย 0600 · version.ts เท่ากับ package.json · ไฟล์เทสต์ใหม่ local-files.test.ts (ครอบหลาย module จึงไม่ยัดใน session-source.test.ts)</dd></dl>
+<pre><code>// session-source fileSource: try { JSON.parse } catch { return undefined }
+// session-file writeSession: rm -f tmp → writeFileSync(tmp, data, {mode:0o600, flag:"wx"}) → chmodSync(tmp,0o600) → renameSync(tmp, path); catch → rm tmp, rethrow
+// audit-log lines(): Partial&lt;SendRecord&gt;[]; parse ไม่ได้ หรือไม่ใช่ object → warnOnce(`audit log ${file} has a bad line; counting it as a send`) และคืน { outcome:"uncertain", at: statSync(file).mtime.toISOString() }
+// setup({ dryRun, allowSend, mock }):
+//   mock → ชื่อ "lineoa-cs-mock" เท่านั้น, env object ของตัวเอง { LINEOA_MOCK:"1", LINEOA_MOCK_PORT:"0", LINEOA_ALLOW_SEND:"true" } — ไม่แตะ "lineoa-cs"
+//   live → env = { ...existingEntry.env, LINEOA_ALLOW_SEND: allowSend ? "true" : "false" }  (merge)
+//   backup → `${file}.bak-${YYYYMMDD-HHMMSS}` (ไม่ทับ) · Claude Code → for (k,v) of env: "-e", `${k}=${v}`
+//   Desktop ไม่มี → detail: "not found. Install Claude Desktop from https://claude.ai/download, then run npm run setup again (skip this if you use Claude Code)."
+//   config อ่านไม่ได้ → done:false, detail: `${file} is not valid JSON; left it unchanged. Fix or remove it, then run setup again.`
+// version.ts: เดินขึ้นจาก dirname(fileURLToPath(import.meta.url)) จนเจอ package.json ที่ name === "lineoa-cs-mcp" (src: 1 ชั้น, dist/src: 2 ชั้น) · export const VERSION
+// package.json: tsx → dependencies; scripts.smoke = "node scripts/smoke-dist.mjs"
+// .mcp.json: lineoa-cs-mock env + LINEOA_MOCK_PORT:"0" (lineoa-cs ไม่แตะ)</code></pre></div>
+
+<div class="task"><h4>T6 · ตรวจรูปแบบข้อมูลจาก LINE (coder D)</h4><dl><dt>Depends on</dt><dd>—</dd><dt>Files</dt><dd class="mono">src/domain/raw-schemas.ts (new), src/client/line-client.ts, tests/unit/raw-schemas.test.ts (new), tests/unit/normalize.test.ts (new), tests/e2e/not-found.test.ts (new)</dd><dt>Tests first</dt><dd>fixture chats, chat, messages, messages.older-page ผ่าน (bots/me/notes/tags/owners ไม่ทำ schema — getList ตรวจ list อยู่แล้ว) · AC17 (a)(b)(c) ด้วย fetch ปลอม · toChat/toMessage กับ fixture (unread, status, attachment kind, expired) · not-found e2e: read_chat/get_user_profile id ไม่มีจริง → ข้อความไม่มี /api/ และมี list_chats · interface ใน normalize.ts ไม่แก้ (schema = ตัวตรวจอย่างเดียว)</dd></dl>
+<pre><code>// raw-schemas.ts (zod 4)
+const RawMessage = z.object({ id: z.string(), type: z.string() }).passthrough()
+export const RawEventSchema = z.object({ type: z.string().nullish(), timestamp: z.number().nullish(), message: RawMessage.nullish() }).passthrough()
+export const RawChatSchema = z.object({ chatId: z.string(), read: z.boolean().nullish(), done: z.boolean().nullish(),
+  profile: z.object({ name: z.string().nullish() }).passthrough().nullish(), latestEvent: RawEventSchema.nullish() }).passthrough()
+// checkList(items, schema, where, keyFields?): ตรวจทีละรายการ → รายการผิดถูกข้าม + console.error เตือน
+//   ENDPOINT_CHANGED ถ้า (ผิด &gt; ครึ่ง) หรือ (keyFields เช่น ["read","done"] ไม่มีในทุกรายการ และรายการ &gt; 0)
+//   ข้อความ: `${where}: ${path} ${message}. The internal API may have changed.`
+// checkOne(value, schema, where): getChat/getProfile แชทเดียว ผิด → ENDPOINT_CHANGED
+// line-client.ts: listChats (keyFields read, done) · getChat · listMessages/rawMessages (events) · getProfile
+// getChat/getProfile/listMessages: catch NOT_FOUND → `Chat ${chatId} is not in this OA. Find it with list_chats.`
+// getChat/getProfile/listMessages: catch NOT_FOUND → `Chat ${chatId} is not in this OA. Find it with list_chats.`</code></pre></div>
+
+<div class="task"><h4>T7 · build/dist + CI (orchestrator, wave 2)</h4><dl><dt>Depends on</dt><dd>T4, T5 (cli.ts โครงใหม่ + setup({mock}) + script smoke)</dd><dt>Files</dt><dd class="mono">mock-server/fixtures.ts, scripts/smoke-dist.mjs (new), .github/workflows/ci.yml, tests/unit/files.test.ts, src/cli.ts (options + mock และส่ง {mock} ให้ setup)</dd><dt>Tests</dt><dd>AC5, AC16, AC22 (ดู CI หลัง push)</dd></dl>
+<pre><code>// fixtures.ts
+const candidates = [join(HERE,"..","test","research","line-api-shapes"), join(HERE,"..","..","test","research","line-api-shapes")]
+export const DEFAULT_FIXTURES_DIR = candidates.find(existsSync) ?? candidates[0]
+// ci.yml: strategy.matrix.os [ubuntu-latest, macos-latest, windows-latest], fail-fast: false
+//   steps: npm ci --ignore-scripts · lint · typecheck · test · build · npm run smoke</code></pre></div>
+
+<div class="task"><h4>T8 · เอกสารสำหรับคน CS + README (coder C, wave 2)</h4><dl><dt>Depends on</dt><dd>T4, T5 (ข้อความ error/flag ใหม่), T7</dd><dt>Files</dt><dd class="mono">README.md, docs/START.th.md (new), docs/USAGE.th.md, scripts/welcome.mjs, start-mac.command (new)</dd><dt>Tests</dt><dd>AC2, AC20, AC21 · welcome.mjs ยังพิมพ์ JSON ที่ parse ได้ และมีภาษาไทย · checklist: README กับ USAGE.th.md พูดตรงกันเรื่อง setup, --mock, read ด้วยชื่อ, ความปลอดภัย</dd></dl>
+<pre><code>START.th.md: 0) เปิด Terminal (Cmd+Space → Terminal) 1) ติดตั้ง Node LTS จาก nodejs.org → node -v ≥ 22.13
+2) ดาวน์โหลด (git clone หรือ Download ZIP) 3) ดับเบิลคลิก start-mac.command หรือพิมพ์ทีละคำสั่ง + "ควรเห็น …"
+4) เลือก Claude Desktop (แนะนำ) / Claude Code 5) ลอง mock: npm run setup -- --mock
+6) ข้อมูลไปไหน / ปลอดภัยไหม: ข้อความแชทถูกส่งให้แอป AI อ่าน (เช็กนโยบายบริษัท) · ไม่เห็นรหัสผ่าน · session หมดทุกวัน login ใหม่
+   · อย่ากด "Always allow" ให้ send_message · การใช้ session พนักงานเป็นพื้นที่สีเทาของข้อตกลง LINE · การอ่านไม่ทำเครื่องหมายว่าอ่านแล้ว
+README: บนสุด "ภาษาไทย: เริ่มใช้งาน → docs/START.th.md · คู่มือ → docs/USAGE.th.md" · ลบ INTRO/SHOWCASE comment · badge Vitest ไม่มีตัวเลข
+ลำดับ: … Limitations → What it could grow into → Develop → How this was built → Versions
+Limitations เพิ่ม: Windows ไฟล์ session พึ่งสิทธิ์โฟลเดอร์ผู้ใช้ (mode 0600 ไม่มีผล) · CI Windows ตรวจแค่ build+test
+start-mac.command: #!/bin/bash · cd "$(dirname "$0")" · set -e · เช็ก node -v ≥ 22.13 (ไม่ผ่าน → ข้อความไทย + open https://nodejs.org) ·
+  npm ci --ignore-scripts · npm run setup (ไม่มี --allow-send) · read -p "login ตอนนี้ไหม? (y/n)" → npm run login · ห้าม echo/cat ~/.config/lineoa-mcp
+START.th.md: อธิบายการคลิกขวา → Open ครั้งแรก (macOS กันไฟล์จากเน็ต)</code></pre></div>
+
+<div class="task"><h4>T9 · Release v0.2.0 (orchestrator, หลัง T8 + final check)</h4><dl><dt>Depends on</dt><dd>T1–T8, AC1–AC23 ผ่าน</dd><dt>Files</dt><dd class="mono">CHANGELOG.md, README.md (Versions row), package.json + package-lock.json (version), docs/features.html (npm run features), docs/dev/STATUS.md + LOG.md</dd><dt>Tests</dt><dd>AC24</dd></dl>
+<pre><code>release/v0.2.0 → merge dev → main --no-ff → tag v0.2.0 → push dev main tag → gh release → ดู CI (3 OS)</code></pre></div>
+
+<h2 id="tests">Test strategy</h2>
+<div class="scroll"><table>
+<thead><tr><th>ไฟล์</th><th>เคสที่ต้องมี (ชื่อ)</th></tr></thead>
+<tbody>
+<tr><td class="mono">tests/unit/http-errors.test.ts</td><td>"404 message has no internal path" · "network error on GET becomes UPSTREAM_ERROR" · "external download network error names only the host" · "external download sends no Cookie" · "postJson network error is not wrapped" · "csrf token fetch failure never reaches postJson"</td></tr>
+<tr><td class="mono">tests/e2e/input-validation.test.ts</td><td>"rejects impossible dates" · "accepts leap day 2028-02-29" · "rejects until before since" · "same-day since/until works" · "rejects whitespace-only query" · "rejects whitespace-only send text" · "external attachment failure is UPSTREAM_ERROR"</td></tr>
+<tr><td class="mono">tests/unit/cli-errors.test.ts</td><td>"server config error is one stderr line" · "unknown CLI option is a one-line error" · "read opens an exact name and prints its id" · "read never opens a partial match" · "read lists duplicates" · "read says only 125 chats were searched" · "dates are not Buddhist era"</td></tr>
+<tr><td class="mono">tests/unit/local-files.test.ts</td><td>"corrupt session file means AUTH_EXPIRED" · "session write replaces a stale tmp with 0600" · "corrupt or non-object audit line counts as a send" · "setup leaves a corrupt Desktop config untouched" · "setup keeps existing env and old backups" · "setup --mock writes only lineoa-cs-mock" · "setup --mock --dry-run writes nothing" · "claude mcp add gets -e for every env key" · "version matches package.json"</td></tr>
+<tr><td class="mono">tests/unit/raw-schemas.test.ts · normalize.test.ts · tests/e2e/not-found.test.ts</td><td>"chat and message fixtures pass" · "read missing on every chat is ENDPOINT_CHANGED" · "numeric chatId everywhere is ENDPOINT_CHANGED" · "one odd chat (nulls, group, no timestamp) is skipped, list still works" · "extra fields pass" · "toChat unread/status from fixture" · "toMessage attachment and expired" · "unknown chat says use list_chats"</td></tr>
+<tr><td>live (read-only, หลัง T6)</td><td>AC23: <code>npm run lineoa -- status</code> · <code>chats --oa &lt;OA จริง&gt;</code></td></tr>
+<tr><td>CI</td><td>matrix 3 OS + build + <code>npm run smoke</code></td></tr>
+</tbody></table></div>
+
+<h2 id="open">Open questions</h2>
+<p>none — ตัดสินใจไว้ใน Scope และ Edge cases แล้ว</p>
+
+<h2 id="rounds">Review rounds</h2>
+<div class="scroll"><table class="round">
+<thead><tr><th>รอบ</th><th>ใครเจอ</th><th>ระดับ</th><th>อะไร</th><th>แก้ยังไง</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>plan-risk-auditor</td><td><span class="pill crit">CRITICAL</span></td><td>schema ทดสอบกับ fixture สังเคราะห์ · แชทแปลกแชทเดียวทำ list ทั้ง OA พัง</td><td>schema ผ่อน (.nullish, บังคับแค่ chatId/message.id/type) · ตรวจทีละรายการ ข้าม+เตือน · ENDPOINT_CHANGED เมื่อเกินครึ่งผิดหรือ key field หายทุกรายการ · AC17 ใหม่ + AC23 live read-only</td></tr>
+<tr><td>1</td><td>plan-reviewer</td><td><span class="pill warn">IMPORTANT</span></td><td>AC17 ขัดกับ schema (read optional) — P11 ยังเงียบ</td><td>รวมกับข้อบน: ตรวจ read/done 'ไม่มีในทุกรายการ' ระดับหน้า</td></tr>
+<tr><td>1</td><td>plan-reviewer</td><td><span class="pill warn">IMPORTANT</span></td><td>AC4 ไม่ผ่าน: CLAUDE.md:92 และ docs/README.md:4 ยังอ้าง ASSIGNMENT</td><td>T2 แก้ทั้งสามจุด · AC4 grep รวม docs/README.md</td></tr>
+<tr><td>1</td><td>plan-reviewer</td><td><span class="pill warn">IMPORTANT</span></td><td>wave 1 ไม่เขียวเอง: T3 เทสต์ข้อความของ T6 · T4 ส่ง {mock} ก่อน T5 มี</td><td>ย้ายเทสต์ NOT_FOUND ไป T6 (not-found.test.ts) · การต่อ --mock ย้ายไป T7 (wave 2)</td></tr>
+<tr><td>1</td><td>plan-reviewer</td><td><span class="pill warn">IMPORTANT</span></td><td>ไม่มี task release และ files.test.ts (mode 0600) ไม่มีเจ้าของ</td><td>เพิ่ม T9 release · files.test.ts อยู่ใน T7</td></tr>
+<tr><td>1</td><td>plan-reviewer</td><td><span class="pill warn">IMPORTANT</span></td><td>claude mcp add มีแค่ -e LINEOA_ALLOW_SEND · port mock ชน</td><td>-e ทุก key ของ env · LINEOA_MOCK_PORT=0 ใน entry mock และทุก spawn ในเทสต์</td></tr>
+<tr><td>1</td><td>plan-reviewer</td><td><span class="pill warn">IMPORTANT</span></td><td>AC19 กับรูปแบบวันที่ใน T4 ไม่ตรง + padEnd(14)</td><td>กำหนด en-GB มีปี "5 Nov 2026, 12:00" + padEnd(18)</td></tr>
+<tr><td>1</td><td>plan-reviewer</td><td><span class="pill warn">IMPORTANT</span></td><td>โครง cli.ts ใหม่คลุมเครือ</td><td>เขียนโครงชัด: let mock นอก try, makeCommands(ctx), finally close</td></tr>
+<tr><td>1</td><td>plan-reviewer</td><td><span class="pill warn">IMPORTANT</span></td><td>schema ซ้ำกับ interface ใน normalize.ts และ fixture อื่นไม่มี schema</td><td>schema เป็นตัวตรวจอย่างเดียว interface คงไว้ · ทดสอบเฉพาะ chats/chat/messages</td></tr>
+<tr><td>1</td><td>plan-risk-auditor</td><td><span class="pill warn">IMPORTANT</span></td><td>setup รันซ้ำทับ env เดิมและ .bak</td><td>merge env · backup มี timestamp · ไม่ใส่ --allow-send ในสคริปต์</td></tr>
+<tr><td>1</td><td>plan-risk-auditor</td><td><span class="pill warn">IMPORTANT</span></td><td>--mock อาจแตะ entry จริง</td><td>--mock เขียนเฉพาะ lineoa-cs-mock ด้วย env ของตัวเอง + เทสต์ว่า entry จริงไม่เปลี่ยน</td></tr>
+<tr><td>1</td><td>plan-risk-auditor</td><td><span class="pill warn">IMPORTANT</span></td><td>read ด้วยชื่ออาจเปิดแชทลูกค้าผิดคน</td><td>เปิดอัตโนมัติเฉพาะชื่อตรงทั้งคำ + พิมพ์ id · ตรงบางส่วน = Did you mean ไม่เปิด · บอกว่าค้นแค่ 125</td></tr>
+<tr><td>1</td><td>plan-risk-auditor</td><td><span class="pill warn">IMPORTANT</span></td><td>tmp ของ session อาจค้าง mode กว้าง</td><td>ลบ tmp ก่อน · flag wx · chmod ก่อน rename · ลบ tmp เมื่อพลาด · Limitations Windows</td></tr>
+<tr><td>1</td><td>plan-risk-auditor</td><td><span class="pill warn">IMPORTANT</span></td><td>บรรทัด audit ที่เป็น null/5 ยังทำพัง และ at=now ล็อกตลอด</td><td>non-object = บรรทัดเสีย · ใช้ mtime ของไฟล์ · เตือนพร้อม path</td></tr>
+<tr><td>1</td><td>plan-risk-auditor</td><td><span class="pill warn">IMPORTANT</span></td><td>start-mac.command ต้องกำหนดพฤติกรรม</td><td>cd dirname + set -e · ไม่ print โฟลเดอร์ session · setup ไม่มี --allow-send · npm ci --ignore-scripts · อธิบายคลิกขวา Open</td></tr>
+<tr><td>1</td><td>plan-risk-auditor</td><td><span class="pill mute">NICE</span></td><td>network wrap: token fetch / redirect / cookie host</td><td>เขียนใน Edge cases + เทสต์ csrf fetch fail และ external ไม่มี Cookie</td></tr>
+<tr><td>1</td><td>plan-risk-auditor</td><td><span class="pill mute">NICE</span></td><td>mock mirror / README=USAGE / release / audit ของข้อความว่าง / Windows</td><td>Not doing (mock), checklist T8, T9, Edge case audit, Not doing Windows</td></tr>
+<tr><td>1</td><td>plan-reviewer</td><td><span class="pill mute">NICE</span></td><td>README line, version.ts, isRealDate, audit type, welcome ไทย, LICENSE holder</td><td>แก้ในแผนทั้งหมด · LICENSE ใช้ชื่อที่ผู้ใช้ให้ (Putthipong Soongsuwan)</td></tr>
+</tbody></table></div>
+
+</div>
+
+</body></html>

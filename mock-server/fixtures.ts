@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { ROOT_DIR } from "../src/version.js";
 
 /** One captured (fake) chat.line.biz response, as written by test/research/tools/gen_line_api_shapes.py. */
 interface Fixture<T> {
@@ -32,8 +33,13 @@ export interface RawBot {
   [k: string]: unknown;
 }
 
-const HERE = dirname(fileURLToPath(import.meta.url));
-export const DEFAULT_FIXTURES_DIR = join(HERE, "..", "test", "research", "line-api-shapes");
+// Found from the repo root, so it works from src and from the build (dist/) alike.
+export const DEFAULT_FIXTURES_DIR = join(
+  ROOT_DIR ?? join(dirname(fileURLToPath(import.meta.url)), ".."),
+  "test",
+  "research",
+  "line-api-shapes",
+);
 
 function load<T>(dir: string, name: string): T {
   const raw = JSON.parse(readFileSync(join(dir, `${name}.json`), "utf8")) as Fixture<T>;

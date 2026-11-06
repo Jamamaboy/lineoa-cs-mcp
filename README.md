@@ -1,5 +1,7 @@
 # lineoa-cs
 
+**ภาษาไทย:** [เริ่มใช้งาน (สำหรับทีม CS)](docs/START.th.md) · [คู่มือการใช้](docs/USAGE.th.md)
+
 [![release](https://img.shields.io/github/v/release/Jamamaboy/lineoa-cs-mcp?label=release)](https://github.com/Jamamaboy/lineoa-cs-mcp/releases)
 [![ci](https://github.com/Jamamaboy/lineoa-cs-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/Jamamaboy/lineoa-cs-mcp/actions/workflows/ci.yml)
 ![status](https://img.shields.io/badge/status-working%20MVP-2ea44f)
@@ -11,12 +13,14 @@
 ![Playwright](https://img.shields.io/badge/Playwright-login-2EAD33)
 ![SQLite](https://img.shields.io/badge/SQLite-built--in-003B57?logo=sqlite&logoColor=white)
 ![Hono](https://img.shields.io/badge/Hono-mock-E36002?logo=hono&logoColor=white)
-![Vitest](https://img.shields.io/badge/Vitest-31%20tests-6E9F18?logo=vitest&logoColor=white)
+![Vitest](https://img.shields.io/badge/Vitest-tests-6E9F18?logo=vitest&logoColor=white)
 ![Claude Code](https://img.shields.io/badge/built%20with-Claude%20Code-D97757?logo=claude&logoColor=white)
 
-<!-- INTRO: the owner writes this paragraph. Until then, the text below describes the project. -->
-An MCP server that lets an AI agent work a LINE Official Account the way a customer-support person does. It
-can list ongoing chats, read a chat, search messages across chats, send a message, see a customer's profile,
+Ask your AI app, in plain words, which LINE chats are waiting for a reply, what a customer wrote, or who
+mentioned a refund. You get a summary and a drafted reply back. Sending is off by default; when it is on, the AI app asks you before each send (unless you choose "Always allow", which you shouldn't).
+
+Technically, this is an MCP server that lets an AI agent work a LINE Official Account the way a
+customer-support person does. It can list ongoing chats, read a chat, search messages across chats, send a message, see a customer's profile,
 and open the images and files customers send.
 
 It works through the same web console a CS person uses (LINE OA Manager, `chat.line.biz`), with that person's
@@ -24,7 +28,6 @@ own login. LINE's Messaging API is built for bots: it can't see existing chats o
 
 **Read-only by default.** Sending is off until you turn it on.
 
-<!-- SHOWCASE: replace with the recorded Claude session GIF (docs/assets/demo.gif). -->
 ![lineoa in a terminal, against the built-in mock](docs/assets/demo-cli.gif)
 
 <p align="center"><img src="docs/assets/supports.svg" alt="What it works with: AI apps, login browsers, platforms and the LINE side" width="880"></p>
@@ -53,7 +56,7 @@ own login. LINE's Messaging API is built for bots: it can't see existing chats o
 
 ## Setup
 
-You need Node 22.13 or newer, Google Chrome or Microsoft Edge, and an account that can open LINE OA Manager.
+You need Node 22.13 or newer, Google Chrome, Microsoft Edge or another supported browser (Brave, Chromium, Firefox, WebKit), and an account that can open LINE OA Manager.
 
 ```bash
 git clone https://github.com/Jamamaboy/lineoa-cs-mcp.git
@@ -68,9 +71,13 @@ Restart Claude Desktop, or run `claude`, and ask: *"Which LINE chats are waiting
 In this folder, Claude Code greets you with the next step and example questions. `npm run features` opens
 [`docs/features.html`](docs/features.html): what each tool does, and every feature with its commits.
 
+**Not a developer?** On a Mac, follow [`docs/START.th.md`](docs/START.th.md) (Thai), or double-click
+`start-mac.command`: it checks Node, installs, runs `npm run setup` and asks before it opens the login.
+
 **No LINE account?** Try everything against the built-in mock:
 
 ```bash
+npm run setup -- --mock   # registers only lineoa-cs-mock (sample data, sending on, never reaches LINE)
 npm run try        # a 10-second tour in the terminal, no AI app needed
 claude             # in this folder: approve "lineoa-cs-mock" from .mcp.json, then ask questions
                    # (sending is on for the mock only, so you can try send_message safely)
@@ -109,7 +116,9 @@ LINEOA_MOCK=1 npm run lineoa -- chats --oa "Demo Shop"   # the terminal command,
 | `get_attachment` | an image shown to the AI, or a file saved locally | no |
 | `send_message` | sends text as the staff member; `dryRun` previews | **yes**, only if `LINEOA_ALLOW_SEND=true` |
 
-The same features are in a terminal command: `npm run lineoa -- status | chats --needs-reply | read <chatId> | search <text>`.
+The same features are in a terminal command: `npm run lineoa -- status | chats --needs-reply | read <chatId or exact customer name> | search <text>`.
+`read "customer name"` opens a chat only on an exact name match (and prints `→ name (id)` first); a partial name only
+suggests "Did you mean …?". It looks at the latest 125 chats. Dates print like `5 Nov 2026, 12:00`.
 
 **Several OAs?** Every tool takes `oa` (a name like `"Shop A"`, an `@id` or a botId). If the account reaches more
 than one OA and the request doesn't say which, the tool answers `CHOOSE_OA` with the list, and the AI asks you.
@@ -176,6 +185,8 @@ The picture is in [Architecture](#architecture). In words:
 - **Terms of service.** Automating a staff session is a grey area. This tool uses the person's own seat, a
   human login, low request volume and an audit log. A production rollout should be cleared with LINE or
   legal first.
+- **Windows.** The session file relies on the user-profile folder permissions, because mode 0600 has no effect
+  there. CI checks the build and tests on Windows; setup and login are not tested there.
 - **Sessions expire**, usually within a day, so the CS person logs in again.
 - **Search freshness.** Search only sees what was copied: the 50 most recent chats and 200 messages each by
   default.
@@ -202,6 +213,15 @@ These ideas came out of the research and real support-OA chats. They are planned
   forever.
 - **Reach the agent from chat apps**, for example a supervisor approving a send from Telegram through Claude
   Code Channels.
+
+## Develop
+
+```bash
+npm run check      # lint + typecheck + tests (CI runs the same)
+npm run try        # tour against the mock
+```
+
+To add a tool, another backend or a new way to log in, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## How this was built
 
@@ -235,12 +255,3 @@ is in the repo:
 | [v0.1.0](https://github.com/Jamamaboy/lineoa-cs-mcp/releases/tag/v0.1.0) | 2026-11-06 | first release: 7 tools, login, CLI, setup, mock |
 
 Details are in [CHANGELOG.md](CHANGELOG.md).
-
-## Develop
-
-```bash
-npm run check      # lint + typecheck + tests (CI runs the same)
-npm run try        # tour against the mock
-```
-
-To add a tool, another backend or a new way to log in, see [CONTRIBUTING.md](CONTRIBUTING.md).
