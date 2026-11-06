@@ -31,7 +31,7 @@ own login. LINE's Messaging API is built for bots: it can't see existing chats o
 
 ## How it flows
 
-<p align="center"><img src="docs/assets/flow.svg" alt="Customers message the OA; the CS person asks the AI app; lineoa-cs reads LINE with the staff session; the AI drafts; the human says OK; the reply goes out as the staff member" width="100%"></p>
+<p align="center"><img src="docs/assets/flow.svg" alt="Left to right: the CS person asks the AI app, which calls lineoa-cs, which reads LINE OA Manager; the AI shows a summary and a draft; after the human says OK the reply goes the same way to the customer" width="100%"></p>
 
 ## Architecture
 
