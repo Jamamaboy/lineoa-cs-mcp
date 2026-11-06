@@ -29,7 +29,12 @@ export class AuditLog {
     };
     if (this.file === ":memory:") return void this.memory.push(line);
     mkdirSync(dirname(this.file), { recursive: true, mode: 0o700 });
-    appendFileSync(this.file, `${JSON.stringify(line)}\n`, { mode: 0o600 });
+    // A crash can leave a torn last line; start on a fresh line so the next record stays readable.
+    const torn =
+      existsSync(this.file) &&
+      !readFileSync(this.file, "utf8").endsWith("\n") &&
+      statSync(this.file).size > 0;
+    appendFileSync(this.file, `${torn ? "\n" : ""}${JSON.stringify(line)}\n`, { mode: 0o600 });
   }
 
   /** How many messages may have gone out today (local time), for the daily cap. Uncertain sends count. */

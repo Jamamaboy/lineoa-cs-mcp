@@ -367,3 +367,9 @@
 - Why: Tech-lead review: placeholders and process before setup; CS review: Thai guide hard to find.
 - Commits: `docs: README opens with a plain pitch and the Thai links; guides in sync` (this commit; the LOG entry ships with the work)
 - For other lanes: none.
+
+## 2026-11-06 20:03 ICT · review fix round (code + security)
+- What: src/client/http.ts, src/client/line-client.ts, src/audit/audit-log.ts, src/mock-env.ts, src/cli/setup.ts, start-mac.command, tests/unit/review-fixes.test.ts
+- Why: code-reviewer 2 should-fix, security-reviewer 3 should-fix + suggestions; all small, fixed by the orchestrator.
+- Commits: `fix: review follow-ups in the client, setup and mock` (this commit; the LOG entry ships with the work)
+- For other lanes: none.

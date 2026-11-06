@@ -1,6 +1,6 @@
 #!/bin/bash
 # Double-click starter for macOS: checks Node, installs, registers the read-only server, offers to log in.
-cd "$(dirname "$0")"
+cd "$(dirname "$0")" || exit 1
 set -e
 
 echo "== lineoa-cs: เริ่มต้นใช้งาน =="

@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -9,6 +9,14 @@ const NAME = "lineoa-cs";
 const MOCK_NAME = "lineoa-cs-mock";
 // On Windows the npm-installed `claude` is claude.cmd, which only runs through a shell.
 const WIN = process.platform === "win32";
+/** cmd.exe joins arguments with spaces: quote paths with spaces, refuse characters cmd would interpret. */
+export function winQuote(arg: string): string {
+  if (/["%^&|<>]/.test(arg))
+    throw new Error(
+      `Cannot pass ${JSON.stringify(arg)} through cmd.exe; move the project to a simpler path.`,
+    );
+  return /\s/.test(arg) ? `"${arg}"` : arg;
+}
 
 /** How an AI app should start this server: absolute paths, because GUI apps don't share the shell's PATH. */
 export function serverCommand(): { command: string; args: string[] } {
@@ -123,7 +131,9 @@ export function setup(opts: { dryRun?: boolean; allowSend?: boolean; mock?: bool
           copyFileSync(file, backup);
         }
         mkdirSync(dirname(file), { recursive: true });
-        writeFileSync(file, JSON.stringify(buildDesktopConfig(cfg, name, entry), null, 2));
+        // Write then rename, so a crash mid-write never leaves a truncated config.
+        writeFileSync(`${file}.tmp`, JSON.stringify(buildDesktopConfig(cfg, name, entry), null, 2));
+        renameSync(`${file}.tmp`, file);
       }
       steps.push({
         target: "Claude Desktop",
@@ -147,7 +157,7 @@ export function setup(opts: { dryRun?: boolean; allowSend?: boolean; mock?: bool
       try {
         execFileSync("claude", ["mcp", "remove", "--scope", "user", name], { stdio: "ignore", shell: WIN });
       } catch {}
-      execFileSync("claude", addArgs, { stdio: "ignore", shell: WIN });
+      execFileSync("claude", WIN ? addArgs.map(winQuote) : addArgs, { stdio: "ignore", shell: WIN });
     }
     steps.push({
       target: "Claude Code",

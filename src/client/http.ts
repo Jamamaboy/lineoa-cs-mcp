@@ -77,8 +77,16 @@ export async function getBytes(
   url: string,
   maxBytes: number,
 ): Promise<{ bytes: Uint8Array; contentType?: string }> {
-  const target = new URL(url);
-  const own = hostMatches(target.hostname, "line.biz") || target.origin === new URL(deps.baseUrl).origin;
+  let target: URL;
+  try {
+    target = new URL(url);
+  } catch {
+    throw new LineOAError("UPSTREAM_ERROR", "LINE gave a download address that is not a valid URL.");
+  }
+  // The cookie goes to LINE only over HTTPS (or to the mock's own origin).
+  const own =
+    (hostMatches(target.hostname, "line.biz") && target.protocol === "https:") ||
+    target.origin === new URL(deps.baseUrl).origin;
   const cookie = own ? deps.cookie(target.hostname) : undefined;
   if (own && !cookie) throw authExpired();
   let res: Response;
@@ -105,13 +113,22 @@ export async function getBytes(
   const chunks: Uint8Array[] = [];
   let size = 0;
   const reader = res.body?.getReader();
-  for (let chunk = await reader?.read(); chunk && !chunk.done; chunk = await reader?.read()) {
-    size += chunk.value.length;
-    if (size > maxBytes) {
-      await reader?.cancel();
-      throw tooBig();
+  try {
+    for (let chunk = await reader?.read(); chunk && !chunk.done; chunk = await reader?.read()) {
+      size += chunk.value.length;
+      if (size > maxBytes) {
+        await reader?.cancel();
+        throw tooBig();
+      }
+      chunks.push(chunk.value);
     }
-    chunks.push(chunk.value);
+  } catch (err) {
+    if (err instanceof LineOAError) throw err;
+    // The connection dropped after the headers: same answer as a failed connect, host name only.
+    throw new LineOAError(
+      "UPSTREAM_ERROR",
+      `The download from ${target.hostname} was cut off. Retry, or open the chat's webUrl.`,
+    );
   }
   const bytes = new Uint8Array(size);
   let offset = 0;

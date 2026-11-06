@@ -237,7 +237,8 @@ export function createLineClient(cfg: Config, fetchImpl?: typeof fetch): LineOAC
       let status = await post(await token());
       if (status === 403) status = await post(await token()); // an expired CSRF token: refresh once and retry
       if (status === 403) throw new LineOAError("FORBIDDEN", "This staff account may not send in this chat.");
-      if (status === 404) throw new LineOAError("NOT_FOUND", `Chat ${chatId} not found.`);
+      if (status === 404)
+        throw new LineOAError("NOT_FOUND", `Chat ${chatId} is not in this OA. Find it with list_chats.`);
       const messageId = await findSent();
       if (status >= 200 && status < 300) return { sendId, ...(messageId ? { messageId } : {}) };
       if (messageId) return { sendId, messageId };
