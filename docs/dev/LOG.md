@@ -181,3 +181,9 @@
 - Why: The user asked for icons and one visual style across all diagrams.
 - Commits: 0cea395, deffad9, 9e9f7ee
 - For other lanes: none.
+
+## 2026-11-06 10:11 ICT · linear flow diagram
+- What: flow.svg redrawn to read left to right in the style of the LINE docs diagrams the user shared.
+- Why: The user asked for a linear, left-to-right flow.
+- Commits: a99ca13
+- For other lanes: none.
