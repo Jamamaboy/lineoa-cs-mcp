@@ -1,0 +1,4 @@
+# Same line endings on every OS, so the formatter and tests see identical files on Windows.
+* text=auto eol=lf
+*.gif binary
+*.png binary
