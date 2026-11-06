@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
  * Where the staff member's LINE session comes from. The server only ever asks "which cookie do I send
  * to this host?", so a new way to log in is one new SessionSource, with no change to the tools.
  *
- * Built in: `env` (LINEOA_COOKIE) and `file` (written by `lineoa login`).
+ * Built in: `env` (LINEOA_COOKIE) and `file` (written by `npm run login`).
  * Room for later, not built: a web login page that posts the session to a hosted server, a browser
  * extension that hands over the cookie, or a team vault that stores one session per staff member.
  */

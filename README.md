@@ -101,7 +101,9 @@ Restart Claude Desktop, or run `claude`, and ask: *"Which LINE chats are waiting
 ```bash
 npm run try        # a 10-second tour in the terminal, no AI app needed
 claude             # in this folder: approve "lineoa-cs-mock" from .mcp.json, then ask questions
+                   # (sending is on for the mock only, so you can try send_message safely)
 npm run mock       # browse the mock's chats at http://127.0.0.1:8787
+LINEOA_MOCK=1 npm run lineoa -- chats --oa "Demo Shop"   # the terminal command, on the mock
 ```
 
 <details>
@@ -114,7 +116,7 @@ npm run mock       # browse the mock's chats at http://127.0.0.1:8787
 | `LINEOA_SEND_DAILY_LIMIT` | `50` | sends per day before the tool refuses |
 | `LINEOA_BOT_ALLOWLIST` | empty | only these OAs are reachable |
 | `LINEOA_DEFAULT_OA` | empty | OA to use when a request names none (name, @id or botId). Without it, an account with several OAs makes the AI ask which one. |
-| `LINEOA_MOCK` | unset | `1` runs the built-in mock instead of LINE |
+| `LINEOA_MOCK` | unset | `1` runs the built-in mock instead of LINE (MCP server and terminal command) |
 | `LINEOA_SESSION_FILE` | `~/.config/lineoa-mcp/session.json` | written by `npm run login` |
 | `LINEOA_INDEX_FILE` | `~/.local/share/lineoa-mcp/index.db` | local search index |
 | `LINEOA_CACHE_DIR` | `~/.cache/lineoa-mcp/attachments` | downloaded files |
@@ -254,6 +256,7 @@ is in the repo:
 
 | version | date | highlights |
 |---|---|---|
+| [v0.1.4](https://github.com/Jamamaboy/lineoa-cs-mcp/releases/tag/v0.1.4) | 2026-11-06 | fresh-clone fixes: CLI hints, mock for the CLI, send on the mock |
 | [v0.1.3](https://github.com/Jamamaboy/lineoa-cs-mcp/releases/tag/v0.1.3) | 2026-11-06 | docs: diagrams, graphics, demo GIF, history guide |
 | [v0.1.1](https://github.com/Jamamaboy/lineoa-cs-mcp/releases/tag/v0.1.1) | 2026-11-06 | security and reliability fixes from a code review |
 | [v0.1.0](https://github.com/Jamamaboy/lineoa-cs-mcp/releases/tag/v0.1.0) | 2026-11-06 | first release: 7 tools, login, CLI, setup, mock |

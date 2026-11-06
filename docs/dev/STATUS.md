@@ -1,29 +1,24 @@
 # dev status
-Last updated: 2026-11-06 18:38 ICT · branch release/v0.1.3
+Last updated: 2026-11-06 19:03 ICT · branch release/v0.1.4
 
 ## Now
-- Done: release v0.1.3
-- Done: history guide in README
-- Done: linear flow diagram
-- Done: diagram restyle
-- Done: README diagrams and badges
-- Done: README showcase
-- v0.1.0 is public at github.com/Jamamaboy/lineoa-cs-mcp (main, dev, plan, research, tag, release; CI green).
-- `feat/polish` (local, NOT pushed): grader dry-run on a fresh clone passed; lint warnings cleared; 11 code-review
-  findings fixed (id path traversal, cookie host match, numeric config, send path + audit, search dates, filtered
-  paging, ENDPOINT_CHANGED on shape change, streamed size cap, Windows setup, CLI filters); README notes that
-  Messaging-API bot replies can be invisible. 31 tests green; live read-only checks pass.
+- v0.1.4 released to main (tag v0.1.4, GitHub release). Public repo: github.com/Jamamaboy/lineoa-cs-mcp.
+- All 5 required actions, auth, attachments and the README sections are done. 33 tests green, CI green.
+- Live OA checks are read-only and pass. Sending is verified on the mock only.
+- The user is testing from a fresh `git clone` with a new Claude session.
 
 ## Next
-- Wait for the user's review, then push dev (and cut v0.1.1 to main if they want the fixes on the default branch).
-- Optional: one live send on a test OA; case layer; file sending; bonus video.
+- Waiting on the user: the recorded Claude GIF (docs/assets/demo.gif) and a Thai intro paragraph to translate.
+- Before 1.0.0: one live send on a test OA, and a run on Claude Desktop and Windows.
+- Optional: restyle architecture.svg and supports.svg like the left-to-right flow.svg; case layer; file sending.
+- After submission: delete ~/lineoa-backup-before-scrub.bundle and the old private repo.
 
 ## Blocked
-- Push needs the user's OK.
+- A live send needs a test OA and chat from the user.
 
 ## Requests
 - none
 
 ## Heads-up (affects other lanes)
-- Tool inputs: chatId/messageId must be LINE id characters; search since/until are YYYY-MM-DD (local time).
-- list_chats returns `scanned` and reads up to 125 chats for filtered lists.
+- LINEOA_MOCK=1 now applies to the CLI too (src/mock-env.ts).
+- The LOG entry ships in the same commit as the work; no separate docs(dev) log commits.

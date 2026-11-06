@@ -199,3 +199,27 @@
 - Why: The user asked to push and release the README and diagram work. v0.1.2 was already taken by a stray tag on the v0.1.1 commit.
 - Commits: `chore(release): v0.1.3` (this commit; the LOG entry ships with the work)
 - For other lanes: none.
+
+## 2026-11-06 19:02 ICT · CLI hints use npm scripts
+- What: Every CLI hint (not logged in, usage, help, unknown command, setup) now names an npm script.
+- Why: A fresh-clone test showed 'Run: lineoa login', which a new user cannot run.
+- Commits: `fix(cli): point hints at npm scripts a fresh clone can run` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
+
+## 2026-11-06 19:03 ICT · LINEOA_MOCK for the CLI
+- What: New src/mock-env.ts (withMockIfAsked) used by index.ts and cli.ts; the CLI stops the mock when done. Test: tests/unit/mock-env.test.ts. README shows the CLI on the mock.
+- Why: A fresh-clone test found that LINEOA_MOCK=1 had no effect on the CLI, which then read the live OA.
+- Commits: `fix(cli): LINEOA_MOCK=1 also switches the terminal command to the mock` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
+
+## 2026-11-06 19:03 ICT · send on the mock
+- What: .mcp.json: lineoa-cs-mock gets LINEOA_ALLOW_SEND=true; README says so. lineoa-cs (live) is unchanged: read-only.
+- Why: Without it a fresh clone could not try the send tool anywhere.
+- Commits: `feat(dx): turn sending on for the mock entry in .mcp.json` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
+
+## 2026-11-06 19:04 ICT · release v0.1.4
+- What: version 0.1.4 (package.json, SERVER_VERSION), CHANGELOG entry, Versions row, STATUS rewritten to match the current state. Then dev to main with --no-ff, tag v0.1.4, push, GitHub release.
+- Why: the user asked to finish the fresh-clone fixes and release them before testing from a git clone.
+- Commits: `chore(release): v0.1.4` (this commit)
+- For other lanes: none.
