@@ -96,6 +96,9 @@ npm run login      # a browser window opens; log in to LINE yourself
 
 Restart Claude Desktop, or run `claude`, and ask: *"Which LINE chats are waiting for a reply?"*
 
+In this folder, Claude Code greets you with the next step and example questions. `npm run features` opens
+[`docs/features.html`](docs/features.html): what each tool does, and every feature with its commits.
+
 **No LINE account?** Try everything against the built-in mock:
 
 ```bash

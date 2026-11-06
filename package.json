@@ -23,7 +23,8 @@
     "try": "tsx scripts/try.ts",
     "login": "tsx src/cli.ts login",
     "lineoa": "tsx src/cli.ts",
-    "setup": "tsx src/cli.ts setup"
+    "setup": "tsx src/cli.ts setup",
+    "features": "tsx scripts/features-page.ts"
   },
   "license": "MIT",
   "dependencies": {
