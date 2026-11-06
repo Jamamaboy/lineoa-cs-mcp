@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { chooseOa } from "../../src/client/choose-oa.js";
+import type { Bot } from "../../src/domain/types.js";
 
-const bots = [
+const bots: [Bot, Bot] = [
   { botId: "U1", name: "Demo Shop", searchId: "@demo-shop" },
   { botId: "U2", name: "Test Shop", searchId: "@test-shop" },
 ];
@@ -11,7 +12,7 @@ describe("chooseOa", () => {
     expect(() => chooseOa(bots)).toThrow(/CHOOSE_OA|2 OAs: "Demo Shop" \(@demo-shop\), "Test Shop"/);
   });
   it("uses the only OA, or the configured default", () => {
-    expect(chooseOa([bots[0]!]).botId).toBe("U1");
+    expect(chooseOa([bots[0]]).botId).toBe("U1");
     expect(chooseOa(bots, undefined, "Test Shop").botId).toBe("U2");
   });
   it("matches by name, @id, botId or a unique part of the name", () => {

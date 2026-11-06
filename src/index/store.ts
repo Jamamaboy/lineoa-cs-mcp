@@ -72,10 +72,17 @@ export class MessageStore {
     const where = ["m.bot_id = ?", "(m.text LIKE ? ESCAPE '\\' OR c.name LIKE ? ESCAPE '\\')"];
     const like = `%${q.text.replace(/[\\%_]/g, (ch) => `\\${ch}`)}%`;
     const args: string[] = [q.botId, like, like];
-    if (q.chatId) where.push("m.chat_id = ?"), args.push(q.chatId);
-    if (q.from) where.push("m.sender = ?"), args.push(q.from);
-    if (q.since) where.push("m.sent_at >= ?"), args.push(q.since);
-    if (q.until) where.push("m.sent_at <= ?"), args.push(q.until);
+    const filters: [string, string | undefined][] = [
+      ["m.chat_id = ?", q.chatId],
+      ["m.sender = ?", q.from],
+      ["m.sent_at >= ?", q.since],
+      ["m.sent_at <= ?", q.until],
+    ];
+    for (const [clause, value] of filters) {
+      if (value === undefined) continue;
+      where.push(clause);
+      args.push(value);
+    }
     return this.db
       .prepare(
         `SELECT m.bot_id AS botId, m.chat_id AS chatId, c.name AS chatName, m.id, m.sent_at AS sentAt,
