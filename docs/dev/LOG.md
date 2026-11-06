@@ -397,3 +397,9 @@
 - Why: the review-fixes plan is done (T1–T8 + review rounds); the user approved releasing it as v0.2.0.
 - Commits: `chore(release): v0.2.0` (this commit)
 - For other lanes: plan lane's neutral CLAUDE.md is merged into dev in the same release.
+
+## 2026-11-06 20:10 ICT · Windows CI line endings
+- What: .gitattributes
+- Why: v0.2.0's first Windows CI run failed in lint on CRLF.
+- Commits: `fix(ci): LF line endings on every OS` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
