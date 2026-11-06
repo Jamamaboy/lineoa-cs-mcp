@@ -9,7 +9,7 @@ import { registerSendMessage } from "./tools/send-message.js";
 import type { ToolContext } from "./tools/shared.js";
 
 export const SERVER_NAME = "lineoa-cs";
-export const SERVER_VERSION = "0.1.0";
+export const SERVER_VERSION = "0.1.1";
 
 export function createServer(ctx: ToolContext): McpServer {
   const server = new McpServer({ name: SERVER_NAME, version: SERVER_VERSION });
