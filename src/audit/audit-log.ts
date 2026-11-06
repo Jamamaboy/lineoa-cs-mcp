@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { appendFileSync, existsSync, mkdirSync, readFileSync } from "node:fs";
+import { appendFileSync, existsSync, mkdirSync, readFileSync, statSync } from "node:fs";
 import { dirname } from "node:path";
 
 export interface SendRecord {
@@ -36,17 +36,31 @@ export class AuditLog {
   sentToday(): number {
     const today = new Date().toDateString();
     return this.lines().filter(
-      (l) => (l.outcome === "sent" || l.outcome === "uncertain") && new Date(l.at).toDateString() === today,
+      (l) =>
+        (l.outcome === "sent" || l.outcome === "uncertain") &&
+        (l.at === undefined || new Date(l.at).toDateString() === today),
     ).length;
   }
 
   private memory: SendRecord[] = [];
-  private lines(): SendRecord[] {
+  private warned = false;
+  private lines(): Partial<SendRecord>[] {
     if (this.file === ":memory:") return this.memory;
     if (!existsSync(this.file)) return [];
     return readFileSync(this.file, "utf8")
       .split("\n")
       .filter(Boolean)
-      .map((l) => JSON.parse(l) as SendRecord);
+      .map((l): Partial<SendRecord> => {
+        try {
+          const v: unknown = JSON.parse(l);
+          if (v && typeof v === "object" && !Array.isArray(v)) return v as Partial<SendRecord>;
+        } catch {}
+        // Unreadable line: assume a message may have gone out, so the daily cap errs on the safe side.
+        if (!this.warned) {
+          this.warned = true;
+          process.stderr.write(`audit log ${this.file} has a bad line; counting it as a send\n`);
+        }
+        return { outcome: "uncertain", at: statSync(this.file).mtime.toISOString() };
+      });
   }
 }

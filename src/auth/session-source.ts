@@ -36,8 +36,14 @@ export function fileSource(path: string): SessionSource {
       } catch {
         return undefined;
       }
-      const state = JSON.parse(raw) as { cookies?: { name: string; value: string; domain: string }[] };
-      const cookies = (state.cookies ?? []).filter((c) => hostMatches(host, c.domain));
+      let state: { cookies?: { name: string; value: string; domain: string }[] };
+      try {
+        state = JSON.parse(raw);
+      } catch {
+        return undefined; // a half-written or damaged file means "not logged in", not a crash
+      }
+      if (!state || typeof state !== "object" || !Array.isArray(state.cookies)) return undefined;
+      const cookies = state.cookies.filter((c) => hostMatches(host, c.domain));
       return cookies.length ? cookies.map((c) => `${c.name}=${c.value}`).join("; ") : undefined;
     },
   };

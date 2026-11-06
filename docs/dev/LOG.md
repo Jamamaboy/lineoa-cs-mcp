@@ -307,3 +307,9 @@
 - Why: Cover the T4 behaviour.
 - Commits: `test: CLI and server start-up errors, read by name` (this commit; the LOG entry ships with the work)
 - For other lanes: none.
+
+## 2026-11-06 19:54 ICT · robust local files (T5a)
+- What: src/auth/session-source.ts, src/auth/session-file.ts, src/audit/audit-log.ts
+- Why: Dev review: one bad audit line stopped all sending; a half-written session caused UNEXPECTED.
+- Commits: `fix: corrupt local files no longer break login or sending` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
