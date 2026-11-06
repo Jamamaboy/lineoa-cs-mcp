@@ -355,3 +355,9 @@
 - Why: CS review: Claude Desktop users had no way to try the mock.
 - Commits: `feat(cli): npm run setup -- --mock` (this commit; the LOG entry ships with the work)
 - For other lanes: none.
+
+## 2026-11-06 19:58 ICT · CS start page (T8a)
+- What: docs/START.th.md, start-mac.command
+- Why: CS persona review scored setup 3/10: no Terminal/Node steps, no safety explanation.
+- Commits: `docs: Thai start page and a double-click installer for CS staff` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
