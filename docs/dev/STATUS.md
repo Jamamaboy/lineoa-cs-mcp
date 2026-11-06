@@ -1,16 +1,14 @@
 # dev status
-Last updated: 2026-11-06 20:13 ICT · branch release/v0.2.1
+Last updated: 2026-11-06 20:30 ICT · branch feat/submission-polish
 
 ## Now
+- Done: submission polish (dev)
 - Done: Windows CI line endings
 - v0.2.1 released to main (CI green on Linux/macOS/Windows). v0.2.0 (tag, GitHub release): the four-persona review fixes (plan
   docs/dev/plans/2026-11-06-review-fixes.html, T1–T9). 78 tests, CI on Linux/macOS/Windows.
 - Live OA checks (read-only) pass, including the new response-shape checks. Sending is verified on the mock only.
-- /update-skill proposal for the agent strategy is at docs/agent-strategy/2026-11-proposal.html (not committed;
-  waiting for the owner's decision on C1–C7).
 
 ## Next
-- Owner decides on the /update-skill proposal (C1–C7).
 - Follow-ups not done: getBytes follows redirects with the cookie header (set redirect manual and re-check the host);
   NOT_FOUND rewrite could move into http.ts options; shared atomic-write helper.
 - Before 1.0.0: one live send on a test OA; run on Claude Desktop and Windows.
