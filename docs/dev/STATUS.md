@@ -1,7 +1,8 @@
 # dev status
-Last updated: 2026-11-06 18:35 ICT · branch feat/history-guide
+Last updated: 2026-11-06 18:38 ICT · branch release/v0.1.3
 
 ## Now
+- Done: release v0.1.3
 - Done: history guide in README
 - Done: linear flow diagram
 - Done: diagram restyle

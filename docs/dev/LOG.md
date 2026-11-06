@@ -193,3 +193,9 @@
 - Why: 164 commits looked like a lot; read by first-parent they are about 40 features, each split into small reviewable commits.
 - Commits: `docs: show how to read the git history one level at a time` (this commit; the LOG entry ships with the work)
 - For other lanes: none.
+
+## 2026-11-06 18:38 ICT · release v0.1.3
+- What: Version 0.1.3 in package.json and SERVER_VERSION, a CHANGELOG entry and a Versions row. Then dev to main with --no-ff, tag v0.1.3, push dev, main and the tag.
+- Why: The user asked to push and release the README and diagram work. v0.1.2 was already taken by a stray tag on the v0.1.1 commit.
+- Commits: `chore(release): v0.1.3` (this commit; the LOG entry ships with the work)
+- For other lanes: none.

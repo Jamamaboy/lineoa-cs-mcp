@@ -1,6 +1,6 @@
 {
   "name": "lineoa-cs-mcp",
-  "version": "0.1.1",
+  "version": "0.1.3",
   "description": "MCP server that lets an AI agent work LINE OA Manager chat (chat.line.biz) the way a CS person does",
   "type": "module",
   "private": true,
