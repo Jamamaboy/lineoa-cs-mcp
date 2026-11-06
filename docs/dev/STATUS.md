@@ -2,6 +2,7 @@
 Last updated: 2026-11-06 19:58 ICT · branch feat/review-fixes
 
 ## Now
+- Done: setup --mock flag (T7b)
 - Done: dist + CI (T7a)
 - Done: tests for T6
 - Done: response shapes (T6)

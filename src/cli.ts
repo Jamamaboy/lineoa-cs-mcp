@@ -30,6 +30,7 @@ const parseCli = () =>
       all: { type: "boolean" },
       "dry-run": { type: "boolean" },
       "allow-send": { type: "boolean" },
+      mock: { type: "boolean" },
     },
   });
 
@@ -48,8 +49,18 @@ function makeCommands({ opt, rest, client, config }: Ctx): Record<string, () => 
   return {
     async setup() {
       ui.title("Set up lineoa-cs for your AI apps");
-      for (const s of setup({ dryRun: Boolean(opt["dry-run"]), allowSend: Boolean(opt["allow-send"]) })) {
-        (s.done ? ui.ok : ui.warn)(`${ui.bold(s.target)}: ${s.detail}`);
+      const mockOnly = Boolean(opt.mock);
+      const steps = setup({
+        dryRun: Boolean(opt["dry-run"]),
+        allowSend: Boolean(opt["allow-send"]),
+        mock: mockOnly,
+      });
+      for (const s of steps) (s.done ? ui.ok : ui.warn)(`${ui.bold(s.target)}: ${s.detail}`);
+      if (mockOnly) {
+        // The mock never reaches LINE, so it needs no login and may send (to fake chats only).
+        ui.line("  added lineoa-cs-mock: sample chats, sending on, never reaches LINE.");
+        ui.line('\nNext: restart your AI app and ask: "Which LINE chats are waiting for a reply?"');
+        return;
       }
       ui.line(
         `  sending: ${opt["allow-send"] ? ui.bold("ON") : "off (read-only). Run `npm run setup -- --allow-send` to turn it on."}`,
@@ -162,7 +173,10 @@ function makeCommands({ opt, rest, client, config }: Ctx): Record<string, () => 
     async help() {
       ui.title("lineoa — LINE OA Manager from the terminal");
       for (const [c, d] of [
-        ["setup [--allow-send] [--dry-run]", "add this server to Claude Desktop and Claude Code"],
+        [
+          "setup [--allow-send] [--mock] [--dry-run]",
+          "add this server (or, with --mock, the sample-data server) to Claude Desktop and Claude Code",
+        ],
         [
           "login [--browser chrome|edge|brave|chromium|firefox|webkit]",
           "log in once (a browser window opens)",
