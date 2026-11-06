@@ -2,7 +2,7 @@
 version=1.5.0
 commit=c2905e8
 installed=2026-11-06T12:38:07Z
-source=/Users/psoongsu/claude-skill
+source=github.com/Jamamaboy/claude-skill
 # sha256  path (relative to .claude/)
 b61bdf2816e50add6c66377e80e11329aeda97e3092d0f5a478cc6ab683c4d80 skills/write-plan/SKILL.md
 abf91304ff6d682dca0e12331a68ca9c0d71bb2e90b1d14c0b3d3514023ca1a9 skills/write-plan/references/plan-template.html
