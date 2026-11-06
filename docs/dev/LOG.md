@@ -229,3 +229,9 @@
 - Why: A fresh Claude session in the clone opened blank; the user wanted it to say what the system can do.
 - Commits: `feat(dx): welcome message when Claude Code starts in this folder` (this commit; the LOG entry ships with the work)
 - For other lanes: none.
+
+## 2026-11-06 19:11 ICT · features page
+- What: New scripts/features-page.ts, npm run features, generated docs/features.html, README link.
+- Why: The user wanted one page that says what the system does and what each feature contains in git.
+- Commits: `docs: features page built from git (npm run features)` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
