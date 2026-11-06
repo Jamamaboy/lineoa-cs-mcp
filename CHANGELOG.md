@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.1.4 · 2026-11-06
+
+Fixes from walking through the README on a fresh clone.
+
+- The terminal command's hints name npm scripts (`npm run login`, `npm run lineoa -- …`). Before this they said
+  `lineoa login`, which a fresh clone does not have.
+- `LINEOA_MOCK=1` now also switches the terminal command to the mock. Before this, the terminal command read the
+  live OA even with the setting on. One helper, `src/mock-env.ts`, now starts the mock for both.
+- The mock entry in `.mcp.json` has sending on, so `send_message` can be tried in Claude without a LINE
+  account. The live entry stays read-only.
+
 ## v0.1.3 · 2026-11-06
 
 Docs only. No code changes since v0.1.1.
