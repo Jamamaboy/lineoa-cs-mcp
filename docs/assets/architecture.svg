@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="700" viewBox="0 0 1400 700" font-family="-apple-system,Segoe UI,Helvetica,Arial,sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#eef5ff"/><stop offset="1" stop-color="#f7fbff"/></linearGradient>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="#24292f"/></marker>
+    <marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="#06c755"/></marker>
+  </defs>
+  <style>
+    .h1{font-size:34px;font-weight:800;fill:#1f4e8c}.h2{font-size:22px;fill:#3b6fb0}
+    .grp{fill:#ffffff;stroke:#2f3a48;stroke-width:1.4}.sub{fill:#f6f8fa;stroke:#2f3a48;stroke-width:1.1}
+    .gt{font-size:15px;font-weight:700;fill:#1f2328}.st{font-size:13.5px;font-weight:700;fill:#1f2328}
+    .tx{font-size:12.5px;fill:#24292f}.mu{font-size:12px;fill:#57606a}
+    .ln{stroke:#24292f;stroke-width:1.6;fill:none}.lg{stroke:#06c755;stroke-width:2;fill:none}
+    .lb{font-size:12px;font-weight:600;fill:#24292f}.lbbg{fill:#e1e4e8}
+    .green{fill:#e8f8ee;stroke:#06c755;stroke-width:1.4}.warn{fill:#fff8e6;stroke:#bf8700;stroke-width:1.2}
+    .dash{stroke-dasharray:6 5}
+  </style>
+  <rect width="1400" height="700" fill="url(#bg)"/>
+  <text class="h1" x="40" y="58">High-Level System Architecture</text>
+  <text class="h2" x="40" y="90">(with data flow)</text>
+
+  <!-- 1. Clients -->
+  <rect class="grp" x="40" y="140" width="230" height="300" rx="10"/>
+  <text class="gt" x="155" y="164" text-anchor="middle">Clients</text>
+  <rect class="sub" x="58" y="182" width="194" height="118" rx="8"/>
+  <text class="st" x="155" y="206" text-anchor="middle">AI app</text>
+  <text class="tx" x="155" y="230" text-anchor="middle">• Claude Code</text>
+  <text class="tx" x="155" y="250" text-anchor="middle">• Claude Desktop</text>
+  <text class="tx" x="155" y="270" text-anchor="middle">• any MCP client</text>
+  <text class="mu" x="155" y="290" text-anchor="middle">asks · drafts · summarises</text>
+  <rect class="sub" x="58" y="318" width="194" height="100" rx="8"/>
+  <text class="st" x="155" y="342" text-anchor="middle">lineoa CLI</text>
+  <text class="tx" x="155" y="366" text-anchor="middle">status · chats</text>
+  <text class="tx" x="155" y="386" text-anchor="middle">read · search</text>
+  <text class="mu" x="155" y="406" text-anchor="middle">for a person at a terminal</text>
+
+  <!-- arrow clients -> server -->
+  <path class="ln" d="M270 240 H352" marker-end="url(#ar)"/>
+  <rect class="lbbg" x="276" y="216" width="70" height="18" rx="3"/><text class="lb" x="311" y="229" text-anchor="middle">stdio MCP</text>
+  <path class="ln" d="M270 368 H352" marker-end="url(#ar)"/>
+  <rect class="lbbg" x="281" y="344" width="60" height="18" rx="3"/><text class="lb" x="311" y="357" text-anchor="middle">direct</text>
+
+  <!-- 2. MCP server -->
+  <rect class="grp" x="356" y="140" width="560" height="380" rx="10"/>
+  <text class="gt" x="636" y="164" text-anchor="middle">lineoa-cs MCP server (Node 22 · TypeScript)</text>
+  <rect class="sub" x="374" y="182" width="250" height="186" rx="8"/>
+  <text class="st" x="499" y="206" text-anchor="middle">Tools layer</text>
+  <text class="tx" x="392" y="230">• auth_status</text>
+  <text class="tx" x="392" y="250">• list_chats (needs_reply…)</text>
+  <text class="tx" x="392" y="270">• read_chat · get_user_profile</text>
+  <text class="tx" x="392" y="290">• search_messages</text>
+  <text class="tx" x="392" y="310">• get_attachment</text>
+  <text class="tx" x="392" y="330">• send_message (off by default)</text>
+  <text class="mu" x="392" y="354">zod inputs · oa by name · CHOOSE_OA</text>
+  <rect class="warn" x="642" y="182" width="256" height="186" rx="8"/>
+  <text class="st" x="770" y="206" text-anchor="middle">Safety gates</text>
+  <text class="tx" x="660" y="230">• ids checked before any URL</text>
+  <text class="tx" x="660" y="250">• send: flag → chat allowlist</text>
+  <text class="tx" x="660" y="270">   → daily cap → dryRun</text>
+  <text class="tx" x="660" y="290">   → human OK in the AI app</text>
+  <text class="tx" x="660" y="310">• never resends: sendId lookup</text>
+  <text class="tx" x="660" y="330">• customer text marked untrusted</text>
+  <text class="mu" x="660" y="354">every send attempt → audit log</text>
+  <rect class="sub" x="374" y="386" width="524" height="116" rx="8"/>
+  <text class="st" x="636" y="410" text-anchor="middle">LineOAClient (one code path for real and mock)</text>
+  <text class="tx" x="392" y="436">• session cookie from SessionSource (env · file)</text>
+  <text class="tx" x="392" y="458">• CSRF token for sends · pages of 25 chats · cursors</text>
+  <text class="tx" x="392" y="480">• typed errors: AUTH_EXPIRED · ENDPOINT_CHANGED · SEND_UNCERTAIN …</text>
+  <path class="ln" d="M499 368 V384" marker-end="url(#ar)"/>
+  <path class="ln" d="M770 368 V384" marker-end="url(#ar)"/>
+
+  <!-- arrow server -> LINE -->
+  <path class="lg" d="M898 420 H1012" marker-end="url(#arg)"/>
+  <rect class="lbbg" x="906" y="396" width="98" height="18" rx="3"/><text class="lb" x="955" y="409" text-anchor="middle">HTTPS + cookie</text>
+  <path class="lg" d="M1012 462 H902" marker-end="url(#arg)"/>
+  <rect class="lbbg" x="914" y="468" width="86" height="18" rx="3"/><text class="lb" x="957" y="481" text-anchor="middle">JSON · bytes</text>
+
+  <!-- 3. LINE -->
+  <rect class="grp" x="1016" y="140" width="344" height="380" rx="10"/>
+  <text class="gt" x="1188" y="164" text-anchor="middle">LINE Official Account Manager</text>
+  <rect class="green" x="1034" y="182" width="308" height="200" rx="8"/>
+  <text class="st" x="1188" y="206" text-anchor="middle">chat.line.biz · internal JSON API</text>
+  <text class="tx" x="1052" y="232">GET  /api/v1/me · /api/v1/bots</text>
+  <text class="tx" x="1052" y="254">GET  /api/v2/bots/{oa}/chats</text>
+  <text class="tx" x="1052" y="276">GET  /api/v3/…/chats/{chat}/messages</text>
+  <text class="tx" x="1052" y="298">GET  …/notes · /tags · /owners</text>
+  <text class="tx" x="1052" y="320">GET  /api/v1/csrfToken</text>
+  <text class="tx" x="1052" y="342">POST …/messages/send</text>
+  <text class="mu" x="1052" y="366">the same calls the web page makes</text>
+  <rect class="green" x="1034" y="400" width="308" height="102" rx="8"/>
+  <text class="st" x="1188" y="424" text-anchor="middle">chat-content.line.biz</text>
+  <text class="tx" x="1052" y="450">GET /bot/{oa}/{contentHash}</text>
+  <text class="tx" x="1052" y="472">images · files · video · audio</text>
+  <text class="mu" x="1052" y="492">downloaded only on request</text>
+
+  <!-- 4. bottom: login, local data, mock -->
+  <rect class="grp" x="40" y="560" width="300" height="118" rx="10"/>
+  <text class="gt" x="190" y="584" text-anchor="middle">Login (once per shift)</text>
+  <text class="tx" x="58" y="610">npm run login → real browser window</text>
+  <text class="tx" x="58" y="632">Chrome · Edge · Brave · Firefox · WebKit</text>
+  <text class="tx" x="58" y="654">the person types the password, not us</text>
+  <path class="ln" d="M340 616 H460 V522" marker-end="url(#ar)"/>
+  <rect class="lbbg" x="350" y="594" width="104" height="18" rx="3"/><text class="lb" x="402" y="607" text-anchor="middle">session.json 0600</text>
+
+  <rect class="grp" x="500" y="560" width="416" height="118" rx="10"/>
+  <text class="gt" x="708" y="584" text-anchor="middle">Local data (on the CS person's computer)</text>
+  <g transform="translate(520,598)"><ellipse cx="54" cy="8" rx="54" ry="8" fill="#ddf4ff" stroke="#2f3a48"/><path d="M0 8 V48 A54 8 0 0 0 108 48 V8" fill="#ddf4ff" stroke="#2f3a48"/><text class="st" x="54" y="36" text-anchor="middle">SQLite</text><text class="mu" x="54" y="52" text-anchor="middle">search index</text></g>
+  <g transform="translate(654,598)"><ellipse cx="54" cy="8" rx="54" ry="8" fill="#ddf4ff" stroke="#2f3a48"/><path d="M0 8 V48 A54 8 0 0 0 108 48 V8" fill="#ddf4ff" stroke="#2f3a48"/><text class="st" x="54" y="36" text-anchor="middle">File cache</text><text class="mu" x="54" y="52" text-anchor="middle">attachments</text></g>
+  <g transform="translate(788,598)"><ellipse cx="54" cy="8" rx="54" ry="8" fill="#ddf4ff" stroke="#2f3a48"/><path d="M0 8 V48 A54 8 0 0 0 108 48 V8" fill="#ddf4ff" stroke="#2f3a48"/><text class="st" x="54" y="36" text-anchor="middle">Audit log</text><text class="mu" x="54" y="52" text-anchor="middle">every send</text></g>
+  <path class="ln" d="M708 520 V556" marker-end="url(#ar)"/>
+  <rect class="lbbg" x="716" y="530" width="52" height="18" rx="3"/><text class="lb" x="742" y="543" text-anchor="middle">write</text>
+
+  <rect class="grp dash" x="1016" y="560" width="344" height="118" rx="10"/>
+  <text class="gt" x="1188" y="584" text-anchor="middle">Built-in mock of chat.line.biz</text>
+  <text class="tx" x="1034" y="610">same paths · cookie · errors · cursors</text>
+  <text class="tx" x="1034" y="632">runs tests, demos and npm run try</text>
+  <text class="tx" x="1034" y="654">no LINE account needed</text>
+  <path class="ln dash" d="M880 520 C900 600 960 620 1012 620" marker-end="url(#ar)"/>
+  <rect class="lbbg" x="924" y="586" width="88" height="18" rx="3"/><text class="lb" x="968" y="599" text-anchor="middle">LINEOA_MOCK=1</text>
+</svg>
