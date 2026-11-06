@@ -2,6 +2,7 @@
 Last updated: 2026-11-06 20:03 ICT · branch feat/review-fixes
 
 ## Now
+- Done: review fix round (UX)
 - Done: review fix round (code + security)
 - Done: README + guides (T8b)
 - Done: CS start page (T8a)

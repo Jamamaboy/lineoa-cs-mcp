@@ -373,3 +373,9 @@
 - Why: code-reviewer 2 should-fix, security-reviewer 3 should-fix + suggestions; all small, fixed by the orchestrator.
 - Commits: `fix: review follow-ups in the client, setup and mock` (this commit; the LOG entry ships with the work)
 - For other lanes: none.
+
+## 2026-11-06 20:03 ICT · review fix round (UX)
+- What: README.md, docs/USAGE.th.md, docs/START.th.md, src/cli.ts
+- Why: uxui-reviewer 7 should-fix.
+- Commits: `docs: honest send wording and consistent guides; tidier CLI rows` (this commit; the LOG entry ships with the work)
+- For other lanes: none.

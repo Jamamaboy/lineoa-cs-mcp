@@ -102,7 +102,7 @@ function makeCommands({ opt, rest, client, config }: Ctx): Record<string, () => 
         const mark = c.unread ? ui.cyan("●") : " ";
         const who = c.lastMessage?.from === "customer" ? "←" : "→";
         ui.line(
-          `${mark} ${ui.bold(cut(c.name, 22).padEnd(22))} ${ui.dim(when(c.lastMessage?.at).padEnd(18))} ${who} ${cut(c.lastMessage?.preview ?? "", 50)}`,
+          `${mark} ${ui.bold(cut(c.name, 22).padEnd(22))} ${ui.dim((c.lastMessage ? when(c.lastMessage.at) : "-").padEnd(18))} ${c.lastMessage ? `${who} ${cut(c.lastMessage.preview ?? "", 50)}` : ui.dim("(no messages yet)")}`,
         );
       }
       ui.line(ui.dim("\n● unread · ← customer spoke last · → staff spoke last"));
@@ -214,7 +214,7 @@ try {
       : code === "CHOOSE_OA"
         ? `${msg.split(" Ask the person")[0]} Pick one with --oa "<name>".`
         : typeof argCode === "string" && argCode.startsWith("ERR_PARSE_ARGS_")
-          ? `${msg}. Run \`npm run lineoa -- help\`.`
+          ? `${(msg.split(". ")[0] ?? msg).replace(/\.$/, "")}. Run \`npm run lineoa -- help\`.`
           : msg,
   );
   process.exitCode = 1;

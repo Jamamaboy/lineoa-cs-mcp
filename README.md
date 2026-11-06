@@ -17,7 +17,7 @@
 ![Claude Code](https://img.shields.io/badge/built%20with-Claude%20Code-D97757?logo=claude&logoColor=white)
 
 Ask your AI app, in plain words, which LINE chats are waiting for a reply, what a customer wrote, or who
-mentioned a refund. You get a summary and a drafted reply back. Nothing is sent to a customer without your OK.
+mentioned a refund. You get a summary and a drafted reply back. Sending is off by default; when it is on, the AI app asks you before each send (unless you choose "Always allow", which you shouldn't).
 
 Technically, this is an MCP server that lets an AI agent work a LINE Official Account the way a
 customer-support person does. It can list ongoing chats, read a chat, search messages across chats, send a message, see a customer's profile,
@@ -56,7 +56,7 @@ own login. LINE's Messaging API is built for bots: it can't see existing chats o
 
 ## Setup
 
-You need Node 22.13 or newer, Google Chrome or Microsoft Edge, and an account that can open LINE OA Manager.
+You need Node 22.13 or newer, Google Chrome, Microsoft Edge or another supported browser (Brave, Chromium, Firefox, WebKit), and an account that can open LINE OA Manager.
 
 ```bash
 git clone https://github.com/Jamamaboy/lineoa-cs-mcp.git
