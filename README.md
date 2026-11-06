@@ -2,9 +2,17 @@
 
 [![release](https://img.shields.io/github/v/release/Jamamaboy/lineoa-cs-mcp?label=release)](https://github.com/Jamamaboy/lineoa-cs-mcp/releases)
 [![ci](https://github.com/Jamamaboy/lineoa-cs-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/Jamamaboy/lineoa-cs-mcp/actions/workflows/ci.yml)
-![node](https://img.shields.io/badge/node-%E2%89%A522.13-339933?logo=node.js&logoColor=white)
-![mcp](https://img.shields.io/badge/MCP-stdio-6b4fbb)
-![read-only by default](https://img.shields.io/badge/sending-off%20by%20default-2da44e)
+![status](https://img.shields.io/badge/status-working%20MVP-2ea44f)
+![sending](https://img.shields.io/badge/sending-off%20by%20default-2da44e)
+
+![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-22.13%2B-339933?logo=nodedotjs&logoColor=white)
+![MCP](https://img.shields.io/badge/MCP%20SDK-1.32-6b4fbb)
+![Playwright](https://img.shields.io/badge/Playwright-login-2EAD33)
+![SQLite](https://img.shields.io/badge/SQLite-built--in-003B57?logo=sqlite&logoColor=white)
+![Hono](https://img.shields.io/badge/Hono-mock-E36002?logo=hono&logoColor=white)
+![Vitest](https://img.shields.io/badge/Vitest-31%20tests-6E9F18?logo=vitest&logoColor=white)
+![Claude Code](https://img.shields.io/badge/built%20with-Claude%20Code-D97757?logo=claude&logoColor=white)
 
 <!-- INTRO: the owner writes this paragraph. Until then, the text below describes the project. -->
 An MCP server that lets an AI agent work a LINE Official Account the way a customer-support person does. It
@@ -21,27 +29,13 @@ own login. LINE's Messaging API is built for bots: it can't see existing chats o
 
 <p align="center"><img src="docs/assets/supports.svg" alt="What it works with: AI apps, login browsers, platforms and the LINE side" width="880"></p>
 
-## Features
+## How it flows
 
-```mermaid
-flowchart LR
-  AI["AI app<br/>Claude Code · Claude Desktop<br/>any MCP client"] -->|stdio| S
-  CLI["lineoa CLI"] --> C
-  subgraph S["lineoa-cs MCP server"]
-    direction TB
-    R["Read<br/>auth_status · list_chats<br/>read_chat · get_user_profile"]
-    F["Find<br/>search_messages"]
-    A["Files<br/>get_attachment"]
-    W["Write · off by default<br/>send_message"]
-  end
-  F <--> IDX[("local index<br/>SQLite")]
-  A --> CACHE[("file cache<br/>0600")]
-  W --> GATE["flag → chat allowlist → daily cap<br/>→ dryRun → human OK → audit log"]
-  S --> C["LineOAClient<br/>cookie · CSRF · typed errors"]
-  GATE --> C
-  C -->|HTTPS + session| LINE["chat.line.biz"]
-  C -.->|same paths| MOCK["built-in mock"]
-```
+<p align="center"><img src="docs/assets/flow.svg" alt="Customers message the OA; the CS person asks the AI app; lineoa-cs reads LINE with the staff session; the AI drafts; the human says OK; the reply goes out as the staff member" width="100%"></p>
+
+## Architecture
+
+<p align="center"><img src="docs/assets/architecture.svg" alt="High-level architecture with data flow: clients, the MCP server (tools, safety gates, LineOAClient), LINE OA Manager, login, local data and the built-in mock" width="100%"></p>
 
 ## How it is used
 
@@ -140,11 +134,7 @@ than one OA and the request doesn't say which, the tool answers `CHOOSE_OA` with
 
 ## How it works
 
-```
-AI app ──stdio──▶ MCP server ── tools ──▶ LineOAClient ──HTTPS + session cookie──▶ chat.line.biz
-                                              │                                    (or the mock)
-                                 local SQLite index (search) · file cache · audit log
-```
+The picture is in [Architecture](#architecture). In words:
 
 - **One client for real and mock.** The mock copies the console's paths, cookie, error bodies and cursors,
   so `LineOAClient` is the same code for both, and the e2e tests drive a real MCP client against it.
