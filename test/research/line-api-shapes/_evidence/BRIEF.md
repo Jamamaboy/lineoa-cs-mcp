@@ -4,7 +4,7 @@ Goal: the dev team builds a mock of chat.line.biz tonight. The orchestrator (Opu
 for each endpoint and a README table saying where every field came from (file + line). You supply the evidence from
 **your repo(s) only**. You do not write fixtures.
 
-Worktree: /Users/psoongsu/orca/lineoa-cs-mcp-research (branch research). Repos are already cloned under
+Worktree: <research worktree> (branch research). Repos are already cloned under
 test/research/_vendor/<slug>/repo/. **Static reading only**: do not install, run, or hit the network. Do not git
 add/commit. Write only your evidence file: test/research/line-api-shapes/_evidence/<slug>.md
 
