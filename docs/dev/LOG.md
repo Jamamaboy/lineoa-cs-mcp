@@ -337,3 +337,9 @@
 - Why: Dev review: a renamed field would give silently wrong values.
 - Commits: `fix(client): check LINE's response shapes; clear not-found for chats` (this commit; the LOG entry ships with the work)
 - For other lanes: none.
+
+## 2026-11-06 19:54 ICT · tests for T6
+- What: tests/unit/raw-schemas.test.ts, tests/unit/normalize.test.ts, tests/e2e/not-found.test.ts
+- Why: Cover the T6 behaviour.
+- Commits: `test: response-shape checks, normalize, not-found wording` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
