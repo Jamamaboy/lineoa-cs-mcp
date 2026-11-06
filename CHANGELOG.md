@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.2.1 · 2026-11-06
+
+- CI: `.gitattributes` pins LF line endings, so the Windows job checks out the same files as Linux and macOS. v0.2.0's Windows job failed in lint on CRLF; lint, typecheck, tests, build and smoke now pass on all three.
+
 ## v0.2.0 · 2026-11-06
 
 Fixes from a four-persona review (non-technical CS user, maintainer, QA, tech lead), planned with `/write-plan`
