@@ -169,3 +169,9 @@
 - Why: The user asked for a GIF, a what-it-works-with graphic, feature and flow diagrams, and versions in the README.
 - Commits: docs: add a terminal demo GIF…; docs: README badges, showcase…
 - For other lanes: none.
+
+## 2026-11-06 09:51 ICT · README diagrams and badges
+- What: docs/assets/flow.svg (illustrated support-chat flow with numbered steps) and docs/assets/architecture.svg (high-level architecture with data flow), both render-checked; README gets status and stack badge rows (all shields verified to return logos) and the two pictures; 2x PNG + SVG copies exported to ~/Downloads/lineoa-diagrams for Canva.
+- Why: The user wants LINE-docs-style flow pictures, an architecture diagram, and badge rows like the reference repo.
+- Commits: docs: add an illustrated flow and an architecture diagram; docs: README tech badges and the new diagrams
+- For other lanes: none.
