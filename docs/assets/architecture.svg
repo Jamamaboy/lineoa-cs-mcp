@@ -11,24 +11,24 @@
 <symbol id="i-node" viewBox="0 0 24 24"><path d="M11.998,24c-0.321,0-0.641-0.084-0.922-0.247l-2.936-1.737c-0.438-0.245-0.224-0.332-0.08-0.383 c0.585-0.203,0.703-0.25,1.328-0.604c0.065-0.037,0.151-0.023,0.218,0.017l2.256,1.339c0.082,0.045,0.197,0.045,0.272,0l8.795-5.076 c0.082-0.047,0.134-0.141,0.134-0.238V6.921c0-0.099-0.053-0.192-0.137-0.242l-8.791-5.072c-0.081-0.047-0.189-0.047-0.271,0 L3.075,6.68C2.99,6.729,2.936,6.825,2.936,6.921v10.15c0,0.097,0.054,0.189,0.139,0.235l2.409,1.392 c1.307,0.654,2.108-0.116,2.108-0.89V7.787c0-0.142,0.114-0.253,0.256-0.253h1.115c0.139,0,0.255,0.112,0.255,0.253v10.021 c0,1.745-0.95,2.745-2.604,2.745c-0.508,0-0.909,0-2.026-0.551L2.28,18.675c-0.57-0.329-0.922-0.945-0.922-1.604V6.921 c0-0.659,0.353-1.275,0.922-1.603l8.795-5.082c0.557-0.315,1.296-0.315,1.848,0l8.794,5.082c0.57,0.329,0.924,0.944,0.924,1.603 v10.15c0,0.659-0.354,1.273-0.924,1.604l-8.794,5.078C12.643,23.916,12.324,24,11.998,24z M19.099,13.993 c0-1.9-1.284-2.406-3.987-2.763c-2.731-0.361-3.009-0.548-3.009-1.187c0-0.528,0.235-1.233,2.258-1.233 c1.807,0,2.473,0.389,2.747,1.607c0.024,0.115,0.129,0.199,0.247,0.199h1.141c0.071,0,0.138-0.031,0.186-0.081 c0.048-0.054,0.074-0.123,0.067-0.196c-0.177-2.098-1.571-3.076-4.388-3.076c-2.508,0-4.004,1.058-4.004,2.833 c0,1.925,1.488,2.457,3.895,2.695c2.88,0.282,3.103,0.703,3.103,1.269c0,0.983-0.789,1.402-2.642,1.402 c-2.327,0-2.839-0.584-3.011-1.742c-0.02-0.124-0.126-0.215-0.253-0.215h-1.137c-0.141,0-0.254,0.112-0.254,0.253 c0,1.482,0.806,3.248,4.655,3.248C17.501,17.007,19.099,15.91,19.099,13.993z" fill="#5FA04E"/></symbol>
 <symbol id="i-line" viewBox="0 0 24 24"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314" fill="#06C755"/></symbol>
 <symbol id="i-term" viewBox="0 0 24 24"><rect x="1" y="3" width="22" height="18" rx="3" fill="#24292f"/><path d="M5 9l3 3-3 3M10 15h6" stroke="#6df24a" stroke-width="2" fill="none" stroke-linecap="round"/></symbol>
-<symbol id="i-plug" viewBox="0 0 24 24"><path d="M8 2v5M16 2v5M5 7h14v4a7 7 0 0 1-14 0zM12 18v4" stroke="#6f4ef2" stroke-width="2.2" fill="none" stroke-linecap="round"/></symbol>
+<symbol id="i-plug" viewBox="0 0 24 24"><path d="M8 2v5M16 2v5M5 7h14v4a7 7 0 0 1-14 0zM12 18v4" stroke="#f97316" stroke-width="2.2" fill="none" stroke-linecap="round"/></symbol>
 <symbol id="i-edge" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#0C7BD8"/><path d="M6 13c0-4 3-6 6-6 3.5 0 6 2.3 6 5H9.5c.3 2 2 3.3 4.5 3.3 1.6 0 3-.5 4-1.2v3c-1.2.8-3 1.2-4.6 1.2C9 18.3 6 16.2 6 13z" fill="#5CCB6B"/></symbol>
 <symbol id="i-windows" viewBox="0 0 24 24"><rect x="2" y="2" width="9.5" height="9.5" fill="#0078D4"/><rect x="12.5" y="2" width="9.5" height="9.5" fill="#0078D4"/><rect x="2" y="12.5" width="9.5" height="9.5" fill="#0078D4"/><rect x="12.5" y="12.5" width="9.5" height="9.5" fill="#0078D4"/></symbol>
-<symbol id="i-webkit" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="#5b3fd1" stroke-width="2"/><path d="M12 3v18M3 12h18M6 6c3 2 9 2 12 0M6 18c3-2 9-2 12 0" stroke="#5b3fd1" stroke-width="1.4" fill="none"/></symbol>
+<symbol id="i-webkit" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="#c2410c" stroke-width="2"/><path d="M12 3v18M3 12h18M6 6c3 2 9 2 12 0M6 18c3-2 9-2 12 0" stroke="#c2410c" stroke-width="1.4" fill="none"/></symbol>
 <symbol id="i-chat" viewBox="0 0 24 24"><path d="M3 5h18v11H9l-5 4v-4H3z" fill="#06C755"/></symbol>
 <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6" stroke="#24292f" stroke-width="2.4" fill="none"/><path d="M14.5 14.5L21 21" stroke="#24292f" stroke-width="2.6" stroke-linecap="round"/></symbol>
 <symbol id="i-image" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2" fill="#7cb8f7"/><circle cx="8" cy="9" r="2" fill="#fff"/><path d="M3 19l6-6 4 4 3-3 5 5z" fill="#fff"/></symbol>
-<symbol id="i-send" viewBox="0 0 24 24"><path d="M2 21L23 12 2 3v7l15 2-15 2z" fill="#6f4ef2"/></symbol>
+<symbol id="i-send" viewBox="0 0 24 24"><path d="M2 21L23 12 2 3v7l15 2-15 2z" fill="#f97316"/></symbol>
 <symbol id="i-bot" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="4" fill="#9198a1"/><circle cx="9" cy="13" r="1.8" fill="#fff"/><circle cx="15" cy="13" r="1.8" fill="#fff"/><path d="M12 7V3" stroke="#9198a1" stroke-width="2"/></symbol>
 
 <marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="#3d4450"/></marker>
 <marker id="g" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="#06c755"/></marker>
 <g id="p"><circle cx="0" cy="-16" r="13" stroke="#111" stroke-width="3.2"/><path d="M-21 26 V12 Q-21 -2 0 -2 Q21 -2 21 12 V26 Z" stroke="#111" stroke-width="3.2" stroke-linejoin="round"/></g>
 <g id="gear" fill="none" stroke="#6df24a" stroke-width="4"><circle r="10"/><path d="M0 -18 V-12 M0 12 V18 M-18 0 H-12 M12 0 H18 M-13 -13 L-8.5 -8.5 M8.5 8.5 L13 13 M-13 13 L-8.5 8.5 M8.5 -8.5 L13 -13"/></g>
-<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 2l8 3v6c0 5-3.4 9-8 11-4.6-2-8-6-8-11V5z" fill="#6f4ef2"/><path d="M8 12l3 3 5-6" stroke="#fff" stroke-width="2.2" fill="none"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 2l8 3v6c0 5-3.4 9-8 11-4.6-2-8-6-8-11V5z" fill="#f97316"/><path d="M8 12l3 3 5-6" stroke="#fff" stroke-width="2.2" fill="none"/></symbol>
 <symbol id="i-db" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3" fill="#24292f"/><path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5c0 1.7-4 3-9 3S3 6.7 3 5z" fill="#3d4450"/><path d="M3 12c0 1.7 4 3 9 3s9-1.3 9-3" stroke="#6df24a" stroke-width="1.6" fill="none"/></symbol>
 <symbol id="i-file" viewBox="0 0 24 24"><path d="M5 2h10l5 5v15H5z" fill="#7cb8f7"/><path d="M15 2v5h5" fill="#fff" opacity=".6"/><path d="M8 13h8M8 17h6" stroke="#fff" stroke-width="2"/></symbol>
-<symbol id="i-log" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2" fill="#6f4ef2"/><path d="M8 7h8M8 11h8M8 15h5" stroke="#fff" stroke-width="2"/></symbol>
+<symbol id="i-log" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2" fill="#f97316"/><path d="M8 7h8M8 11h8M8 15h5" stroke="#fff" stroke-width="2"/></symbol>
 </defs>
 <style>.t{font-size:30px;font-weight:800;fill:#1f2328}.h{font-size:20px;font-weight:800;fill:#fff}
 .b{font-size:15px;font-weight:700;fill:#1f2328}.s{font-size:13px;fill:#3d4450}.w{font-size:13px;fill:#fff}.m{font-size:11.5px;fill:#9198a1}
@@ -57,8 +57,8 @@
 <text class="s" x="299" y="192" text-anchor="middle">stdio</text>
 <path class="ln" d="M264 354 C300 354 300 430 334 430" marker-end="url(#a)"/>
 <text class="s" x="304" y="382" text-anchor="middle">direct</text>
-<rect x="340" y="110" width="580" height="390" rx="22" fill="#f3f0ff" stroke="#c9bdf7" stroke-width="2"/>
-<text x="362" y="146" font-size="20" font-weight="800" fill="#5b3fd1">lineoa-cs MCP server</text>
+<rect x="340" y="110" width="580" height="390" rx="22" fill="#e3f0fd" stroke="#7cb8f7" stroke-width="2"/>
+<text x="362" y="146" font-size="20" font-weight="800" fill="#1d5fa8">lineoa-cs MCP server</text>
 <text class="s" x="575" y="146">Node 22 · TypeScript</text>
 <rect x="362" y="166" width="268" height="206" rx="16" fill="#24292f"/>
 <use href="#gear" x="390" y="194"/>
@@ -70,9 +70,9 @@
 <text class="w" x="382" y="320">• get_attachment</text>
 <text class="w" x="382" y="342">• send_message <tspan fill="#9198a1">(off by default)</tspan></text>
 <text class="m" x="382" y="362">zod inputs · oa by name · CHOOSE_OA</text>
-<rect x="646" y="166" width="256" height="206" rx="12" fill="#fff" stroke="#6f4ef2" stroke-width="2"/>
+<rect x="646" y="166" width="256" height="206" rx="12" fill="#fff" stroke="#f97316" stroke-width="2"/>
 <use href="#i-shield" x="662" y="180" width="26" height="26"/>
-<text x="698" y="200" font-size="17" font-weight="800" fill="#5b3fd1">Safety gates</text>
+<text x="698" y="200" font-size="17" font-weight="800" fill="#c2410c">Safety gates</text>
 <text class="s" x="664" y="232">• ids checked before any URL</text>
 <text class="s" x="664" y="253">• send: flag → chat allowlist</text>
 <text class="s" x="664" y="274">  → daily cap → dryRun</text>
@@ -107,8 +107,8 @@
 <text class="b" x="1080" y="432">chat-content.line.biz</text>
 <text class="c" x="1080" y="452">GET /bot/{oa}/{hash}</text>
 <text class="m" x="1080" y="472">images · files · video · audio, on request</text>
-<rect x="40" y="540" width="300" height="150" rx="22" fill="#f3f0ff" stroke="#c9bdf7" stroke-width="2"/>
-<text x="62" y="574" font-size="18" font-weight="800" fill="#5b3fd1">Login · once per shift</text>
+<rect x="40" y="540" width="300" height="150" rx="22" fill="#fff1e6" stroke="#fdba74" stroke-width="2"/>
+<text x="62" y="574" font-size="18" font-weight="800" fill="#c2410c">Login · once per shift</text>
 <text class="s" x="62" y="598">npm run login opens a real browser</text>
 <text class="s" x="62" y="618">the person types the password, not us</text>
 <use href="#i-chrome" x="62" y="636" width="26" height="26"/>

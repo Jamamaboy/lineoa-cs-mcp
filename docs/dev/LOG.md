@@ -259,3 +259,9 @@
 - Why: The user wants the review fixes planned with /write-plan and built with /implement-plan from their own kit.
 - Commits: `chore(dx): install the plan kit (write-plan / implement-plan) with this repo's profile` (this commit; the LOG entry ships with the work)
 - For other lanes: none.
+
+## 2026-11-06 19:48 ICT · diagram palette
+- What: flow, architecture, sequence and supports SVGs recoloured; layout and text unchanged.
+- Why: The user asked for light blue, green and orange in every diagram.
+- Commits: `docs: diagrams in light blue, green and orange` (this commit; the LOG entry ships with the work)
+- For other lanes: none.

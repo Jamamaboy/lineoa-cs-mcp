@@ -1,7 +1,8 @@
 # dev status
-Last updated: 2026-11-06 19:38 ICT · branch feat/plan-kit
+Last updated: 2026-11-06 19:48 ICT · branch feat/diagram-palette
 
 ## Now
+- Done: diagram palette
 - Done: plan kit installed
 - v0.1.5 released to main (tag v0.1.5, GitHub release): welcome hook, features page, SVG sequence diagram. Public repo: github.com/Jamamaboy/lineoa-cs-mcp.
 - All 5 required actions, auth, attachments and the README sections are done. 33 tests green, CI green.
