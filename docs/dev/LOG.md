@@ -253,3 +253,147 @@
 - Why: the user approved pushing and releasing the welcome message, features page and readable diagram.
 - Commits: `chore(release): v0.1.5` (this commit)
 - For other lanes: none.
+
+## 2026-11-06 19:38 ICT · plan kit installed
+- What: install.sh copied the kit under .claude/; the profile is filled in for this repo.
+- Why: The user wants the review fixes planned with /write-plan and built with /implement-plan from their own kit.
+- Commits: `chore(dx): install the plan kit (write-plan / implement-plan) with this repo's profile` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
+
+## 2026-11-06 19:48 ICT · diagram palette
+- What: flow, architecture, sequence and supports SVGs recoloured; layout and text unchanged.
+- Why: The user asked for light blue, green and orange in every diagram.
+- Commits: `docs: diagrams in light blue, green and orange` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
+
+## 2026-11-06 19:53 ICT · repo polish (T1)
+- What: LICENSE, src/tools/get-user-profile.ts, docs/dev/STATUS.md
+- Why: Tech-lead review: no license file, lint warning, internal note in a public file.
+- Commits: `chore: MIT license, unused import, no internal notes in STATUS` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
+
+## 2026-11-06 19:53 ICT · error + input validation (T3)
+- What: src/client/http.ts, src/tools/search-messages.ts, src/tools/send-message.ts, src/domain/errors.ts
+- Why: QA review: UNEXPECTED fetch failed, impossible dates accepted, blank text accepted, API path in errors.
+- Commits: `fix: network failures and 404s give actionable errors; search dates must be real` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
+
+## 2026-11-06 19:53 ICT · tests for T3
+- What: tests/unit/http-errors.test.ts, tests/e2e/input-validation.test.ts
+- Why: Cover the T3 behaviour.
+- Commits: `test: http error mapping and tool input validation` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
+
+## 2026-11-06 19:54 ICT · server start-up errors (T4a)
+- What: src/index.ts
+- Why: QA review: LINEOA_SEND_DAILY_LIMIT=abc showed only Connection closed.
+- Commits: `fix(server): a bad setting is one stderr line, not a stack trace` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
+
+## 2026-11-06 19:54 ICT · CLI dates + matcher (T4b)
+- What: src/cli/ui.ts
+- Why: CS/QA review: 5/11/69 was confusing; read by name needs a safe matcher.
+- Commits: `fix(cli): Gregorian dates and a pure chat-name matcher` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
+
+## 2026-11-06 19:54 ICT · CLI read by name (T4c)
+- What: src/cli.ts
+- Why: CS review: chat ids are long; QA: unknown options printed Node stack traces.
+- Commits: `feat(cli): read a chat by name; option errors are one line` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
+
+## 2026-11-06 19:54 ICT · tests for T4
+- What: tests/unit/cli-errors.test.ts
+- Why: Cover the T4 behaviour.
+- Commits: `test: CLI and server start-up errors, read by name` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
+
+## 2026-11-06 19:54 ICT · robust local files (T5a)
+- What: src/auth/session-source.ts, src/auth/session-file.ts, src/audit/audit-log.ts
+- Why: Dev review: one bad audit line stopped all sending; a half-written session caused UNEXPECTED.
+- Commits: `fix: corrupt local files no longer break login or sending` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
+
+## 2026-11-06 19:54 ICT · setup (T5b)
+- What: src/cli/setup.ts
+- Why: CS review: no way to try the mock from Desktop, alarming not-installed line; risk review: re-runs dropped settings.
+- Commits: `feat(setup): --mock, merged env, timestamped backups, clear messages` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
+
+## 2026-11-06 19:54 ICT · version + deps (T5c)
+- What: src/version.ts, src/server.ts, package.json, package-lock.json, .mcp.json
+- Why: Dev review: duplicated version, setup relied on a devDependency.
+- Commits: `chore: one version source, tsx at runtime, mock on a free port` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
+
+## 2026-11-06 19:54 ICT · tests for T5
+- What: tests/unit/local-files.test.ts
+- Why: Cover the T5 behaviour.
+- Commits: `test: local files, setup and version` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
+
+## 2026-11-06 19:54 ICT · response shapes (T6)
+- What: src/domain/raw-schemas.ts, src/client/line-client.ts
+- Why: Dev review: a renamed field would give silently wrong values.
+- Commits: `fix(client): check LINE's response shapes; clear not-found for chats` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
+
+## 2026-11-06 19:54 ICT · tests for T6
+- What: tests/unit/raw-schemas.test.ts, tests/unit/normalize.test.ts, tests/e2e/not-found.test.ts
+- Why: Cover the T6 behaviour.
+- Commits: `test: response-shape checks, normalize, not-found wording` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
+
+## 2026-11-06 19:58 ICT · dist + CI (T7a)
+- What: mock-server/fixtures.ts, scripts/smoke-dist.mjs, .github/workflows/ci.yml, tests/unit/files.test.ts
+- Why: Dev review: LINEOA_MOCK=1 node dist/src/index.js crashed; CI only ran Linux and never the build.
+- Commits: `fix(build): the built server finds its mock data; CI checks 3 OSes and the build` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
+
+## 2026-11-06 19:58 ICT · setup --mock flag (T7b)
+- What: src/cli.ts
+- Why: CS review: Claude Desktop users had no way to try the mock.
+- Commits: `feat(cli): npm run setup -- --mock` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
+
+## 2026-11-06 19:58 ICT · CS start page (T8a)
+- What: docs/START.th.md, start-mac.command
+- Why: CS persona review scored setup 3/10: no Terminal/Node steps, no safety explanation.
+- Commits: `docs: Thai start page and a double-click installer for CS staff` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
+
+## 2026-11-06 19:58 ICT · README + guides (T8b)
+- What: README.md, docs/USAGE.th.md, scripts/welcome.mjs
+- Why: Tech-lead review: placeholders and process before setup; CS review: Thai guide hard to find.
+- Commits: `docs: README opens with a plain pitch and the Thai links; guides in sync` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
+
+## 2026-11-06 20:03 ICT · review fix round (code + security)
+- What: src/client/http.ts, src/client/line-client.ts, src/audit/audit-log.ts, src/mock-env.ts, src/cli/setup.ts, start-mac.command, tests/unit/review-fixes.test.ts
+- Why: code-reviewer 2 should-fix, security-reviewer 3 should-fix + suggestions; all small, fixed by the orchestrator.
+- Commits: `fix: review follow-ups in the client, setup and mock` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
+
+## 2026-11-06 20:03 ICT · review fix round (UX)
+- What: README.md, docs/USAGE.th.md, docs/START.th.md, src/cli.ts
+- Why: uxui-reviewer 7 should-fix.
+- Commits: `docs: honest send wording and consistent guides; tidier CLI rows` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
+
+## 2026-11-06 20:06 ICT · simplify pass
+- What: src/domain/json.ts, src/audit/audit-log.ts, src/cli/setup.ts, src/client/http.ts, src/domain/raw-schemas.ts, src/version.ts, mock-server/fixtures.ts
+- Why: /simplify (4 agents) found duplicated guards and a whole-file read per send. Skipped: NOT_FOUND rewrite via http options (invasive in a high-risk file), shared atomic-write helper (different safeguards), cli resolveChat extraction.
+- Commits: `refactor: simplify pass on the review fixes` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
+
+## 2026-11-06 20:07 ICT · re-review follow-up
+- What: src/cli/setup.ts, src/audit/audit-log.ts
+- Why: Re-review of the orchestrator's own fixes (writer != reviewer) found the order issue.
+- Commits: `fix(setup): check Windows paths before removing the old registration` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
+
+## 2026-11-06 20:08 ICT · release v0.2.0
+- What: version 0.2.0, CHANGELOG, Versions row, features page regenerated, STATUS rewritten, runs.md row for this implement-plan run; dev → main --no-ff, tag v0.2.0, push, GitHub release.
+- Why: the review-fixes plan is done (T1–T8 + review rounds); the user approved releasing it as v0.2.0.
+- Commits: `chore(release): v0.2.0` (this commit)
+- For other lanes: plan lane's neutral CLAUDE.md is merged into dev in the same release.
