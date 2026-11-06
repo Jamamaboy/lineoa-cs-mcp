@@ -223,3 +223,9 @@
 - Why: the user asked to finish the fresh-clone fixes and release them before testing from a git clone.
 - Commits: `chore(release): v0.1.4` (this commit)
 - For other lanes: none.
+
+## 2026-11-06 19:11 ICT · welcome on session start
+- What: New .claude/settings.json (SessionStart, matcher startup) and scripts/welcome.mjs.
+- Why: A fresh Claude session in the clone opened blank; the user wanted it to say what the system can do.
+- Commits: `feat(dx): welcome message when Claude Code starts in this folder` (this commit; the LOG entry ships with the work)
+- For other lanes: none.
