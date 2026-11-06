@@ -289,3 +289,9 @@
 - Why: QA review: LINEOA_SEND_DAILY_LIMIT=abc showed only Connection closed.
 - Commits: `fix(server): a bad setting is one stderr line, not a stack trace` (this commit; the LOG entry ships with the work)
 - For other lanes: none.
+
+## 2026-11-06 19:54 ICT · CLI dates + matcher (T4b)
+- What: src/cli/ui.ts
+- Why: CS/QA review: 5/11/69 was confusing; read by name needs a safe matcher.
+- Commits: `fix(cli): Gregorian dates and a pure chat-name matcher` (this commit; the LOG entry ships with the work)
+- For other lanes: none.

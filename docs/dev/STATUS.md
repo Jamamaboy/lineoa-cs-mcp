@@ -2,6 +2,7 @@
 Last updated: 2026-11-06 19:54 ICT · branch feat/review-fixes
 
 ## Now
+- Done: CLI dates + matcher (T4b)
 - Done: server start-up errors (T4a)
 - Done: tests for T3
 - Done: error + input validation (T3)
