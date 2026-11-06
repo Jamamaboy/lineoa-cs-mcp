@@ -45,7 +45,7 @@ const commands: Record<string, () => Promise<void>> = {
       (s.done ? ui.ok : ui.warn)(`${ui.bold(s.target)}: ${s.detail}`);
     }
     ui.line(
-      `  sending: ${opt["allow-send"] ? ui.bold("ON") : "off (read-only). Run `lineoa setup --allow-send` to turn it on."}`,
+      `  sending: ${opt["allow-send"] ? ui.bold("ON") : "off (read-only). Run `npm run setup -- --allow-send` to turn it on."}`,
     );
     ui.line(
       `\nNext: ${ui.cyan("npm run login")}, then ask your AI app: "Which LINE chats are waiting for a reply?"`,
@@ -92,7 +92,8 @@ const commands: Record<string, () => Promise<void>> = {
 
   async read() {
     const chatId = rest[0];
-    if (!chatId) throw new Error("Usage: lineoa read <chatId>   (ids come from `lineoa chats`)");
+    if (!chatId)
+      throw new Error("Usage: npm run lineoa -- read <chatId>   (ids come from `npm run lineoa -- chats`)");
     const bot = await pickOa();
     const [chat, page] = await Promise.all([
       client.getChat(bot.botId, chatId),
@@ -110,7 +111,7 @@ const commands: Record<string, () => Promise<void>> = {
 
   async search() {
     const text = rest.join(" ");
-    if (!text) throw new Error("Usage: lineoa search <text>");
+    if (!text) throw new Error("Usage: npm run lineoa -- search <text>");
     const bot = await pickOa();
     const store = new MessageStore(config.indexFile);
     const sync = await syncRecent(client, store, bot.botId, config.syncLimits);
@@ -132,20 +133,20 @@ const commands: Record<string, () => Promise<void>> = {
       ["read <chatId>", "show one chat"],
       ["search <text>", "find messages in recent chats"],
     ])
-      ui.line(`  ${ui.cyan(`lineoa ${c}`)}\n      ${d}`);
+      ui.line(`  ${ui.cyan(`npm run lineoa -- ${c}`)}\n      ${d}`);
   },
 };
 
 try {
   const run = commands[cmd];
-  if (!run) throw new Error(`Unknown command "${cmd}". Run \`lineoa help\`.`);
+  if (!run) throw new Error(`Unknown command "${cmd}". Run \`npm run lineoa -- help\`.`);
   await run();
 } catch (err) {
   const code = err instanceof LineOAError ? err.code : "";
   const msg = (err as Error).message;
   ui.fail(
     code === "AUTH_EXPIRED"
-      ? "Not logged in. Run: lineoa login"
+      ? "Not logged in. Run: npm run login"
       : code === "CHOOSE_OA"
         ? `${msg.split(" Ask the person")[0]} Pick one with --oa "<name>".`
         : msg,

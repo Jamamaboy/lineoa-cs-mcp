@@ -199,3 +199,9 @@
 - Why: The user asked to push and release the README and diagram work. v0.1.2 was already taken by a stray tag on the v0.1.1 commit.
 - Commits: `chore(release): v0.1.3` (this commit; the LOG entry ships with the work)
 - For other lanes: none.
+
+## 2026-11-06 19:02 ICT · CLI hints use npm scripts
+- What: Every CLI hint (not logged in, usage, help, unknown command, setup) now names an npm script.
+- Why: A fresh-clone test showed 'Run: lineoa login', which a new user cannot run.
+- Commits: `fix(cli): point hints at npm scripts a fresh clone can run` (this commit; the LOG entry ships with the work)
+- For other lanes: none.

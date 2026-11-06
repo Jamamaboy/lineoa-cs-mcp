@@ -1,7 +1,8 @@
 # dev status
-Last updated: 2026-11-06 18:38 ICT · branch release/v0.1.3
+Last updated: 2026-11-06 19:02 ICT · branch feat/fresh-clone-fixes
 
 ## Now
+- Done: CLI hints use npm scripts
 - Done: release v0.1.3
 - Done: history guide in README
 - Done: linear flow diagram
