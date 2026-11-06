@@ -88,6 +88,11 @@ main{max-width:920px;margin:0 auto;padding:32px 16px 64px}h1{margin:0 0 4px}h2{m
 .meta{color:var(--mute);font-size:13px;margin-left:auto}
 .tag{font-size:12px;font-weight:700;color:#fff;background:var(--dark);border-radius:6px;padding:1px 8px}
 .feature .tag{background:var(--purple)}.release .tag{background:var(--green)}
+.shot{margin:14px 0 22px}.shot img{width:100%;border:1px solid var(--line);border-radius:12px;background:#fff}
+.shot figcaption{color:var(--mute);font-size:13px;margin-top:6px}
+.chat{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:14px 16px}
+.me,.ai{margin:8px 0;padding:10px 12px;border-radius:12px;max-width:85%}.me{background:var(--purple);color:#fff;margin-left:auto}
+.ai{background:var(--bg);border:1px solid var(--line)}.call{font:12px SFMono-Regular,Menlo,monospace;color:var(--mute)}
 </style></head><body><main>
 <h1>lineoa-cs</h1>
 <p class="lead">An MCP server that lets an AI app work LINE OA Manager chats the way a support person does:
@@ -98,6 +103,24 @@ read, search, look at customers and files, and reply only after a human says OK.
 <p>Ask in plain words, for example: <i>"Which LINE chats are waiting for a reply?"</i>,
 <i>"Summarise the chat with … in English"</i>, <i>"Search for 'receipt' this week"</i>.
 No LINE account? The <code>lineoa-cs-mock</code> server answers the same questions with sample chats.</p>
+
+
+<h2>See it</h2>
+<div class="chat">
+  <div class="me">Which LINE chats are waiting for a reply?</div>
+  <div class="ai"><div class="call">→ list_chats(oa: "Demo Shop", filter: "needs_reply")</div>
+    2 chats are waiting in <b>Demo Shop</b>:<br>• <b>นก 🌸</b>: asks for a refund on order #1250, items missing · <a href="#">open in LINE</a><br>
+    • <b>ทีมตัวแทนขาย</b> (group): asks for yesterday's sales · <a href="#">open in LINE</a></div>
+  <div class="me">Draft a reply to นก</div>
+  <div class="ai"><div class="call">→ read_chat · get_user_profile</div>Draft (not sent): "ขอโทษค่ะ เดี๋ยวตรวจสอบออเดอร์ #1250 และดำเนินการคืนเงินให้นะคะ"<br>
+    Say <b>OK</b> and I will send it with <code>send_message</code>.</div>
+</div>
+<p class="lead">An example with the built-in mock's sample chats. On a live OA sending is off unless you turn it on.</p>
+<figure class="shot"><img src="assets/demo-cli.gif" alt="the terminal command against the mock"><figcaption>The terminal command (<code>npm run lineoa</code>) on the mock.</figcaption></figure>
+<figure class="shot"><img src="assets/flow.svg" alt="flow"><figcaption>How a support chat flows, left to right.</figcaption></figure>
+<figure class="shot"><img src="assets/sequence.svg" alt="step by step"><figcaption>Step by step: set up, read and draft, send after OK.</figcaption></figure>
+<figure class="shot"><img src="assets/architecture.svg" alt="architecture"><figcaption>How it is built.</figcaption></figure>
+<figure class="shot"><img src="assets/supports.svg" alt="what it works with"><figcaption>What it works with, and what was tested.</figcaption></figure>
 
 <h2>How it was built</h2>
 <p class="lead">${count("feature")} feature branches, ${count("release")} releases, and the plan and research

@@ -241,3 +241,9 @@
 - Why: The user found the mermaid diagram hard to read and cut off on GitHub in dark mode.
 - Commits: `docs: draw the step-by-step diagram as an SVG that reads in dark mode` (this commit; the LOG entry ships with the work)
 - For other lanes: none.
+
+## 2026-11-06 19:20 ICT · features page pictures
+- What: scripts/features-page.ts gains a See it section; docs/features.html regenerated.
+- Why: The user asked for example pictures on the features page.
+- Commits: `docs: example chat and pictures on the features page` (this commit; the LOG entry ships with the work)
+- For other lanes: none.

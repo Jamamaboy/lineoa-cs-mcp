@@ -1,7 +1,8 @@
 # dev status
-Last updated: 2026-11-06 19:19 ICT · branch feat/readable-diagrams
+Last updated: 2026-11-06 19:20 ICT · branch feat/readable-diagrams
 
 ## Now
+- Done: features page pictures
 - Done: readable sequence diagram
 - Done: features page
 - Done: welcome on session start
